@@ -138,7 +138,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
             Marker marker = mMap.addMarker(new MarkerOptions()
                     .position(positions[i]).title("마커 " + i + "번")
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_gray)));
 
             markers.add(marker);
         }
