@@ -80,12 +80,15 @@
                     android:src="@drawable/write3"
                     android:scaleType="centerInside"
                     android:layout_marginRight="10dp"/>
-                <TextView
+                <Button
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/write_calendar"
+                    android:background="#00FFFFFF"
                     android:textColor="@color/contents"
-                    android:layout_gravity="center_vertical"/>
+                    android:onClick="onCalendarClicked"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="start|center_vertical"/>
             </LinearLayout>
 
             <TextView
