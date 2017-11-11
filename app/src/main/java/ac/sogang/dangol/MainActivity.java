@@ -15,15 +15,24 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 
-public class MainActivity extends FragmentActivity implements OnMapReadyCallback {
+import java.util.ArrayList;
+
+public class MainActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
     private GoogleMap mMap;
+
+    ArrayList<Marker> markers = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,6 +112,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 Double latitude = lastlocation.getLatitude();
                 Double longitude = lastlocation.getLongitude();
                 Log.e("dangol_main", "Last known location: " + latitude + "\t" + longitude);
+
             }
         }catch(SecurityException se){
             Log.e("dangol_main", "catch " + se.getMessage());
@@ -110,10 +120,53 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
         Toast.makeText(this, "Check log", Toast.LENGTH_SHORT).show();
 
-        // Add a marker in Sydney and move the camera
-/*        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));*/
+        addMarkerOnView();
+        setCameraZoomToMarker();
+    }
+
+    void addMarkerOnView() {
+
+        LatLng[] positions = {
+                new LatLng(37.552030, 126.9370623),
+                new LatLng(37.552030, 126.9360623),
+                new LatLng(37.552030, 126.9380623),
+                new LatLng(37.556030, 126.9380623),
+                new LatLng(37.559030, 126.9370623)
+        };
+
+        for(int i=0; i<positions.length; i++) {
+
+            Marker marker = mMap.addMarker(new MarkerOptions()
+                    .position(positions[i]).title("마커 " + i + "번")
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_gray)));
+
+            markers.add(marker);
+        }
+
+        mMap.setOnMarkerClickListener(this);
+    }
+
+    void setCameraZoomToMarker() {
+
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        for (Marker marker : markers) {
+            builder.include(marker.getPosition());
+        }
+        LatLngBounds bounds = builder.build();
+
+        int width = getResources().getDisplayMetrics().widthPixels;
+        int height = getResources().getDisplayMetrics().heightPixels;
+        int padding = (int) (width * 0.10); // offset from edges of the map 10% of screen
+
+        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding);
+
+        mMap.moveCamera(cu);
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        Toast.makeText(this, marker.getTitle(), Toast.LENGTH_SHORT).show();
+        return false;
     }
 
     @Override
