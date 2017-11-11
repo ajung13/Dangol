@@ -27,10 +27,13 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
+import java.text.SimpleDateFormat;
 
 public class MainActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
     private GoogleMap mMap;
+    private LocationManager manager = null;
+    private GPSListener gpsListener = null;
 
     ArrayList<Marker> markers = new ArrayList<>();
 
@@ -47,32 +50,32 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         checkDangerousPermissions();
     }
 
-    public void onWriteClicked(View v){
+    public void onWriteClicked(View v) {
         Intent intent = new Intent(MainActivity.this, WritingActivity.class);
         startActivity(intent);
         return;
     }
 
-    private void checkDangerousPermissions(){
+    private void checkDangerousPermissions() {
         String[] permissions = {
                 Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.ACCESS_COARSE_LOCATION
         };
 
         int permissionCheck = PackageManager.PERMISSION_GRANTED;
-        for(int i = 0; i < permissions.length; i++){
+        for (int i = 0; i < permissions.length; i++) {
             permissionCheck = ContextCompat.checkSelfPermission(this, permissions[i]);
-            if(permissionCheck == PackageManager.PERMISSION_DENIED)
+            if (permissionCheck == PackageManager.PERMISSION_DENIED)
                 break;
         }
 
-        if(permissionCheck == PackageManager.PERMISSION_GRANTED)
+        if (permissionCheck == PackageManager.PERMISSION_GRANTED)
             Log.e("dangol_main", "Permission granted");
 //            Toast.makeText(this, "Permission granted", Toast.LENGTH_SHORT).show();
-        else{
+        else {
 //            Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show();
             Log.e("dangol_main", "Permission denied");
-            if(ActivityCompat.shouldShowRequestPermissionRationale(this, permissions[0]))
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, permissions[0]))
                 Toast.makeText(this, "Explain for permission", Toast.LENGTH_SHORT).show();
             else
                 ActivityCompat.requestPermissions(this, permissions, 1);
@@ -92,29 +95,51 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
             return;
 
         mMap.setMyLocationEnabled(true);
 
-        LocationManager manager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-        GPSListener gpsListener = new GPSListener();
+        manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        gpsListener = new GPSListener();
         long minTime = 10000;
         float minDistance = 0;
 
-        try{
+        try {
             manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, minTime, minDistance, gpsListener);
             manager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, minTime, minDistance, gpsListener);
 
+/*            LocationListener locationListener = new LocationListener() {
+                @Override
+                public void onLocationChanged(Location location) {
+
+                }
+
+                @Override
+                public void onStatusChanged(String s, int i, Bundle bundle) {
+
+                }
+
+                @Override
+                public void onProviderEnabled(String s) {
+
+                }
+
+                @Override
+                public void onProviderDisabled(String s) {
+
+                }
+            }*/
+
             Location lastlocation = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            if(lastlocation != null){
+            if (lastlocation != null) {
                 Double latitude = lastlocation.getLatitude();
                 Double longitude = lastlocation.getLongitude();
                 Log.e("dangol_main", "Last known location: " + latitude + "\t" + longitude);
 
             }
-        }catch(SecurityException se){
+        } catch (SecurityException se) {
             Log.e("dangol_main", "catch " + se.getMessage());
         }
 
@@ -170,10 +195,10 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults){
-        if(requestCode == 1){
-            for(int i=0; i<permissions.length; i++){
-                if(grantResults[i] == PackageManager.PERMISSION_GRANTED)
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (requestCode == 1) {
+            for (int i = 0; i < permissions.length; i++) {
+                if (grantResults[i] == PackageManager.PERMISSION_GRANTED)
                     Toast.makeText(this, permissions[i] + " permission granted", Toast.LENGTH_SHORT).show();
                 else
                     Toast.makeText(this, permissions[i] + " permission denied", Toast.LENGTH_SHORT).show();
@@ -181,8 +206,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-    private class GPSListener implements LocationListener{
-        public void onLocationChanged(Location location){
+    private class GPSListener implements LocationListener {
+        public void onLocationChanged(Location location) {
             Double latitude = location.getLatitude();
             Double longitude = location.getLongitude();
 
@@ -192,8 +217,64 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 19));
             mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         }
-        public void onProviderDisabled(String provider){}
-        public void onProviderEnabled(String provider){}
-        public void onStatusChanged(String provider, int status, Bundle extras){}
+
+        public void onProviderDisabled(String provider) {
+        }
+
+        public void onProviderEnabled(String provider) {
+        }
+
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+        }
+    }
+
+    public class TimeThread extends Thread {
+        long sleepTime = 5000;
+
+        public void run() {
+//            LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+//            GPSListener gpsListener = new GPSListener();
+            long minTime = 10000;
+            float minDistance = 0;
+
+            try {
+                Log.e("Dangol_main", "start thread");
+  /*              if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    // TODO: Consider calling
+                    //    ActivityCompat#requestPermissions
+                    // here to request the missing permissions, and then overriding
+                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                    //                                          int[] grantResults)
+                    // to handle the case where the user grants the permission. See the documentation
+                    // for ActivityCompat#requestPermissions for more details.
+                    return;
+                }*/
+
+
+
+                while(true){
+  //                  manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, minTime, minDistance, gpsListener);
+ //                   manager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, minTime, minDistance, gpsListener);
+                    manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 10, gpsListener );
+                    Location location = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                    Double latitude = location.getLatitude();
+                    Double longitude = location.getLongitude();
+                    String nowTime = new SimpleDateFormat("yyyy.MM.DD HH:mm:ss").format(System.currentTimeMillis());
+                    nowTime += "\t" + latitude + "\t" + longitude;
+
+                    //                String str = "Time : "+ nowTime; //"Latitude: "+latitude + ", Longitude : "+ longitude;
+                    //                Toast.makeText(getApplicationContext(), str, Toast.LENGTH_SHORT).show();
+                    sleep(sleepTime);
+                    Log.e("Dangol_main111", nowTime);
+                }
+            }catch(SecurityException se){
+                Log.e("dangol_main", se.toString());
+            }catch(Exception e){
+                Log.e("Dangol_main", e.toString());
+            }
+
+            Log.e("dangol_main", "주금");
+
+        }
     }
 }
