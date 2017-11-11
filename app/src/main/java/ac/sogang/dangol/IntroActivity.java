@@ -10,7 +10,8 @@ import android.util.Log;
 
 public class IntroActivity extends AppCompatActivity {
     String dbName = "Dangol";
-    String[] tableName = {"tmpLocation", "visitedLocation", "Diary"};
+    String[][] tableName = {{"read_data", "location", "diary", "photos"},
+            {"data_id int, latitude long, longitude long, time datatime", "location_id int, name varchar(30), latitude long" }};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +34,7 @@ public class IntroActivity extends AppCompatActivity {
     private void makeTables(){
         SQLiteDatabase mDB = this.openOrCreateDatabase(dbName, MODE_PRIVATE, null);
         try{
-            for(String tName : tableName){
+            for(String tName : tableName[0]){
                 //----MUST FILL THIS FIELD----
                 String sql = "create table if not exists " + tName + "";
                 mDB.execSQL(sql);
