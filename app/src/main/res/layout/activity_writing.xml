@@ -6,33 +6,34 @@
     android:layout_height="match_parent"
     android:background="#FFFFFF"
     android:orientation="vertical"
+    android:id="@+id/write_parent"
     tools:context="ac.sogang.dangol.WritingActivity">
 
     <RelativeLayout
         android:id="@+id/write_bar"
         style="@style/CustomActionBar">
         <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@drawable/write0"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/back_gray"
             android:scaleType="centerCrop"
             android:layout_centerVertical="true"
             android:onClick="onBackPressed"/>
         <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@drawable/write1"
-            android:layout_centerVertical="true"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/menu_pen_blue"
+            android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"/>
         <Button
             android:layout_width="wrap_content"
             android:layout_height="40dp"
-            android:text="작성"
+            android:text="다음"
             android:background="#00000000"
             android:textColor="#000000"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:onClick="onSaveClicked"/>
+            android:onClick="onNextClicked"/>
     </RelativeLayout>
 
     <View
@@ -40,167 +41,193 @@
         android:layout_height="1dp"
         android:background="@color/contentsLight"/>
 
-    <ScrollView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <LinearLayout
+        android:layout_height="50dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="20dp">
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/menu_pin_blue_2"
+            android:scaleType="centerInside"
+            android:layout_marginRight="10dp"/>
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:text="위치 설정"
+            android:textColor="@color/contents"
+            android:layout_gravity="center_vertical"/>
+    </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp">
-                <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:src="@drawable/write2"
-                    android:scaleType="centerInside"
-                    android:layout_marginRight="10dp"/>
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="위치 설정"
-                    android:textColor="@color/contents"
-                    android:layout_gravity="center_vertical"/>
-            </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp">
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/calendar_blue"
+            android:scaleType="centerInside"
+            android:layout_marginRight="10dp"/>
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/write_calendar"
+            android:background="#00FFFFFF"
+            android:textColor="@color/contents"
+            android:onClick="onCalendarClicked"
+            android:layout_gravity="center_vertical"
+            android:gravity="start|center_vertical"/>
+    </LinearLayout>
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="기분"
+        android:textColor="@color/contents"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="20dp"/>
+    <RadioGroup
+        android:id="@+id/write_emotion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal">
+        <RadioButton
+            android:layout_height="20dp"
+            android:layout_width="20dp"
+            android:id="@+id/write_icon1"
+            android:layout_marginRight="40dp"
+            android:button="@drawable/rbtn_selector"/>
+        <RadioButton
+            android:layout_height="20dp"
+            android:layout_width="20dp"
+            android:id="@+id/write_icon2"
+            android:layout_marginRight="40dp"
+            android:button="@drawable/rbtn_selector"/>
+        <RadioButton
+            android:layout_height="20dp"
+            android:layout_width="20dp"
+            android:id="@+id/write_icon3"
+            android:layout_marginRight="40dp"
+            android:button="@drawable/rbtn_selector"/>
+        <RadioButton
+            android:layout_height="20dp"
+            android:layout_width="20dp"
+            android:id="@+id/write_icon4"
+            android:layout_marginRight="40dp"
+            android:button="@drawable/rbtn_selector"/>
+        <RadioButton
+            android:layout_height="20dp"
+            android:layout_width="20dp"
+            android:id="@+id/write_icon5"
+            android:button="@drawable/rbtn_selector"/>
+    </RadioGroup>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:gravity="center_horizontal"
+        android:layout_marginTop="10dp">
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginRight="20dp"
+            android:src="@drawable/feel_best"/>
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginRight="20dp"
+            android:src="@drawable/feel_good"/>
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginRight="20dp"
+            android:src="@drawable/feel_soso"/>
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginRight="20dp"
+            android:src="@drawable/feel_notgood"/>
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/feel_bad"/>
+    </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp">
-                <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:src="@drawable/write3"
-                    android:scaleType="centerInside"
-                    android:layout_marginRight="10dp"/>
-                <Button
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/write_calendar"
-                    android:background="#00FFFFFF"
-                    android:textColor="@color/contents"
-                    android:onClick="onCalendarClicked"
-                    android:layout_gravity="center_vertical"
-                    android:gravity="start|center_vertical"/>
-            </LinearLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="날씨"
+        android:textColor="@color/contents"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="20dp"/>
+    <RadioGroup
+        android:id="@+id/write_weather"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
+        <RadioButton
+            android:layout_height="20dp"
+            android:layout_width="20dp"
+            android:id="@+id/write_icon11"
+            android:layout_marginRight="40dp"
+            android:button="@drawable/rbtn_selector"/>
+        <RadioButton
+            android:layout_height="20dp"
+            android:layout_width="20dp"
+            android:id="@+id/write_icon12"
+            android:layout_marginRight="40dp"
+            android:button="@drawable/rbtn_selector"/>
+        <RadioButton
+            android:layout_height="20dp"
+            android:layout_width="20dp"
+            android:id="@+id/write_icon13"
+            android:layout_marginRight="40dp"
+            android:button="@drawable/rbtn_selector"/>
+        <RadioButton
+            android:layout_height="20dp"
+            android:layout_width="20dp"
+            android:id="@+id/write_icon14"
+            android:layout_marginRight="40dp"
+            android:button="@drawable/rbtn_selector"/>
+        <RadioButton
+            android:layout_height="20dp"
+            android:layout_width="20dp"
+            android:id="@+id/write_icon15"
+            android:button="@drawable/rbtn_selector"/>
+    </RadioGroup>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:gravity="center_horizontal"
+        android:layout_marginTop="10dp">
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginRight="20dp"
+            android:src="@drawable/weather_sunny"/>
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginRight="20dp"
+            android:src="@drawable/weather_sunny_cloud"/>
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginRight="20dp"
+            android:src="@drawable/weather_cloudy"/>
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginRight="20dp"
+            android:src="@drawable/weather_rainy"/>
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/weather_snow"/>
+    </LinearLayout>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="기분"
-                android:textColor="@color/contents"
-                android:layout_marginLeft="20dp"/>
-            <RadioGroup
-                android:id="@+id/write_emotion"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="horizontal">
-                <RadioButton
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:id="@+id/write_icon1"
-                    android:background="@drawable/write40"/>
-                <RadioButton
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:id="@+id/write_icon2"
-                    android:background="@drawable/write41"/>
-                <RadioButton
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:id="@+id/write_icon3"
-                    android:background="@drawable/write43"/>
-                <RadioButton
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:id="@+id/write_icon4"
-                    android:background="@drawable/write44"/>
-                <RadioButton
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:id="@+id/write_icon5"
-                    android:background="@drawable/write45"/>
-            </RadioGroup>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="날씨"
-                android:textColor="@color/contents"
-                android:layout_marginLeft="20dp"/>
-            <RadioGroup
-                android:id="@+id/write_weather"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="horizontal">
-                <RadioButton
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:id="@+id/write_icon11"
-                    android:background="@drawable/write51"/>
-                <RadioButton
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:id="@+id/write_icon12"
-                    android:background="@drawable/write52"/>
-                <RadioButton
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:id="@+id/write_icon13"
-                    android:background="@drawable/write53"/>
-                <RadioButton
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:id="@+id/write_icon14"
-                    android:background="@drawable/write54"/>
-                <RadioButton
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:id="@+id/write_icon15"
-                    android:background="@drawable/write55"/>
-            </RadioGroup>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="제목"
-                android:textColor="@color/contents"
-                android:layout_marginLeft="20dp"/>
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/write_title"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:hint="Write your title"
-                android:textColor="@color/contents"
-                android:textColorHint="@color/contentsLight"/>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="내용"
-                android:textColor="@color/contents"
-                android:layout_marginLeft="20dp"/>
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:id="@+id/write_contents"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:hint="Write your memory"
-                android:textColor="@color/contents"
-                android:textColorHint="@color/contentsLight"/>
-
-        </LinearLayout>
-
-    </ScrollView></LinearLayout>
+</LinearLayout>
