@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 public class Writing2Activity extends AppCompatActivity {
 
@@ -40,5 +41,6 @@ public class Writing2Activity extends AppCompatActivity {
     public void uploadDB(int year, int month, int date, int emotion, int weather, String title, String contents){
         Log.e("dangol_write2", year + "-" + month + "-" + date + ", emotion: " + emotion + " weather: " + weather);
         Log.e("dangol_write2", "title: " + title + ", contents: " + contents);
+        Toast.makeText(getApplicationContext(), "저장되었습니다!", Toast.LENGTH_SHORT).show();
     }
 }

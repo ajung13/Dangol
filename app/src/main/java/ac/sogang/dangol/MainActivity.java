@@ -110,28 +110,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, minTime, minDistance, gpsListener);
             manager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, minTime, minDistance, gpsListener);
 
-/*            LocationListener locationListener = new LocationListener() {
-                @Override
-                public void onLocationChanged(Location location) {
-
-                }
-
-                @Override
-                public void onStatusChanged(String s, int i, Bundle bundle) {
-
-                }
-
-                @Override
-                public void onProviderEnabled(String s) {
-
-                }
-
-                @Override
-                public void onProviderDisabled(String s) {
-
-                }
-            }*/
-
             Location lastlocation = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
             if (lastlocation != null) {
                 Double latitude = lastlocation.getLatitude();

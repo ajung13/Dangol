@@ -18,12 +18,4 @@
         <item name="android:paddingRight">10dp</item>
     </style>
 
-    <style name="CustomRadioButtonLayout">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">match_parent</item>
-        <item name="android:orientation">vertical</item>
-        <item name="android:gravity">center</item>
-        <item name="android:layout_marginRight">20dp</item>
-    </style>
-
 </resources>
