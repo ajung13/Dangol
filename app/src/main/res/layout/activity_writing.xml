@@ -14,14 +14,12 @@
         <ImageView
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:src="@drawable/write0"
             android:scaleType="centerCrop"
             android:layout_centerVertical="true"
             android:onClick="onBackPressed"/>
         <ImageView
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:src="@drawable/write1"
             android:layout_centerVertical="true"
             android:layout_centerHorizontal="true"/>
         <Button
@@ -57,7 +55,6 @@
                 <ImageView
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:src="@drawable/write2"
                     android:scaleType="centerInside"
                     android:layout_marginRight="10dp"/>
                 <TextView
@@ -77,7 +74,6 @@
                 <ImageView
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:src="@drawable/write3"
                     android:scaleType="centerInside"
                     android:layout_marginRight="10dp"/>
                 <Button
@@ -106,28 +102,23 @@
                 <RadioButton
                     android:layout_width="60dp"
                     android:layout_height="60dp"
-                    android:id="@+id/write_icon1"
-                    android:background="@drawable/write40"/>
+                    android:id="@+id/write_icon1"/>
                 <RadioButton
                     android:layout_width="60dp"
                     android:layout_height="60dp"
-                    android:id="@+id/write_icon2"
-                    android:background="@drawable/write41"/>
+                    android:id="@+id/write_icon2"/>
                 <RadioButton
                     android:layout_width="60dp"
                     android:layout_height="60dp"
-                    android:id="@+id/write_icon3"
-                    android:background="@drawable/write43"/>
+                    android:id="@+id/write_icon3"/>
                 <RadioButton
                     android:layout_width="60dp"
                     android:layout_height="60dp"
-                    android:id="@+id/write_icon4"
-                    android:background="@drawable/write44"/>
+                    android:id="@+id/write_icon4"/>
                 <RadioButton
                     android:layout_width="60dp"
                     android:layout_height="60dp"
-                    android:id="@+id/write_icon5"
-                    android:background="@drawable/write45"/>
+                    android:id="@+id/write_icon5"/>
             </RadioGroup>
 
             <TextView
@@ -145,28 +136,23 @@
                 <RadioButton
                     android:layout_width="60dp"
                     android:layout_height="60dp"
-                    android:id="@+id/write_icon11"
-                    android:background="@drawable/write51"/>
+                    android:id="@+id/write_icon11"/>
                 <RadioButton
                     android:layout_width="60dp"
                     android:layout_height="60dp"
-                    android:id="@+id/write_icon12"
-                    android:background="@drawable/write52"/>
+                    android:id="@+id/write_icon12"/>
                 <RadioButton
                     android:layout_width="60dp"
                     android:layout_height="60dp"
-                    android:id="@+id/write_icon13"
-                    android:background="@drawable/write53"/>
+                    android:id="@+id/write_icon13"/>
                 <RadioButton
                     android:layout_width="60dp"
                     android:layout_height="60dp"
-                    android:id="@+id/write_icon14"
-                    android:background="@drawable/write54"/>
+                    android:id="@+id/write_icon14"/>
                 <RadioButton
                     android:layout_width="60dp"
                     android:layout_height="60dp"
-                    android:id="@+id/write_icon15"
-                    android:background="@drawable/write55"/>
+                    android:id="@+id/write_icon15"/>
             </RadioGroup>
 
             <TextView
