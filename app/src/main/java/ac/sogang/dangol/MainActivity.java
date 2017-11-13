@@ -1,6 +1,9 @@
 package ac.sogang.dangol;
 
 import android.Manifest;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -26,8 +29,8 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.util.ArrayList;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 
 public class MainActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
@@ -36,6 +39,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     private GPSListener gpsListener = null;
 
     ArrayList<Marker> markers = new ArrayList<>();
+    private int fragment_num;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +50,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+        fragment_num = 0;
 
         checkDangerousPermissions();
     }
@@ -53,7 +58,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     public void onWriteClicked(View v) {
         Intent intent = new Intent(MainActivity.this, WritingActivity.class);
         startActivity(intent);
-        return;
     }
 
     private void checkDangerousPermissions() {
@@ -254,5 +258,45 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             Log.e("dangol_main", "주금");
 
         }
+    }
+
+    public void changeFragment(View v){
+        int flag = 0;
+        switch(v.getId()){
+            case R.id.menu_diary:
+                if(fragment_num != 1)
+                    flag = 1;
+                break;
+            case R.id.menu_pin:
+                if(fragment_num != 0)
+                    flag = 2;
+                break;
+            default:
+                break;
+        }
+
+        if(flag == 2){
+            Log.e("dangol_main", "return to map");
+            fragment_num = 0;
+            super.onBackPressed();
+        }
+        else if(flag == 1){
+            Log.e("dangol_main", "show diary");
+            fragment_num = 1;
+            Fragment fragment = new Diary_main();
+            FragmentManager fm = getFragmentManager();
+            FragmentTransaction ft = fm.beginTransaction();
+            ft.replace(R.id.map, fragment);
+            ft.addToBackStack(null);
+            ft.commit();
+        }
+        else
+            Log.e("dangol_main", "nothing to show");
+    }
+
+    @Override
+    public void onBackPressed(){
+        if(fragment_num == 1)   fragment_num = 0;
+        super.onBackPressed();
     }
 }
