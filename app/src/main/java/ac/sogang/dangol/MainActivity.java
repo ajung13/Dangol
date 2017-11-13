@@ -283,7 +283,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         else if(flag == 1){
             Log.e("dangol_main", "show diary");
             fragment_num = 1;
-            Fragment fragment = new Diary_main();
+            Fragment fragment = new DiaryFragment();
             FragmentManager fm = getFragmentManager();
             FragmentTransaction ft = fm.beginTransaction();
             ft.replace(R.id.map, fragment);
