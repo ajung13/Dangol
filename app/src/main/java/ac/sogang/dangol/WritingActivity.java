@@ -61,7 +61,7 @@ public class WritingActivity extends AppCompatActivity {
 
         int weather = 0;
         RadioGroup rg_w = (RadioGroup)findViewById(R.id.write_weather);
-        if(rg_w.isSelected()){
+        if(!rg_w.isSelected()){
             switch (rg_w.getCheckedRadioButtonId()){
                 case R.id.write_icon11:  weather = 0;    break;
                 case R.id.write_icon12:  weather = 1;    break;

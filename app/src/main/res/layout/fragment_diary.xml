@@ -6,10 +6,11 @@
     android:background="#FFFFFF">
 
     <TextView
+        android:id="@+id/diary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="Hello world!"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="20dp"
         android:textColor="@color/contents"/>
 
 </LinearLayout>
