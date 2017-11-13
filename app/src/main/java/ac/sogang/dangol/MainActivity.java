@@ -1,7 +1,9 @@
 package ac.sogang.dangol;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -37,10 +39,14 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
     ArrayList<Marker> markers = new ArrayList<>();
 
+    Context context;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        context = getApplicationContext();
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -48,6 +54,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         mapFragment.getMapAsync(this);
 
         checkDangerousPermissions();
+
     }
 
     public void onWriteClicked(View v) {
@@ -190,7 +197,11 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-        Toast.makeText(this, marker.getTitle(), Toast.LENGTH_SHORT).show();
+        MapDialog mDialog = new MapDialog();
+
+        mDialog.show(getSupportFragmentManager(), "0");
+
+
         return false;
     }
 

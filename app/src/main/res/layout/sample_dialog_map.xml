@@ -1,0 +1,137 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res/ac.sogang.dangol"
+    xmlns:app2="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:layout_marginTop="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dip"
+            android:layout_marginRight="20dip">
+            <TextView
+                android:id="@+id/subTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="여기는요"
+                android:textColor="@color/dialogSubtitle"/>
+
+            <ImageButton
+                android:id="@+id/closeButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app2:srcCompat="@drawable/close_gray"
+                android:layout_alignParentRight="true"
+                android:background="@color/white"/>
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/mainTitle"
+            android:layout_width="152dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dip"
+            android:layout_marginTop="8dip"
+            android:layout_marginBottom="8dip"
+            android:textSize="20dp"
+            android:text="스타벅스 신촌점"
+            android:textColor="@color/black"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dip"
+            android:background="#4D404040"
+            android:layout_marginTop="4dip"
+            android:layout_marginLeft="20dip"
+            android:layout_marginRight="20dip"
+            android:layout_marginBottom="0dip"
+            />
+
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TableRow
+                android:layout_height="wrap_content"
+                android:layout_width="fill_parent"
+                android:gravity="center_horizontal">
+
+                <TextView
+                    android:id="@+id/firstTitle"
+                    android:text="첫 기록"
+                    android:layout_weight="1"
+                    android:padding="8dip"
+                    android:gravity="center"
+                    android:textColor="@color/dialogSubtitle"/>
+
+                <TextView
+                    android:id="@+id/secondTitle"
+                    android:text="작성한 글"
+                    android:layout_weight="1"
+                    android:padding="8dip"
+                    android:gravity="center"
+                    android:textColor="@color/dialogSubtitle"/>
+            </TableRow>
+            <TableRow
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent">
+            <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dip"
+                android:background="#4D404040"
+            android:layout_marginTop="4dip"
+            android:layout_marginLeft="20dip"
+            android:layout_marginRight="20dip"
+            android:layout_marginBottom="0dip"
+                android:layout_weight="1"
+            />
+        </TableRow>
+
+            <TableRow
+                android:layout_height="wrap_content"
+                android:layout_width="fill_parent"
+                android:gravity="center_horizontal">
+
+                <TextView
+                    android:id="@+id/firstItem"
+                    android:text="2017년 11월 12일"
+                    android:layout_weight="1"
+                    android:textColor="#000000"
+                    android:padding="8dip"
+                    android:gravity="center"/>
+
+                <TextView
+                    android:id="@+id/secondItem"
+                    android:text="3"
+                    android:textSize="28dip"
+                    android:layout_weight="1"
+                    android:textColor="@color/defaultBlue"
+                    android:padding="8dip"
+                    android:gravity="center"/>
+            </TableRow>
+
+        </TableLayout>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="보기"
+            android:textColor="@color/black"
+            android:background="#F0F0F0"
+            android:layout_marginTop="4dip"
+            android:layout_marginLeft="20dip"
+            android:layout_marginRight="20dip"
+            android:layout_marginBottom="16dip"
+            android:id="@+id/button"/>
+
+    </LinearLayout>
+
+</FrameLayout>
