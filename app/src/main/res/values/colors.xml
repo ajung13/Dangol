@@ -5,4 +5,10 @@
     <color name="colorAccent">#FF4081</color>
     <color name="contents">#555555</color>
     <color name="contentsLight">#BBBBBB</color>
+
+    <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
+    <color name="defaultBlue">#2F85E4</color>
+    <color name="dialogSubtitle">#404040</color>
+
 </resources>
