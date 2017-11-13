@@ -1,22 +1,59 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:map="http://schemas.android.com/apk/res-auto"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="ac.sogang.dangol.MainActivity"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_width="match_parent">
+    android:background="#FFFFFF"
+    android:orientation="vertical">
 
-    <fragment
-        android:id="@+id/map"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/write_bar"
+        style="@style/CustomActionBar">
+        <ImageButton
+            android:id="@+id/menu_pin"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/menu_pin_blue"
+            android:scaleType="centerInside"
+            android:contentDescription="@string/description"
+            android:onClick="changeFragment"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/menu_diary"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+        <ImageButton
+            android:id="@+id/menu_diary"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/menu_diary_gray"
+            android:scaleType="centerInside"
+            android:contentDescription="@string/description"
+            android:onClick="changeFragment"
+            app:layout_constraintLeft_toRightOf="@id/menu_pin"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+    </android.support.constraint.ConstraintLayout>
+
+    <View
         android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/contentsLight"/>
+
+    <FrameLayout
         android:layout_height="match_parent"
-        />
+        android:layout_width="match_parent">
+        <fragment
+            android:id="@+id/map"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:onClick="onWriteClicked"/>
+    </FrameLayout>
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:onClick="onWriteClicked"/>
-
-</FrameLayout>
-
+</LinearLayout>
