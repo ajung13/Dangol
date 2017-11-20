@@ -55,7 +55,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="위치 설정"
+            android:id="@+id/write_location"
             android:textColor="@color/contents"
             android:onClick="onPositionClicked"
             android:layout_gravity="center_vertical"/>

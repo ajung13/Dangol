@@ -24,4 +24,8 @@
     string in this file.
     -->
     <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyB7QpILE0WhzmNI7MALXgz4BnjjlB-kH6c</string>
+
+    <!--Google Places API Web services KEY:
+        AIzaSyCO_2unWzuXRQdWssY7RGAJIKq-GsETEB0
+        https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=AIzaSyCO_2unWzuXRQdWssY7RGAJIKq-GsETEB0&location=37.552030,126.9370623&radius=10-->
 </resources>

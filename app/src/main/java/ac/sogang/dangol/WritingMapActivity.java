@@ -1,8 +1,8 @@
 package ac.sogang.dangol;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.util.Log;
 import android.view.View;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -20,7 +20,11 @@ public class WritingMapActivity extends FragmentActivity implements OnMapReadyCa
 
     private GoogleMap mMap;
     private boolean moveCameraToMarker;
-    Marker mMarker;
+    private Marker mMarker;
+    private LatLng position;
+
+    static final String EXTRA_STUFF = "ac.sogang.dangol.EXTRA_STUFF";
+    Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +35,8 @@ public class WritingMapActivity extends FragmentActivity implements OnMapReadyCa
                 .findFragmentById(R.id.map_write);
         mapFragment.getMapAsync(this);
 
+        intent = new Intent();
+        position = getIntent().getParcelableExtra("location");
     }
 
 
@@ -48,7 +54,6 @@ public class WritingMapActivity extends FragmentActivity implements OnMapReadyCa
         mMap = googleMap;
 
         // Add a marker in Sydney and move the camera
-        LatLng position = new LatLng(37.552030, 126.9370623);
         mMarker = mMap.addMarker(new MarkerOptions()
                 .position(position).title("저장된 위치")
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_blue)).draggable(true));
@@ -59,21 +64,12 @@ public class WritingMapActivity extends FragmentActivity implements OnMapReadyCa
 
     @Override
     public void onMarkerDragStart(Marker marker){}
-
     @Override
     public void onMarkerDragEnd(Marker marker){}
-
     @Override
     public void onMarkerDrag(Marker marker){}
 
-    public void onMapSelected(View v){
-        Log.e("dangol_writing_map", "hi?");
-        String tmp = "Drag complete\t";
-        tmp += "lat: " + mMarker.getPosition().latitude + " / lon: " + mMarker.getPosition().longitude;
-        Log.e("dangol_writing_map", tmp);
-    }
-
-    void setCameraZoomToMarker() {
+    private void setCameraZoomToMarker() {
 
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
         builder.include(mMarker.getPosition());
@@ -86,5 +82,14 @@ public class WritingMapActivity extends FragmentActivity implements OnMapReadyCa
         CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding);
 
         mMap.moveCamera(cu);
+    }
+
+    public void onMapSelected(View v){
+        final LatLng position2 = new LatLng(mMarker.getPosition().latitude, mMarker.getPosition().longitude);
+        Bundle basket = new Bundle();
+        basket.putParcelable(EXTRA_STUFF, position2);
+        intent.putExtras(basket);
+        setResult(RESULT_OK, intent);
+        finish();
     }
 }

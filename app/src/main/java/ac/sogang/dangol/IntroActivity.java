@@ -46,7 +46,7 @@ public class IntroActivity extends AppCompatActivity {
                     else        sql += tableNameData[j] + ", ";
                 }
                 sql += tableNameData[tableNameData.length - 1] + ");";
-                Log.e("dangol_intro", sql);
+//                Log.e("dangol_intro", sql);
 
                 mDB.execSQL(sql);
             }

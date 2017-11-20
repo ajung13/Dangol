@@ -9,14 +9,23 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.RadioGroup;
+import android.widget.TextView;
+
+import com.google.android.gms.maps.model.LatLng;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import static ac.sogang.dangol.WritingMapActivity.EXTRA_STUFF;
 
 public class WritingActivity extends AppCompatActivity {
     int _year = 0;
     int _month = 0;
     int _date = 0;
+
+    LatLng location;
+
+    private static final int MAP_ACTIVITY_RESULT_CODE = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +38,8 @@ public class WritingActivity extends AppCompatActivity {
         _date = date_now.getDate();
         setDate();
 
+        location = new LatLng(37.552030, 126.9370623);
+        setLocation();
     }
 
     public void onBackPressed(View v) {
@@ -42,7 +53,18 @@ public class WritingActivity extends AppCompatActivity {
 
     public void onPositionClicked(View v){
         Intent intent = new Intent(WritingActivity.this, WritingMapActivity.class);
-        startActivity(intent);
+        intent.putExtra(Intent.EXTRA_TEXT, "my text");
+        intent.putExtra("location", location);
+        startActivityForResult(intent, MAP_ACTIVITY_RESULT_CODE);
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+        if(requestCode == MAP_ACTIVITY_RESULT_CODE){
+            if(resultCode == RESULT_OK){
+                location = data.getParcelableExtra(EXTRA_STUFF);
+                setLocation();
+            }
+        }
     }
 
     public void onNextClicked(View v){
@@ -96,6 +118,12 @@ public class WritingActivity extends AppCompatActivity {
         }catch(Exception e){
             Log.e("dangol_write1", e.toString());
         }
+    }
+    private void setLocation(){
+        TextView tv = (TextView)findViewById(R.id.write_location);
+        String tmp = String.format("%.3f", location.latitude) + ", " +
+                String.format("%.3f", location.longitude);
+        tv.setText(tmp);
     }
 
     private DatePickerDialog.OnDateSetListener listener = new DatePickerDialog.OnDateSetListener() {
