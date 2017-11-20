@@ -57,6 +57,7 @@
             android:layout_height="wrap_content"
             android:text="위치 설정"
             android:textColor="@color/contents"
+            android:onClick="onPositionClicked"
             android:layout_gravity="center_vertical"/>
     </LinearLayout>
 

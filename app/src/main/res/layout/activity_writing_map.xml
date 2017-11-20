@@ -1,0 +1,23 @@
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:map="http://schemas.android.com/apk/res-auto"
+    tools:context="ac.sogang.dangol.WritingMapActivity"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:orientation="vertical">
+    <fragment
+        android:id="@+id/map_write"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="장소 선택"
+        android:textColor="@color/contents"
+        android:background="@color/white"
+        android:onClick="onMapSelected"
+        android:layout_gravity="bottom"/>
+
+</FrameLayout>

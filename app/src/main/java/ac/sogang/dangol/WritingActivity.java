@@ -40,6 +40,11 @@ public class WritingActivity extends AppCompatActivity {
         dialog.show();
     }
 
+    public void onPositionClicked(View v){
+        Intent intent = new Intent(WritingActivity.this, WritingMapActivity.class);
+        startActivity(intent);
+    }
+
     public void onNextClicked(View v){
         Intent intent = new Intent(WritingActivity.this, Writing2Activity.class);
         intent.putExtra("year", _year);
