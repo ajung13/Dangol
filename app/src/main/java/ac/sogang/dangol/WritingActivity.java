@@ -40,6 +40,7 @@ public class WritingActivity extends AppCompatActivity {
         setDate();
 
         location = new LatLng(37.552030, 126.9370623);
+        location_name = "저장된 위치";
         setLocation();
     }
 
@@ -64,6 +65,8 @@ public class WritingActivity extends AppCompatActivity {
             if(resultCode == RESULT_OK){
                 location = data.getParcelableExtra(EXTRA_STUFF);
                 location_name = data.getStringExtra("name");
+                if(location == null || location_name == null)
+                    return;
                 Log.e("dangol_write", "new location record: " + location.latitude + ", "
                 + location.longitude + " (" + location_name + ")");
                 setLocation();
@@ -125,8 +128,8 @@ public class WritingActivity extends AppCompatActivity {
     }
     private void setLocation(){
         TextView tv = (TextView)findViewById(R.id.write_location);
-        String tmp = String.format("%.3f", location.latitude) + ", " +
-                String.format("%.3f", location.longitude);
+        String tmp = location_name + " (" +String.format("%.3f", location.latitude) + ", " +
+                String.format("%.3f", location.longitude) + ")";
         tv.setText(tmp);
     }
 
