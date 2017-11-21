@@ -24,6 +24,7 @@ public class WritingActivity extends AppCompatActivity {
     int _date = 0;
 
     LatLng location;
+    String location_name;
 
     private static final int MAP_ACTIVITY_RESULT_CODE = 0;
 
@@ -62,6 +63,9 @@ public class WritingActivity extends AppCompatActivity {
         if(requestCode == MAP_ACTIVITY_RESULT_CODE){
             if(resultCode == RESULT_OK){
                 location = data.getParcelableExtra(EXTRA_STUFF);
+                location_name = data.getStringExtra("name");
+                Log.e("dangol_write", "new location record: " + location.latitude + ", "
+                + location.longitude + " (" + location_name + ")");
                 setLocation();
             }
         }
@@ -101,9 +105,9 @@ public class WritingActivity extends AppCompatActivity {
 
         intent.putExtra("emotion", emotion);
         intent.putExtra("weather", weather);
+        intent.putExtra("location", location);
+        intent.putExtra("location_name", location_name);
 
-        Log.e("dangol_write1", "emotion: " + emotion);
-        Log.e("dangol_write1", "weather: " + weather);
         startActivity(intent);
         finish();
     }

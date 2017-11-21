@@ -1,9 +1,12 @@
 package ac.sogang.dangol;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AlertDialog;
 import android.view.View;
+import android.widget.EditText;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -85,11 +88,35 @@ public class WritingMapActivity extends FragmentActivity implements OnMapReadyCa
     }
 
     public void onMapSelected(View v){
-        final LatLng position2 = new LatLng(mMarker.getPosition().latitude, mMarker.getPosition().longitude);
-        Bundle basket = new Bundle();
-        basket.putParcelable(EXTRA_STUFF, position2);
-        intent.putExtras(basket);
-        setResult(RESULT_OK, intent);
-        finish();
+        //dialog for setting the name of that location
+        AlertDialog.Builder ad = new AlertDialog.Builder(WritingMapActivity.this);
+        ad.setTitle("장소 이름을 정해주세요");
+        ad.setMessage("ex. 스타벅스 신촌점");
+        final EditText et = new EditText(WritingMapActivity.this);
+        ad.setView(et);
+
+        ad.setPositiveButton("완료", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                //put the location into basket
+                final LatLng position2 = new LatLng(mMarker.getPosition().latitude, mMarker.getPosition().longitude);
+                Bundle basket = new Bundle();
+                basket.putParcelable(EXTRA_STUFF, position2);
+                String name = et.getText().toString();
+                basket.putString("name", name);
+                dialog.dismiss();
+                intent.putExtras(basket);
+                setResult(RESULT_OK, intent);
+                finish();
+            }
+        });
+
+        ad.setNegativeButton("취소", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        ad.show();
     }
 }

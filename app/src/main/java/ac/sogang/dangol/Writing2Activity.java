@@ -10,6 +10,8 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.model.LatLng;
+
 public class Writing2Activity extends AppCompatActivity {
     String dbName = "Dangol";
 
@@ -31,17 +33,19 @@ public class Writing2Activity extends AppCompatActivity {
         int date = intent.getIntExtra("date", 0);
         int emotion = intent.getIntExtra("emotion", -1);
         int weather = intent.getIntExtra("weather", -1);
+        LatLng location = intent.getParcelableExtra("loaction");
+        String location_name = intent.getStringExtra("location_name");
 
         EditText et = (EditText)findViewById(R.id.write_title);
         String title = et.getText().toString();
         et = (EditText)findViewById(R.id.write_contents);
         String contents = et.getText().toString();
 
-        uploadDB(year, month, date, emotion, weather, title, contents);
+        uploadDB(year, month, date, emotion, weather, location.latitude, location.longitude, location_name, title, contents);
         finish();
     }
 
-    public void uploadDB(int year, int month, int date, int emotion, int weather, String title, String contents){
+    public void uploadDB(int year, int month, int date, int emotion, int weather, double lat, double lon, String name, String title, String contents){
         SQLiteDatabase mDB = this.openOrCreateDatabase(dbName, MODE_PRIVATE, null);
 
         try{
