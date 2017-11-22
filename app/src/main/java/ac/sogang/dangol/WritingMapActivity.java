@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.places.AutocompleteFilter;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
@@ -27,7 +28,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 public class WritingMapActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerDragListener {
 
     private GoogleMap mMap;
-    private boolean moveCameraToMarker;
     private Marker mMarker;
     private LatLng position;
 
@@ -46,11 +46,17 @@ public class WritingMapActivity extends FragmentActivity implements OnMapReadyCa
         intent = new Intent();
         position = getIntent().getParcelableExtra("location");
 
-        PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
+        PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment) getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
+        //addition (from)
+        AutocompleteFilter typeFilter = new AutocompleteFilter.Builder().setTypeFilter(AutocompleteFilter.TYPE_FILTER_ADDRESS).build();
+        autocompleteFragment.setFilter(typeFilter);
+        //addition (to)
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(Place place) {
                 Log.e("dangol_write_map", "Place: " + place.getName());
+                position = place.getLatLng();
+                updateMap();
             }
 
             @Override
@@ -73,14 +79,7 @@ public class WritingMapActivity extends FragmentActivity implements OnMapReadyCa
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
-        // Add a marker in Sydney and move the camera
-        mMarker = mMap.addMarker(new MarkerOptions()
-                .position(position).title("저장된 위치")
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_blue)).draggable(true));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(position));
-        mMap.setOnMarkerDragListener(this);
-        setCameraZoomToMarker();
+        updateMap();
     }
 
     @Override
@@ -89,6 +88,16 @@ public class WritingMapActivity extends FragmentActivity implements OnMapReadyCa
     public void onMarkerDragEnd(Marker marker){}
     @Override
     public void onMarkerDrag(Marker marker){}
+
+    private void updateMap(){
+        // Add a marker in Sydney and move the camera
+        mMarker = mMap.addMarker(new MarkerOptions()
+                .position(position).title("저장된 위치")
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_blue)).draggable(true));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(position));
+        mMap.setOnMarkerDragListener(this);
+        setCameraZoomToMarker();
+    }
 
     private void setCameraZoomToMarker() {
 

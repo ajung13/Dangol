@@ -54,7 +54,7 @@
         <activity android:name=".Writing2Activity" />
         <activity
             android:name=".WritingMapActivity"
-            android:label="@string/title_activity_writing_map"></activity>
+            android:label="@string/title_activity_writing_map"/>
     </application>
 
 </manifest>
