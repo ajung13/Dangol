@@ -1,12 +1,10 @@
 package ac.sogang.dangol;
 
 import android.Manifest;
-import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -18,6 +16,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -182,8 +181,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         MapDialog mDialog = new MapDialog();
 
         mDialog.show(getSupportFragmentManager(), "0");
-
-
         return false;
     }
 
@@ -246,8 +243,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
 
                 while(true){
-  //                  manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, minTime, minDistance, gpsListener);
- //                   manager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, minTime, minDistance, gpsListener);
+                    //                  manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, minTime, minDistance, gpsListener);
+                    //                   manager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, minTime, minDistance, gpsListener);
                     manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 10, gpsListener );
                     Location location = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                     Double latitude = location.getLatitude();
@@ -286,14 +283,21 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 break;
         }
 
+        ImageButton ib_d = (ImageButton)findViewById(R.id.menu_diary);
+        ImageButton ib_p = (ImageButton)findViewById(R.id.menu_pin);
+
         if(flag == 2){
             Log.e("dangol_main", "return to map");
             fragment_num = 0;
+            ib_d.setBackground(getResources().getDrawable(R.drawable.menu_diary_gray));
+            ib_p.setBackground(getResources().getDrawable(R.drawable.menu_pin_blue));
             super.onBackPressed();
         }
         else if(flag == 1){
             Log.e("dangol_main", "show diary");
             fragment_num = 1;
+            ib_d.setBackground(getResources().getDrawable(R.drawable.menu_diary_blue));
+            ib_p.setBackground(getResources().getDrawable(R.drawable.menu_pin_gray));
             Fragment fragment = new DiaryFragment();
             FragmentManager fm = getFragmentManager();
             FragmentTransaction ft = fm.beginTransaction();
@@ -307,7 +311,13 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onBackPressed(){
-        if(fragment_num == 1)   fragment_num = 0;
+        if(fragment_num == 1){
+            fragment_num = 0;
+            ImageButton ib_d = (ImageButton)findViewById(R.id.menu_diary);
+            ImageButton ib_p = (ImageButton)findViewById(R.id.menu_pin);
+            ib_d.setBackground(getResources().getDrawable(R.drawable.menu_diary_gray));
+            ib_p.setBackground(getResources().getDrawable(R.drawable.menu_pin_blue));
+        }
         super.onBackPressed();
     }
 }
