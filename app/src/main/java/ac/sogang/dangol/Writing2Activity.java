@@ -40,6 +40,8 @@ public class Writing2Activity extends AppCompatActivity {
         String title = et.getText().toString();
         et = (EditText)findViewById(R.id.write_contents);
         String contents = et.getText().toString();
+        title = checkString(title);
+        contents = checkString(contents);
 
         Log.e("dangol_write2", "location: " + location.latitude + ", " + location.longitude);
         Log.e("dangol_write2", "location name: " + location_name);
@@ -68,5 +70,12 @@ public class Writing2Activity extends AppCompatActivity {
         }
         mDB.close();
         Toast.makeText(getApplicationContext(), "저장되었습니다!", Toast.LENGTH_SHORT).show();
+    }
+
+    private String checkString(String str){
+        if(str.length() == 0) str = "제목 없음";
+        if(str.contains("'"))
+            str = str.replace("'", " ");
+        return str;
     }
 }

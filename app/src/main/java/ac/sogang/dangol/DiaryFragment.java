@@ -1,6 +1,7 @@
 package ac.sogang.dangol;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
@@ -9,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -31,6 +33,16 @@ public class DiaryFragment extends Fragment {
         mListView = (ListView)view.findViewById(R.id.main_diary_list);
         dataSetting();
 
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id){
+                MyItem listItem = (MyItem) parent.getAdapter().getItem(position);
+                Intent intent = new Intent(getActivity(), Diary_detail.class);
+                intent.putExtra("id", listItem.getID());
+                startActivity(intent);
+            }
+        });
+
         return view;
     }
 
@@ -50,14 +62,12 @@ public class DiaryFragment extends Fragment {
                         date = c.getString(c.getColumnIndexOrThrow("Time"));
                         int id = c.getInt(c.getColumnIndexOrThrow("DiaryID"));
 
-                        Log.e("dangol_diary", "not throwed yet/" + date);
-
                         if(title.length() > 30)
                             title = title.substring(0, 30) + "...";
                         if(content.length() > 30)
                             content = content.substring(0, 30) + "...";
-                        if(date == null)    date = "0";
-                        date = date.substring(0, date.indexOf(" "));
+                        if(date != null)
+                            date = date.substring(0, date.indexOf(" "));
 
                         mMyAdapter.addItem(title, content, date, id);
                     } while (c.moveToPrevious());
@@ -65,11 +75,11 @@ public class DiaryFragment extends Fragment {
                 if(!c.isClosed())   c.close();
             }
         }catch(SQLiteException se) {
-            Log.e("dangol_diary", se.toString());
+            Log.e("dangol_diary(se)", se.toString());
         }catch(NullPointerException ne){
-            Log.e("dangol_diary", ne.toString());
+            Log.e("dangol_diary(ne)", ne.toString());
         }catch(Exception e){
-            Log.e("dangol_diary", e.toString());
+            Log.e("dangol_diary(e)", e.toString());
         }
         mDB.close();
 
