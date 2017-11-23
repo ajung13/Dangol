@@ -24,7 +24,7 @@
             android:id="@+id/diary_list_title"
             android:layout_gravity="center_vertical"
             android:textColor="@color/contents"
-            android:textSize="25sp"/>
+            android:textSize="20sp"/>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="20dp"

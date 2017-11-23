@@ -289,15 +289,15 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         if(flag == 2){
             Log.e("dangol_main", "return to map");
             fragment_num = 0;
-            ib_d.setBackground(getResources().getDrawable(R.drawable.menu_diary_gray));
-            ib_p.setBackground(getResources().getDrawable(R.drawable.menu_pin_blue));
+            ib_d.setBackgroundResource(R.drawable.menu_diary_gray);
+            ib_p.setBackgroundResource(R.drawable.menu_pin_blue);
             super.onBackPressed();
         }
         else if(flag == 1){
             Log.e("dangol_main", "show diary");
             fragment_num = 1;
-            ib_d.setBackground(getResources().getDrawable(R.drawable.menu_diary_blue));
-            ib_p.setBackground(getResources().getDrawable(R.drawable.menu_pin_gray));
+            ib_d.setBackgroundResource(R.drawable.menu_diary_blue);
+            ib_p.setBackgroundResource(R.drawable.menu_pin_gray);
             Fragment fragment = new DiaryFragment();
             FragmentManager fm = getFragmentManager();
             FragmentTransaction ft = fm.beginTransaction();
@@ -315,8 +315,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             fragment_num = 0;
             ImageButton ib_d = (ImageButton)findViewById(R.id.menu_diary);
             ImageButton ib_p = (ImageButton)findViewById(R.id.menu_pin);
-            ib_d.setBackground(getResources().getDrawable(R.drawable.menu_diary_gray));
-            ib_p.setBackground(getResources().getDrawable(R.drawable.menu_pin_blue));
+            ib_d.setBackgroundResource(R.drawable.menu_diary_gray);
+            ib_p.setBackgroundResource(R.drawable.menu_pin_blue);
         }
         super.onBackPressed();
     }
