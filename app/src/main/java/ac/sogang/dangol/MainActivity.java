@@ -228,7 +228,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             float minDistance = 0;
 
             try {
-                Log.e("Dangol_main", "start thread");
+                Log.e("dangol_main", "start thread");
   /*              if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     // TODO: Consider calling
                     //    ActivityCompat#requestPermissions
@@ -255,12 +255,12 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                     //                String str = "Time : "+ nowTime; //"Latitude: "+latitude + ", Longitude : "+ longitude;
                     //                Toast.makeText(getApplicationContext(), str, Toast.LENGTH_SHORT).show();
                     sleep(sleepTime);
-                    Log.e("Dangol_main111", nowTime);
+                    Log.e("dangol_main111", nowTime);
                 }
             }catch(SecurityException se){
                 Log.e("dangol_main", se.toString());
             }catch(Exception e){
-                Log.e("Dangol_main", e.toString());
+                Log.e("dangol_main", e.toString());
             }
 
             Log.e("dangol_main", "주금");

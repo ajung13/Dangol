@@ -48,7 +48,8 @@ public class WritingMapActivity extends FragmentActivity implements OnMapReadyCa
 
         PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment) getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
         //addition (from)
-        AutocompleteFilter typeFilter = new AutocompleteFilter.Builder().setTypeFilter(AutocompleteFilter.TYPE_FILTER_ADDRESS).build();
+//        AutocompleteFilter typeFilter = new AutocompleteFilter.Builder().setTypeFilter(AutocompleteFilter.TYPE_FILTER_ADDRESS).build();
+        AutocompleteFilter typeFilter = new AutocompleteFilter.Builder().setTypeFilter(Place.TYPE_COUNTRY).setCountry("KR").build();
         autocompleteFragment.setFilter(typeFilter);
         //addition (to)
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
@@ -91,6 +92,7 @@ public class WritingMapActivity extends FragmentActivity implements OnMapReadyCa
 
     private void updateMap(){
         // Add a marker in Sydney and move the camera
+
         mMarker = mMap.addMarker(new MarkerOptions()
                 .position(position).title("저장된 위치")
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_blue)).draggable(true));
