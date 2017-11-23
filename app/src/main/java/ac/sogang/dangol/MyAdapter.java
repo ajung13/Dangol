@@ -50,8 +50,6 @@ public class MyAdapter extends BaseAdapter {
         tv_date.setText(myItem.getDate());
         tv_content.setText(myItem.getContent());
 
-        //event listener
-
         return convertView;
     }
 

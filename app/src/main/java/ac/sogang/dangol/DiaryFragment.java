@@ -34,13 +34,6 @@ public class DiaryFragment extends Fragment {
         return view;
     }
 
-/*    private void dataSetting(){
-        MyAdapter mMyAdapter = new MyAdapter();
-        mMyAdapter.addItem("학교", "학교에 갔다", "2017-10-23");
-        mMyAdapter.addItem("집", "집에 갔다", "2017-10-30");
-
-    }*/
-
     private void dataSetting(){
         SQLiteDatabase mDB = getActivity().openOrCreateDatabase(dbName, MODE_PRIVATE, null);
         MyAdapter mMyAdapter = new MyAdapter();
