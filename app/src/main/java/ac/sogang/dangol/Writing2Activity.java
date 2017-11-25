@@ -93,6 +93,7 @@ public class Writing2Activity extends AppCompatActivity {
                                 lat == c.getDouble(c.getColumnIndexOrThrow("Latitude")) &&
                                 lon == c.getDouble(c.getColumnIndexOrThrow("Longitude"))){
                             position = c.getInt(c.getColumnIndexOrThrow("LocationID"));
+                            Log.e("dangol_write2_check", "found");
                             flag = Boolean.TRUE;
                             break;
                         }
