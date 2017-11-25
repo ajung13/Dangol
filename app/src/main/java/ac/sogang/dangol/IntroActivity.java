@@ -58,4 +58,44 @@ public class IntroActivity extends AppCompatActivity {
 
         mDB.close();
     }
+    private void insertDB(){
+        SQLiteDatabase mDB = this.openOrCreateDatabase(dbName, MODE_PRIVATE, null);
+
+        try{
+
+            mDB.execSQL("INSERT INTO readData(readDataID, Latitude, Longitude, Time) VALUES ('R-1', 0.000, 0.000, '2017-11-13 15:05:11')");
+
+        }catch(SQLiteException se){
+            Log.e("insert_sql", se.toString());
+        }catch(Exception e){
+            Log.e("insert", e.toString());
+        }
+        mDB.close();
+    }
+
+    private void checkDB(){
+        SQLiteDatabase mDB = this.openOrCreateDatabase(dbName, MODE_PRIVATE, null);
+
+        try {
+            Cursor c = mDB.rawQuery("SELECT Time FROM readData", null);
+            String data = "";
+            Log.e("lala","오긴하는거니?");
+            if (c != null) {
+                if (c.moveToFirst()) {
+                    int i = 0;
+                    data += getPackageName() + ": ";
+                    do {
+                        data += c.getString(i++) + "\t";
+                    } while (c.moveToNext());
+                    Log.e("checkData", data);
+                    Toast.makeText(this, data, Toast.LENGTH_SHORT).show();
+                }
+            }
+        }catch(SQLiteException se){
+            Log.e("check_sql", se.toString());
+        }catch(Exception e){
+            Log.e("check", e.toString());
+        }
+        mDB.close();
+    }
 }

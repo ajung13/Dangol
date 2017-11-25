@@ -7,6 +7,8 @@ import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -103,6 +105,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
+
+
         mMap = googleMap;
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
@@ -219,7 +223,9 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     public class TimeThread extends Thread {
-        long sleepTime = 5000;
+        String dbName = "Dangol";
+        String sql = "";
+        long sleepTime = 18000;
 
         public void run() {
 //            LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -229,18 +235,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
             try {
                 Log.e("Dangol_main", "start thread");
-  /*              if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    // TODO: Consider calling
-                    //    ActivityCompat#requestPermissions
-                    // here to request the missing permissions, and then overriding
-                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                    //                                          int[] grantResults)
-                    // to handle the case where the user grants the permission. See the documentation
-                    // for ActivityCompat#requestPermissions for more details.
-                    return;
-                }*/
-
-
 
                 while(true){
                     //                  manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, minTime, minDistance, gpsListener);
@@ -250,12 +244,24 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                     Double latitude = location.getLatitude();
                     Double longitude = location.getLongitude();
                     String nowTime = new SimpleDateFormat("yyyy.MM.DD HH:mm:ss").format(System.currentTimeMillis());
-                    nowTime += "\t" + latitude + "\t" + longitude;
 
-                    //                String str = "Time : "+ nowTime; //"Latitude: "+latitude + ", Longitude : "+ longitude;
-                    //                Toast.makeText(getApplicationContext(), str, Toast.LENGTH_SHORT).show();
+                    SQLiteDatabase mDB = this.openOrCreateDatabase(dbName, MODE_PRIVATE, null);
+
+                    try{
+                        //ID 처리 방식 어떻게 할건지.
+
+                        sql = "INSERT INTO readData(readDataID, Latitude, Longitude, Time) VALUES (" + tableID + ", " + latitude + ", "+ longitude +", '"+ nowTime +"')";
+
+                        mDB.execSQL(sql);
+
+                    }catch(SQLiteException se){
+                        Log.e("insert_sql", se.toString());
+                    }catch(Exception e){
+                        Log.e("insert", e.toString());
+                    }
+                    mDB.close();
                     sleep(sleepTime);
-                    Log.e("Dangol_main111", nowTime);
+                    Log.e("Dangol_main111", sql);
                 }
             }catch(SecurityException se){
                 Log.e("dangol_main", se.toString());
@@ -266,6 +272,10 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             Log.e("dangol_main", "주금");
 
         }
+    }
+
+    public dataFilter(){
+        //DB를 열고 readData에서 첫번째 데이터를 불러옴
     }
 
     public void changeFragment(View v){
