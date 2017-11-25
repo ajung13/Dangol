@@ -1,6 +1,7 @@
 package ac.sogang.dangol;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.os.Bundle;
@@ -14,20 +15,22 @@ import com.google.android.gms.maps.model.LatLng;
 
 public class Writing2Activity extends AppCompatActivity {
     String dbName = "Dangol";
+    Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_writing2);
+        intent = getIntent();
     }
 
     public void onBackPressed(View v){
-        Intent intent = new Intent(Writing2Activity.this, WritingActivity.class);
-        startActivity(intent);
+        Intent back_intent = new Intent(Writing2Activity.this, WritingActivity.class);
+        back_intent.putExtras(intent.getExtras());
+        startActivity(back_intent);
         finish();
     }
     public void onSavePressed(View v){
-        Intent intent = getIntent();
         int year = intent.getIntExtra("year", 0);
         int month = intent.getIntExtra("month", 0);
         int date = intent.getIntExtra("date", 0);
@@ -54,12 +57,18 @@ public class Writing2Activity extends AppCompatActivity {
         SQLiteDatabase mDB = this.openOrCreateDatabase(dbName, MODE_PRIVATE, null);
 
         try{
-            String sql = "INSERT INTO Location(Name, Latitude, Longitude) VALUES ('" + name + "', " +
-                    lat + ", " + lon + ");";
-            Log.e("dangol_insert", "sql(1): " + sql);
-            mDB.execSQL(sql);
+            String sql;
+            Boolean findFlag = Boolean.FALSE;
+            int locID = checkLocationID(mDB, name, lat, lon, findFlag);
+            if(findFlag.equals(Boolean.FALSE)){
+                sql = "INSERT INTO Location(Name, Latitude, Longitude) VALUES ('" + name + "', " +
+                        lat + ", " + lon + ");";
+                Log.e("dangol_insert", "sql(1): " + sql);
+                mDB.execSQL(sql);
+            }
 
-            sql = "INSERT INTO Diary(Mood, Weather, Title, Text, Time) VALUES (" + emotion + ", " + weather +
+            sql = "INSERT INTO Diary(LocationID, Mood, Weather, Title, Text, Time) VALUES (" +
+                    locID + ", " + emotion + ", " + weather +
                     ", '" + title + "', '" + contents + "', '" + year + "-" + month + "-" + date + " 00:00:00');";
             Log.e("dangol_insert", "sql(2): " + sql);
             mDB.execSQL(sql);
@@ -70,6 +79,35 @@ public class Writing2Activity extends AppCompatActivity {
         }
         mDB.close();
         Toast.makeText(getApplicationContext(), "저장되었습니다!", Toast.LENGTH_SHORT).show();
+    }
+
+    private int checkLocationID(SQLiteDatabase db, String name, double lat, double lon, Boolean flag){
+        int position = 0;
+        try {
+            Cursor c = db.rawQuery("SELECT * FROM Location", null);
+            if (c != null) {
+                if (c.moveToFirst()) {
+                    do {
+                        position++;
+                        if(name.equals(c.getString(c.getColumnIndexOrThrow("Name"))) &&
+                                lat == c.getDouble(c.getColumnIndexOrThrow("Latitude")) &&
+                                lon == c.getDouble(c.getColumnIndexOrThrow("Longitude"))){
+                            position = c.getInt(c.getColumnIndexOrThrow("LocationID"));
+                            flag = Boolean.TRUE;
+                            break;
+                        }
+                    } while (c.moveToNext());
+                }
+            }
+            if (!c.isClosed()) c.close();
+        }catch(SQLiteException se){
+            Log.e("dangol_write2_save", se.toString());
+        }catch(NullPointerException ne){
+            Log.e("dangol_write2_save", ne.toString());
+        }catch(Exception e){
+            Log.e("dangol_write2_save", e.toString());
+        }
+        return position;
     }
 
     private String checkString(String str, int flag){

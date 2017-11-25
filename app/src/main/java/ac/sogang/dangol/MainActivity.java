@@ -38,6 +38,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleMap mMap;
     private LocationManager manager = null;
     private GPSListener gpsListener = null;
+    private Location lastlocation;
 
     ArrayList<Marker> markers = new ArrayList<>();
     private int fragment_num;
@@ -63,6 +64,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
     public void onWriteClicked(View v) {
         Intent intent = new Intent(MainActivity.this, WritingActivity.class);
+        intent.putExtra("lat", lastlocation.getLatitude());
+        intent.putExtra("lon", lastlocation.getLongitude());
         startActivity(intent);
     }
 
@@ -120,12 +123,11 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, minTime, minDistance, gpsListener);
             manager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, minTime, minDistance, gpsListener);
 
-            Location lastlocation = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            lastlocation = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
             if (lastlocation != null) {
                 Double latitude = lastlocation.getLatitude();
                 Double longitude = lastlocation.getLongitude();
                 Log.e("dangol_main", "Last known location: " + latitude + "\t" + longitude);
-
             }
         } catch (SecurityException se) {
             Log.e("dangol_main", "catch " + se.getMessage());
@@ -148,7 +150,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         };
 
         for(int i=0; i<positions.length; i++) {
-
             Marker marker = mMap.addMarker(new MarkerOptions()
                     .position(positions[i]).title("마커 " + i + "번")
                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_gray)));
@@ -239,8 +240,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                     // for ActivityCompat#requestPermissions for more details.
                     return;
                 }*/
-
-
 
                 while(true){
                     //                  manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, minTime, minDistance, gpsListener);
