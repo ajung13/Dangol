@@ -137,6 +137,14 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
         addMarkerOnView();
         setCameraZoomToMarker();
+
+        if(dangolApp.th == null) {
+            dangolApp.th = new TimeThread();
+            dangolApp.th.start();
+        }
+        else if(!dangolApp.th.isAlive()){
+            dangolApp.th.start();
+        }
     }
 
     void addMarkerOnView() {
