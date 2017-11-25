@@ -38,6 +38,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleMap mMap;
     private LocationManager manager = null;
     private GPSListener gpsListener = null;
+    private Location lastlocation;
 
     ArrayList<Marker> markers = new ArrayList<>();
     private int fragment_num;
@@ -63,6 +64,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
     public void onWriteClicked(View v) {
         Intent intent = new Intent(MainActivity.this, WritingActivity.class);
+        intent.putExtra("lat", lastlocation.getLatitude());
+        intent.putExtra("lon", lastlocation.getLongitude());
         startActivity(intent);
     }
 
@@ -120,12 +123,11 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, minTime, minDistance, gpsListener);
             manager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, minTime, minDistance, gpsListener);
 
-            Location lastlocation = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            lastlocation = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
             if (lastlocation != null) {
                 Double latitude = lastlocation.getLatitude();
                 Double longitude = lastlocation.getLongitude();
                 Log.e("dangol_main", "Last known location: " + latitude + "\t" + longitude);
-
             }
         } catch (SecurityException se) {
             Log.e("dangol_main", "catch " + se.getMessage());
@@ -148,7 +150,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         };
 
         for(int i=0; i<positions.length; i++) {
-
             Marker marker = mMap.addMarker(new MarkerOptions()
                     .position(positions[i]).title("마커 " + i + "번")
                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_gray)));
@@ -228,7 +229,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             float minDistance = 0;
 
             try {
-                Log.e("Dangol_main", "start thread");
+                Log.e("dangol_main", "start thread");
   /*              if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     // TODO: Consider calling
                     //    ActivityCompat#requestPermissions
@@ -239,8 +240,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                     // for ActivityCompat#requestPermissions for more details.
                     return;
                 }*/
-
-
 
                 while(true){
                     //                  manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, minTime, minDistance, gpsListener);
@@ -255,12 +254,12 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                     //                String str = "Time : "+ nowTime; //"Latitude: "+latitude + ", Longitude : "+ longitude;
                     //                Toast.makeText(getApplicationContext(), str, Toast.LENGTH_SHORT).show();
                     sleep(sleepTime);
-                    Log.e("Dangol_main111", nowTime);
+                    Log.e("dangol_main111", nowTime);
                 }
             }catch(SecurityException se){
                 Log.e("dangol_main", se.toString());
             }catch(Exception e){
-                Log.e("Dangol_main", e.toString());
+                Log.e("dangol_main", e.toString());
             }
 
             Log.e("dangol_main", "주금");
@@ -289,15 +288,15 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         if(flag == 2){
             Log.e("dangol_main", "return to map");
             fragment_num = 0;
-            ib_d.setBackground(getResources().getDrawable(R.drawable.menu_diary_gray));
-            ib_p.setBackground(getResources().getDrawable(R.drawable.menu_pin_blue));
+            ib_d.setBackgroundResource(R.drawable.menu_diary_gray);
+            ib_p.setBackgroundResource(R.drawable.menu_pin_blue);
             super.onBackPressed();
         }
         else if(flag == 1){
             Log.e("dangol_main", "show diary");
             fragment_num = 1;
-            ib_d.setBackground(getResources().getDrawable(R.drawable.menu_diary_blue));
-            ib_p.setBackground(getResources().getDrawable(R.drawable.menu_pin_gray));
+            ib_d.setBackgroundResource(R.drawable.menu_diary_blue);
+            ib_p.setBackgroundResource(R.drawable.menu_pin_gray);
             Fragment fragment = new DiaryFragment();
             FragmentManager fm = getFragmentManager();
             FragmentTransaction ft = fm.beginTransaction();
@@ -315,8 +314,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             fragment_num = 0;
             ImageButton ib_d = (ImageButton)findViewById(R.id.menu_diary);
             ImageButton ib_p = (ImageButton)findViewById(R.id.menu_pin);
-            ib_d.setBackground(getResources().getDrawable(R.drawable.menu_diary_gray));
-            ib_p.setBackground(getResources().getDrawable(R.drawable.menu_pin_blue));
+            ib_d.setBackgroundResource(R.drawable.menu_diary_gray);
+            ib_p.setBackgroundResource(R.drawable.menu_pin_blue);
         }
         super.onBackPressed();
     }

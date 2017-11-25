@@ -32,15 +32,22 @@ public class WritingActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_writing);
+        Intent intent = getIntent();
 
-        final Date date_now = new Date(System.currentTimeMillis());
-        _year = Integer.parseInt(new SimpleDateFormat("yyyy").format(date_now));
-        _month = date_now.getMonth() + 1;
-        _date = date_now.getDate();
+        _year = intent.getIntExtra("year", 0);
+        _month = intent.getIntExtra("month", 0);
+        _date = intent.getIntExtra("date", 0);
+        if(_year == 0) {
+            final Date date_now = new Date(System.currentTimeMillis());
+            _year = Integer.parseInt(new SimpleDateFormat("yyyy").format(date_now));
+            _month = date_now.getMonth() + 1;
+            _date = date_now.getDate();
+        }
         setDate();
 
-        location = new LatLng(37.552030, 126.9370623);
-        location_name = "저장된 위치";
+        location = new LatLng(intent.getDoubleExtra("lat", 0), intent.getDoubleExtra("lon", 0));
+        location_name = intent.getStringExtra("name");
+        if(location_name == null)   location_name = "현재 위치";
         setLocation();
     }
 
