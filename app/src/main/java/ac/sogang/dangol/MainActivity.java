@@ -7,6 +7,9 @@ import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -148,23 +151,22 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     void addMarkerOnView() {
-
-        LatLng[] positions = {
+ /*       LatLng[] positions = {
                 new LatLng(37.552030, 126.9370623),
                 new LatLng(37.552030, 126.9360623),
                 new LatLng(37.552030, 126.9380623),
                 new LatLng(37.556030, 126.9380623),
                 new LatLng(37.559030, 126.9370623)
-        };
-
-        for(int i=0; i<positions.length; i++) {
-            Marker marker = mMap.addMarker(new MarkerOptions()
-                    .position(positions[i]).title("마커 " + i + "번")
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_gray)));
-
-            markers.add(marker);
+        };*/
+        LatLng[] positions = selectLocations();
+        if(positions != null) {
+            for (int i = 0; i < positions.length; i++) {
+                Marker marker = mMap.addMarker(new MarkerOptions()
+                        .position(positions[i]).title("마커 " + i + "번")
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_gray)));
+                markers.add(marker);
+            }
         }
-
         mMap.setOnMarkerClickListener(this);
     }
 
@@ -326,5 +328,45 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             ib_p.setBackgroundResource(R.drawable.menu_pin_blue);
         }
         super.onBackPressed();
+    }
+
+    private LatLng[] selectLocations(){
+        LatLng[] result;
+        SQLiteDatabase mDB;
+        Cursor c;
+
+        try{
+            mDB = this.openOrCreateDatabase("Dangol", MODE_PRIVATE, null);
+            c = mDB.rawQuery("SELECT * FROM Location", null);
+            result = new LatLng[c.getCount()];
+            int idx = 0;
+
+            Log.e("dangol_main_marker", "is c null?");
+            if(c.getCount() != 0){
+                Log.e("dangol_main_marker","no");
+                if(c.moveToFirst()){
+                    do{
+                        double lat = c.getDouble(c.getColumnIndexOrThrow("Latitude"));
+                        double lon = c.getDouble(c.getColumnIndexOrThrow("Longitude"));
+                        result[idx] = new LatLng(lat, lon);
+                        Log.e("dangol_main_marker", idx + ") " + result[idx].latitude + ", " + result[idx].longitude);
+                        idx++;
+                    }while(c.moveToNext());
+                }
+                else{
+                    Toast.makeText(this, "아직 기록이 없어요!", Toast.LENGTH_SHORT).show();
+                    Log.e("dangol_main_marker", "not write yet");
+                }
+                if(!c.isClosed())   c.close();
+            }
+            mDB.close();
+            return result;
+        }catch(SQLiteException se){
+            Log.e("dangol_main_marker", se.toString());
+        }catch(Exception e){
+            Log.e("dangol_main_marker", e.toString());
+        }
+
+        return null;
     }
 }

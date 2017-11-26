@@ -2,7 +2,6 @@ package ac.sogang.dangol;
 import android.app.Activity;
 import android.app.Application;
 import android.os.Bundle;
-import android.util.Log;
 
 /**
  * Created by Hyunah on 2017-11-25.
@@ -19,17 +18,17 @@ public class dangolApp implements Application.ActivityLifecycleCallbacks {
 
     @Override
     public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
-        Log.e("dangol_thread", "created");
+//        Log.e("dangol_thread", "created");
     }
 
     @Override
     public void onActivityDestroyed(Activity activity) {
-        Log.e("dangol_thread", "destroyed");
+        //Log.e("dangol_thread", "destroyed");
     }
 
     @Override
     public void onActivityResumed(Activity activity) {
-        Log.e("dangol_thread", "resumed");
+        //Log.e("dangol_thread", "resumed");
         ++resumed;
     }
 
@@ -37,7 +36,7 @@ public class dangolApp implements Application.ActivityLifecycleCallbacks {
     public void onActivityPaused(Activity activity) {
         ++paused;
         android.util.Log.w("test", "application is in foreground: " + (resumed > paused));
-        Log.e("dangol_thread", "paused");
+        //Log.e("dangol_thread", "paused");
     }
 
     @Override
@@ -46,7 +45,7 @@ public class dangolApp implements Application.ActivityLifecycleCallbacks {
 
     @Override
     public void onActivityStarted(Activity activity) {
-        Log.e("dangol_thread", "started");
+        //Log.e("dangol_thread", "started");
         ++started;
     }
 
@@ -54,7 +53,7 @@ public class dangolApp implements Application.ActivityLifecycleCallbacks {
     public void onActivityStopped(Activity activity) {
         ++stopped;
         android.util.Log.w("test", "application is visible: " + (started > stopped));
-        Log.e("dangol_thread", "stopped");
+        //Log.e("dangol_thread", "stopped");
     }
 
     // If you want a static function you can use to check if your application is
