@@ -254,20 +254,16 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 }*/
 
                 while(true){
-                    //                  manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, minTime, minDistance, gpsListener);
-                    //                   manager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, minTime, minDistance, gpsListener);
-                    manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 10, gpsListener );
+                    manager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, minTime, minDistance, gpsListener);
+                    manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, minTime, minDistance, gpsListener );
                     Location location = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                     if(location == null)    break;
-                    Double latitude = location.getLatitude();
-                    Double longitude = location.getLongitude();
-                    String nowTime = new SimpleDateFormat("yyyy.MM.DD HH:mm:ss").format(System.currentTimeMillis());
-                    nowTime += "\t" + latitude + "\t" + longitude;
+                    double latitude = location.getLatitude();
+                    double longitude = location.getLongitude();
+                    String nowTime = new SimpleDateFormat("yyyy-MM-DD HH:mm:ss").format(System.currentTimeMillis());
 
-                    //                String str = "Time : "+ nowTime; //"Latitude: "+latitude + ", Longitude : "+ longitude;
-                    //                Toast.makeText(getApplicationContext(), str, Toast.LENGTH_SHORT).show();
+                    insertLocationDB(latitude, longitude, nowTime);
                     sleep(sleepTime);
-                    Log.e("dangol_main(7)", nowTime);
                 }
             }catch(SecurityException se){
                 Log.e("dangol_main(8)", se.toString());
@@ -278,6 +274,21 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             Log.e("dangol_main(10)", "주금");
 
         }
+    }
+
+    private void insertLocationDB(double lat, double lon, String time){
+        SQLiteDatabase mDB = openOrCreateDatabase("Dangol", MODE_PRIVATE, null);
+        try{
+            String sql = "insert into readData(Latitude, Longitude, Time) values (" + lat + ", " +
+                    lon + ", '" + time + "');";
+            Log.e("dangol_main_readData", sql);
+            mDB.execSQL(sql);
+        }catch(SQLiteException se){
+            Log.e("dangol_main(14)", se.toString());
+        }catch(Exception e){
+            Log.e("dangol_main(15)", e.toString());
+        }
+        mDB.close();
     }
 
     public void changeFragment(View v){
@@ -369,5 +380,35 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         }
 
         return null;
+    }
+
+    public void onDBUpdateClicked(View v){
+        SQLiteDatabase mDB;
+        try{
+            mDB = openOrCreateDatabase("Dangol", MODE_PRIVATE, null);
+            Cursor c = mDB.rawQuery("SELECT * FROM readData", null);
+            if(c != null && c.getCount() > 0){
+                if(c.moveToFirst()){
+                    do{
+                        double lat = c.getDouble(c.getColumnIndexOrThrow("Latitude"));
+                        double lon = c.getDouble(c.getColumnIndexOrThrow("Longitude"));
+                        String time = c.getString(c.getColumnIndexOrThrow("Time"));
+                        String date = time.substring(0, time.indexOf(" "));
+                        time = time.substring(time.indexOf(" ")+1);
+                        //TODO: do your logic here
+                        Log.e("dangol_main_update", "lat: " + lat + ", lon: " + lon + ", date: " + date + "time:" + time);
+                    }while(c.moveToNext());
+                }
+            }
+            if(c != null && !c.isClosed())    c.close();
+
+            //delete all
+            mDB.execSQL("DELETE FROM readData");
+            mDB.close();
+        }catch(SQLiteException se){
+            Log.e("dangol_main(16)", se.toString());
+        }catch(Exception e){
+            Log.e("dangol_main(17)", e.toString());
+        }
     }
 }
