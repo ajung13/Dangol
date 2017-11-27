@@ -67,8 +67,10 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
     public void onWriteClicked(View v) {
         Intent intent = new Intent(MainActivity.this, WritingActivity.class);
-        intent.putExtra("lat", lastlocation.getLatitude());
-        intent.putExtra("lon", lastlocation.getLongitude());
+        if(lastlocation != null) {
+            intent.putExtra("lat", lastlocation.getLatitude());
+            intent.putExtra("lon", lastlocation.getLongitude());
+        }
         startActivity(intent);
     }
 
@@ -86,11 +88,11 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         }
 
         if (permissionCheck == PackageManager.PERMISSION_GRANTED)
-            Log.e("dangol_main", "Permission granted");
+            Log.e("dangol_main(1)", "Permission granted");
 //            Toast.makeText(this, "Permission granted", Toast.LENGTH_SHORT).show();
         else {
 //            Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show();
-            Log.e("dangol_main", "Permission denied");
+            Log.e("dangol_main(2)", "Permission denied");
             if (ActivityCompat.shouldShowRequestPermissionRationale(this, permissions[0]))
                 Toast.makeText(this, "Explain for permission", Toast.LENGTH_SHORT).show();
             else
@@ -130,10 +132,10 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             if (lastlocation != null) {
                 Double latitude = lastlocation.getLatitude();
                 Double longitude = lastlocation.getLongitude();
-                Log.e("dangol_main", "Last known location: " + latitude + "\t" + longitude);
+                Log.e("dangol_main(3)", "Last known location: " + latitude + "\t" + longitude);
             }
         } catch (SecurityException se) {
-            Log.e("dangol_main", "catch " + se.getMessage());
+            Log.e("dangol_main(4)", "catch " + se.getMessage());
         }
 
         Toast.makeText(this, "Check log", Toast.LENGTH_SHORT).show();
@@ -212,7 +214,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             Double latitude = location.getLatitude();
             Double longitude = location.getLongitude();
 
-            Log.e("dangol_main", "Location Changed: " + latitude + "\t" + longitude);
+            Log.e("dangol_main(5)", "Location Changed: " + latitude + "\t" + longitude);
 
             LatLng myLocation = new LatLng(latitude, longitude);
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 19));
@@ -239,7 +241,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             float minDistance = 0;
 
             try {
-                Log.e("dangol_main", "start thread");
+                Log.e("dangol_main(6)", "start thread");
   /*              if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     // TODO: Consider calling
                     //    ActivityCompat#requestPermissions
@@ -256,6 +258,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                     //                   manager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, minTime, minDistance, gpsListener);
                     manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 10, gpsListener );
                     Location location = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                    if(location == null)    break;
                     Double latitude = location.getLatitude();
                     Double longitude = location.getLongitude();
                     String nowTime = new SimpleDateFormat("yyyy.MM.DD HH:mm:ss").format(System.currentTimeMillis());
@@ -264,15 +267,15 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                     //                String str = "Time : "+ nowTime; //"Latitude: "+latitude + ", Longitude : "+ longitude;
                     //                Toast.makeText(getApplicationContext(), str, Toast.LENGTH_SHORT).show();
                     sleep(sleepTime);
-                    Log.e("dangol_main111", nowTime);
+                    Log.e("dangol_main(7)", nowTime);
                 }
             }catch(SecurityException se){
-                Log.e("dangol_main", se.toString());
+                Log.e("dangol_main(8)", se.toString());
             }catch(Exception e){
-                Log.e("dangol_main", e.toString());
+                Log.e("dangol_main(9)", e.toString());
             }
 
-            Log.e("dangol_main", "주금");
+            Log.e("dangol_main(10)", "주금");
 
         }
     }
@@ -296,14 +299,14 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         ImageButton ib_p = (ImageButton)findViewById(R.id.menu_pin);
 
         if(flag == 2){
-            Log.e("dangol_main", "return to map");
+            Log.e("dangol_main(11)", "return to map");
             fragment_num = 0;
             ib_d.setBackgroundResource(R.drawable.menu_diary_gray);
             ib_p.setBackgroundResource(R.drawable.menu_pin_blue);
             super.onBackPressed();
         }
         else if(flag == 1){
-            Log.e("dangol_main", "show diary");
+            Log.e("dangol_main(12)", "show diary");
             fragment_num = 1;
             ib_d.setBackgroundResource(R.drawable.menu_diary_blue);
             ib_p.setBackgroundResource(R.drawable.menu_pin_gray);
@@ -315,7 +318,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             ft.commit();
         }
         else
-            Log.e("dangol_main", "nothing to show");
+            Log.e("dangol_main(13)", "nothing to show");
     }
 
     @Override
@@ -341,15 +344,13 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             result = new LatLng[c.getCount()];
             int idx = 0;
 
-            Log.e("dangol_main_marker", "is c null?");
             if(c.getCount() != 0){
-                Log.e("dangol_main_marker","no");
                 if(c.moveToFirst()){
                     do{
                         double lat = c.getDouble(c.getColumnIndexOrThrow("Latitude"));
                         double lon = c.getDouble(c.getColumnIndexOrThrow("Longitude"));
                         result[idx] = new LatLng(lat, lon);
-                        Log.e("dangol_main_marker", idx + ") " + result[idx].latitude + ", " + result[idx].longitude);
+//                        Log.e("dangol_main_marker", idx + ") " + result[idx].latitude + ", " + result[idx].longitude);
                         idx++;
                     }while(c.moveToNext());
                 }
