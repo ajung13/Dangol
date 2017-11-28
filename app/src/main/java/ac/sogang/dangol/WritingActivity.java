@@ -1,13 +1,16 @@
 package ac.sogang.dangol;
 
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
@@ -27,6 +30,13 @@ public class WritingActivity extends AppCompatActivity {
     String location_name;
 
     private static final int MAP_ACTIVITY_RESULT_CODE = 0;
+
+
+    // 이미지용
+    Context context;
+    private static int RESULT_LOAD_IMAGE = 1;
+    ImageView myImageView;
+    //    String imagePath = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +59,9 @@ public class WritingActivity extends AppCompatActivity {
         location_name = intent.getStringExtra("name");
         if(location_name == null)   location_name = "현재 위치";
         setLocation();
+
+
+        myImageView = (ImageView) findViewById(R.id.thumbnail);
     }
 
     public void onBackPressed(View v) {
@@ -78,6 +91,14 @@ public class WritingActivity extends AppCompatActivity {
                 + location.longitude + " (" + location_name + ")");
                 setLocation();
             }
+        }
+
+        // 이미지 가져오기
+        if(requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK){
+            Uri imageUri = data.getData();
+            myImageView.setImageURI(imageUri);
+
+//            imagePath = imageUri.toString();
         }
     }
 
@@ -122,6 +143,12 @@ public class WritingActivity extends AppCompatActivity {
         finish();
     }
 
+    public void onGetImageButtonClicked(View v) {
+        Intent gallery = new Intent(Intent.ACTION_GET_CONTENT);
+        gallery.setType("image/*");
+        startActivityForResult(gallery, RESULT_LOAD_IMAGE);
+    }
+
     private void setDate(){
         try {
             Button tv = (Button) findViewById(R.id.write_calendar);
@@ -150,4 +177,5 @@ public class WritingActivity extends AppCompatActivity {
             setDate();
         }
     };
+
 }
