@@ -16,6 +16,8 @@ import com.google.android.gms.maps.model.LatLng;
 public class Writing2Activity extends AppCompatActivity {
     String dbName = "Dangol";
     Intent intent;
+    final double minDiff = 0.000001;
+    boolean locationFlag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,9 +60,9 @@ public class Writing2Activity extends AppCompatActivity {
 
         try{
             String sql;
-            Boolean findFlag = Boolean.FALSE;
-            int locID = checkLocationID(mDB, name, lat, lon, findFlag);
-            if(findFlag.equals(Boolean.FALSE)){
+            locationFlag = false;
+            int locID = checkLocationID(mDB, name, lat, lon);
+            if(!locationFlag){
                 sql = "INSERT INTO Location(Name, Latitude, Longitude) VALUES ('" + name + "', " +
                         lat + ", " + lon + ");";
                 Log.e("dangol_insert", "sql(1): " + sql);
@@ -81,7 +83,7 @@ public class Writing2Activity extends AppCompatActivity {
         Toast.makeText(getApplicationContext(), "저장되었습니다!", Toast.LENGTH_SHORT).show();
     }
 
-    private int checkLocationID(SQLiteDatabase db, String name, double lat, double lon, Boolean flag){
+    private int checkLocationID(SQLiteDatabase db, String name, double lat, double lon){
         int position = 0;
         try {
             Cursor c = db.rawQuery("SELECT * FROM Location", null);
@@ -89,12 +91,16 @@ public class Writing2Activity extends AppCompatActivity {
                 if (c.moveToFirst()) {
                     do {
                         position++;
-                        if(name.equals(c.getString(c.getColumnIndexOrThrow("Name"))) &&
-                                lat == c.getDouble(c.getColumnIndexOrThrow("Latitude")) &&
-                                lon == c.getDouble(c.getColumnIndexOrThrow("Longitude"))){
+                        String tmpName = c.getString(c.getColumnIndexOrThrow("Name"));
+                        double tmpLat = c.getDouble(c.getColumnIndexOrThrow("Latitude"));
+                        double tmpLon = c.getDouble(c.getColumnIndexOrThrow("Longitude"));
+                        Log.e("dangol_write2_check!", "(" + c.getInt(c.getColumnIndexOrThrow("LocationID"))
+                                + ") " + tmpName);
+
+                        if(name.equals(tmpName) && (tmpLat - lat < minDiff) && (tmpLon - lon < minDiff)){
                             position = c.getInt(c.getColumnIndexOrThrow("LocationID"));
                             Log.e("dangol_write2_check", "found");
-                            flag = Boolean.TRUE;
+                            locationFlag = true;
                             break;
                         }
                     } while (c.moveToNext());

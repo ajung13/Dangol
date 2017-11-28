@@ -45,7 +45,7 @@ public class WritingActivity extends AppCompatActivity {
         }
         setDate();
 
-        location = new LatLng(intent.getDoubleExtra("lat", 0), intent.getDoubleExtra("lon", 0));
+        location = new LatLng(intent.getDoubleExtra("lat", 37.555262), intent.getDoubleExtra("lon", 126.970679));
         location_name = intent.getStringExtra("name");
         if(location_name == null)   location_name = "현재 위치";
         setLocation();
