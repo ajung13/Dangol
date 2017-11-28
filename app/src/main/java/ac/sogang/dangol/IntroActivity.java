@@ -14,7 +14,7 @@ public class IntroActivity extends AppCompatActivity {
             {"readData", "readDataID integer", "Latitude double", "Longitude double", "Time datetime"},
             {"realData", "realDataID integer", "Latitude double", "Longitude double", "Time datetime"},
             {"Location", "LocationID integer", "Name text", "Latitude double", "Longitude double"},
-            {"Diary", "DiaryID integer", "LocationID integer", "Mood integer", "Weather integer", "Title text", "Text text", "Time datetime", "Foto text"}
+            {"Diary", "DiaryID integer", "LocationID integer", "Mood integer", "Weather integer", "Title text", "Text text", "Time datetime", "Photo text"}
     };
 
     @Override

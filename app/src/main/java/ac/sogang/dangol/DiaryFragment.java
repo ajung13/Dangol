@@ -56,10 +56,11 @@ public class DiaryFragment extends Fragment {
             if (c != null) {
                 if (c.moveToLast()) {
                     do {
-                        String title, content, date;
+                        String title, content, date, imageName;
                         title = c.getString(c.getColumnIndexOrThrow("Title"));
                         content = c.getString(c.getColumnIndexOrThrow("Text"));
                         date = c.getString(c.getColumnIndexOrThrow("Time"));
+
                         int id = c.getInt(c.getColumnIndexOrThrow("DiaryID"));
 
                         if(title.length() > 30)

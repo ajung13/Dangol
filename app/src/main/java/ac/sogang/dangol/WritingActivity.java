@@ -36,7 +36,7 @@ public class WritingActivity extends AppCompatActivity {
     Context context;
     private static int RESULT_LOAD_IMAGE = 1;
     ImageView myImageView;
-    //    String imagePath = "";
+    String imagePath = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,7 +98,7 @@ public class WritingActivity extends AppCompatActivity {
             Uri imageUri = data.getData();
             myImageView.setImageURI(imageUri);
 
-//            imagePath = imageUri.toString();
+            imagePath = imageUri.toString();
         }
     }
 
@@ -139,6 +139,7 @@ public class WritingActivity extends AppCompatActivity {
         intent.putExtra("location", location);
         intent.putExtra("location_name", location_name);
 
+        intent.putExtra("thumbnail", imagePath);
         startActivity(intent);
         finish();
     }
