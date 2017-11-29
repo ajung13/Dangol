@@ -9,6 +9,8 @@ public class MyItem {
     private String title;
     private String contents;
     private String date;
+    private String location;
+    private int emotion, weather;
 
     public String getTitle(){
         return title;
@@ -36,5 +38,26 @@ public class MyItem {
     }
     public void setID(int ID){
         this.id = ID;
+    }
+
+    public String getLocation(){
+        return location;
+    }
+    public void setLocation(String location){
+        this.location = location;
+    }
+
+    public int getEmotion(){
+        return emotion;
+    }
+    public void setEmotion(int emotion){
+        this.emotion = emotion;
+    }
+
+    public int getWeather(){
+        return weather;
+    }
+    public void setWeather(int weather){
+        this.weather = weather;
     }
 }

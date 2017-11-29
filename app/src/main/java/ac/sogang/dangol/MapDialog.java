@@ -2,6 +2,7 @@ package ac.sogang.dangol;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
@@ -134,7 +135,9 @@ public class MapDialog extends DialogFragment {
 
     Button.OnClickListener diaryOpenListener = new View.OnClickListener(){
         public void onClick(View v){
-
+            Intent intent = new Intent(getActivity(), DiaryLocationActivity.class);
+            intent.putExtra("location", location);
+            startActivity(intent);
         }
     };
 
