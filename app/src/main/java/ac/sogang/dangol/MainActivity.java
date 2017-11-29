@@ -141,15 +141,16 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         Toast.makeText(this, "Check log", Toast.LENGTH_SHORT).show();
 
         addMarkerOnView();
-        setCameraZoomToMarker();
+        if(!markers.isEmpty())
+            setCameraZoomToMarker();
 
-        if(dangolApp.th == null) {
+/*        if(dangolApp.th == null) {
             dangolApp.th = new TimeThread();
             dangolApp.th.start();
         }
         else if(!dangolApp.th.isAlive()){
             dangolApp.th.start();
-        }
+        }*/
     }
 
     void addMarkerOnView() {
@@ -168,8 +169,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_gray)));
                 markers.add(marker);
             }
+            mMap.setOnMarkerClickListener(this);
         }
-        mMap.setOnMarkerClickListener(this);
     }
 
     void setCameraZoomToMarker() {
@@ -192,6 +193,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public boolean onMarkerClick(Marker marker) {
         MapDialog mDialog = new MapDialog();
+        mDialog.dialogInit(marker.getPosition());
 
         mDialog.show(getSupportFragmentManager(), "0");
         return false;
@@ -352,25 +354,24 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         try{
             mDB = this.openOrCreateDatabase("Dangol", MODE_PRIVATE, null);
             c = mDB.rawQuery("SELECT * FROM Location", null);
-            result = new LatLng[c.getCount()];
-            int idx = 0;
 
-            if(c.getCount() != 0){
-                if(c.moveToFirst()){
-                    do{
-                        double lat = c.getDouble(c.getColumnIndexOrThrow("Latitude"));
-                        double lon = c.getDouble(c.getColumnIndexOrThrow("Longitude"));
-                        result[idx] = new LatLng(lat, lon);
+            if(c.getCount() != 0 && c.moveToFirst()){
+                result = new LatLng[c.getCount()];
+                int idx = 0;
+                do{
+                    double lat = c.getDouble(c.getColumnIndexOrThrow("Latitude"));
+                    double lon = c.getDouble(c.getColumnIndexOrThrow("Longitude"));
+                    result[idx] = new LatLng(lat, lon);
 //                        Log.e("dangol_main_marker", idx + ") " + result[idx].latitude + ", " + result[idx].longitude);
-                        idx++;
-                    }while(c.moveToNext());
-                }
-                else{
-                    Toast.makeText(this, "아직 기록이 없어요!", Toast.LENGTH_SHORT).show();
-                    Log.e("dangol_main_marker", "not write yet");
-                }
-                if(!c.isClosed())   c.close();
+                    idx++;
+                }while(c.moveToNext());
             }
+            else{
+                Toast.makeText(this, "아직 기록이 없어요!", Toast.LENGTH_SHORT).show();
+                Log.e("dangol_main_marker", "not write yet");
+                return null;
+            }
+            if(!c.isClosed())   c.close();
             mDB.close();
             return result;
         }catch(SQLiteException se){
@@ -382,33 +383,4 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         return null;
     }
 
-    public void onDBUpdateClicked(View v){
-        SQLiteDatabase mDB;
-        try{
-            mDB = openOrCreateDatabase("Dangol", MODE_PRIVATE, null);
-            Cursor c = mDB.rawQuery("SELECT * FROM readData", null);
-            if(c != null && c.getCount() > 0){
-                if(c.moveToFirst()){
-                    do{
-                        double lat = c.getDouble(c.getColumnIndexOrThrow("Latitude"));
-                        double lon = c.getDouble(c.getColumnIndexOrThrow("Longitude"));
-                        String time = c.getString(c.getColumnIndexOrThrow("Time"));
-                        String date = time.substring(0, time.indexOf(" "));
-                        time = time.substring(time.indexOf(" ")+1);
-                        //TODO: do your logic here
-                        Log.e("dangol_main_update", "lat: " + lat + ", lon: " + lon + ", date: " + date + "time:" + time);
-                    }while(c.moveToNext());
-                }
-            }
-            if(c != null && !c.isClosed())    c.close();
-
-            //delete all
-            mDB.execSQL("DELETE FROM readData");
-            mDB.close();
-        }catch(SQLiteException se){
-            Log.e("dangol_main(16)", se.toString());
-        }catch(Exception e){
-            Log.e("dangol_main(17)", e.toString());
-        }
-    }
 }

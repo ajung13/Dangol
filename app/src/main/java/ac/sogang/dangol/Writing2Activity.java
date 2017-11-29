@@ -84,7 +84,7 @@ public class Writing2Activity extends AppCompatActivity {
     }
 
     private int checkLocationID(SQLiteDatabase db, String name, double lat, double lon){
-        int position = 0;
+        int position = 1;
         try {
             Cursor c = db.rawQuery("SELECT * FROM Location", null);
             if (c != null) {
@@ -106,7 +106,7 @@ public class Writing2Activity extends AppCompatActivity {
                     } while (c.moveToNext());
                 }
             }
-            if (!c.isClosed()) c.close();
+            if (c != null && !c.isClosed()) c.close();
         }catch(SQLiteException se){
             Log.e("dangol_write2_save", se.toString());
         }catch(NullPointerException ne){

@@ -32,8 +32,8 @@ public class Diary_detail extends AppCompatActivity {
 
         mDB = this.openOrCreateDatabase("Dangol", MODE_PRIVATE, null);
 
-        setDiaryCursor(dataID);
-        if(c_diary == null || !c_diary.moveToFirst()){
+        int locID = setDiaryCursor(dataID);
+        if(c_diary == null){
             Toast.makeText(this, "Error!", Toast.LENGTH_SHORT).show();
             Log.e("dangol_diary_detail", "diary cursor is null");
             if(!c_diary.isClosed()) c_diary.close();
@@ -41,8 +41,7 @@ public class Diary_detail extends AppCompatActivity {
             finish();
         }
 
-//        setLocationCursor(c_diary.getInt(c_diary.getColumnIndexOrThrow("LocationID")));
-        setLocationCursor(dataID);
+        setLocationCursor(locID);
         if(c_location == null || !c_location.moveToFirst()){
             Toast.makeText(this, "Error!", Toast.LENGTH_SHORT).show();
             Log.e("dangol_diary_detail", "location cursor is null");
@@ -58,15 +57,19 @@ public class Diary_detail extends AppCompatActivity {
         mDB.close();
     }
 
-    private void setDiaryCursor(int id) {
+    private int setDiaryCursor(int id) {
+        int locId = -1;
         try {
             String sql = "SELECT * FROM Diary WHERE DiaryID=" + id;
             c_diary = mDB.rawQuery(sql, null);
+            if(c_diary != null && c_diary.moveToFirst())
+                locId = c_diary.getInt(c_diary.getColumnIndexOrThrow("LocationID"));
         } catch (SQLiteException se) {
             Log.e("dangol_diary_detail", se.toString());
         } catch (Exception e) {
             Log.e("dangol_diary_detail", e.toString());
         }
+        return locId;
     }
     private void setLocationCursor(int id){
         try {
