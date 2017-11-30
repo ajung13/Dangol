@@ -28,6 +28,7 @@ public class Writing2Activity extends AppCompatActivity {
     String imagePath = "";
     Integer lastDiaryId = 1;
     String imageName = "";
+    String extension = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,13 +117,17 @@ public class Writing2Activity extends AppCompatActivity {
         finish();
     }
 
+    /*
+       (내부)로컬 저장소에 이미지 저장
+       형태 : DiaryImage1.png(번호는 DiaryID)
+    */
     void saveImageToStorage() {
 
         if (imagePath != "" || imagePath != null) {
             Bitmap bitmap = ((BitmapDrawable) thumbnailImageView.getDrawable()).getBitmap();
 
             String id = Integer.toString(lastDiaryId);
-            imageName = "DiaryImage" + id;
+            imageName = "DiaryImage" + id + ".png";
 
             Log.e("dangol_write2", "imageFile name: " + imageName);
 

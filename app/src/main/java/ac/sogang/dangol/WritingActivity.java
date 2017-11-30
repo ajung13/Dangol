@@ -1,13 +1,21 @@
 package ac.sogang.dangol;
 
 import android.app.DatePickerDialog;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ImageView;
@@ -16,6 +24,7 @@ import android.widget.TextView;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -62,6 +71,44 @@ public class WritingActivity extends AppCompatActivity {
 
 
         myImageView = (ImageView) findViewById(R.id.thumbnail);
+
+
+        getImageTest();
+
+    }
+
+    // 이미지 저장 테스트
+    void getImageTest() {
+        SQLiteDatabase mDB = openOrCreateDatabase("Dangol", MODE_PRIVATE, null);
+
+        try{
+            String sql = "SELECT Photo FROM Diary";
+            Cursor c = mDB.rawQuery(sql, null);
+            Log.e("dangol_write_test", sql);
+
+            if (c != null) {
+                if (c.moveToLast()) {
+                        String imageName;
+                        imageName = c.getString(c.getColumnIndexOrThrow("Photo"));
+                        Log.e("dangol_write_test", "image Path: " + imageName);
+
+                        Bitmap bitmap = new ImageSaver(getApplicationContext()).
+                            setFileName(imageName).
+                            setDirectoryName("images").
+                            load();
+
+                        Log.e("dangol_write", "bitmap: " + bitmap);
+                        myImageView.setImageBitmap(bitmap);
+
+                    if(!c.isClosed()) c.close();
+                }
+            }
+        }catch(SQLiteException se){
+            Log.e("dangol_write_test", se.toString());
+        }catch(Exception e){
+            Log.e("dangol_write_test", e.toString());
+        }
+        mDB.close();
     }
 
     public void onBackPressed(View v) {
@@ -99,6 +146,8 @@ public class WritingActivity extends AppCompatActivity {
             myImageView.setImageURI(imageUri);
 
             imagePath = imageUri.toString();
+
+            Log.e("dangol_write", "imageUri: " + imageUri);
         }
     }
 
