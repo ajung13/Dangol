@@ -26,10 +26,9 @@
                 android:id="@+id/dialog_close_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app2:srcCompat="@drawable/close_gray"
                 android:layout_alignParentRight="true"
                 android:contentDescription="@string/description"
-                android:background="@color/white"/>
+                android:background="@drawable/close_gray"/>
         </RelativeLayout>
 
         <TextView

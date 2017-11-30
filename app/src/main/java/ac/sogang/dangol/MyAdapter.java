@@ -1,6 +1,7 @@
 package ac.sogang.dangol;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,10 +46,14 @@ public class MyAdapter extends BaseAdapter {
 
         if(convertView == null){
             LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(R.layout.diary_listview, parent, false);
+            if(adapterFlag)
+                convertView = inflater.inflate(R.layout.diary_detail_fragment, parent, false);
+            else
+                convertView = inflater.inflate(R.layout.diary_listview, parent, false);
         }
 
         if(adapterFlag){
+            Log.e("dangol_adapter", "good");
             TextView tv_date = (TextView)convertView.findViewById(R.id.diary_date);
             TextView tv_location = (TextView)convertView.findViewById(R.id.diary_location);
             TextView tv_title = (TextView)convertView.findViewById(R.id.diary_title);
@@ -78,6 +83,7 @@ public class MyAdapter extends BaseAdapter {
             }
         }
         else{
+            Log.e("dangol_adapter", "no..");
             TextView tv_title = (TextView)convertView.findViewById(R.id.diary_list_title);
             TextView tv_date = (TextView)convertView.findViewById(R.id.diary_list_date);
             TextView tv_content = (TextView)convertView.findViewById(R.id.diary_list_content);

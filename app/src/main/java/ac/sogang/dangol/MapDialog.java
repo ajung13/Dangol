@@ -48,6 +48,7 @@ public class MapDialog extends DialogFragment {
         else
             diaryBtn.setOnClickListener(diaryOpenListener);
         ImageButton closeBtn = (ImageButton)v.findViewById(R.id.dialog_close_button);
+//        Button closeBtn = (Button)v.findViewById(R.id.dialog_close_button);
         if(closeBtn == null)
             Log.e("dangol_dialog", "close btn null");
         else

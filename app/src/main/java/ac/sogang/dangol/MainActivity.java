@@ -71,6 +71,9 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             intent.putExtra("lat", lastlocation.getLatitude());
             intent.putExtra("lon", lastlocation.getLongitude());
         }
+        else{
+            Log.e("dangol_mainToWrite", "last location is null");
+        }
         startActivity(intent);
     }
 
@@ -219,6 +222,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             Log.e("dangol_main(5)", "Location Changed: " + latitude + "\t" + longitude);
 
             LatLng myLocation = new LatLng(latitude, longitude);
+            lastlocation = location;
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 19));
             mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         }

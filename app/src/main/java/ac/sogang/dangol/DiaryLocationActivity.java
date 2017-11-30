@@ -55,15 +55,13 @@ public class DiaryLocationActivity extends AppCompatActivity {
         if(c != null && c.getCount() > 0){
             if(c.moveToFirst()){
                 do{
-                    Log.e("dangol_diary_loc", "hi");
                     String title = c.getString(c.getColumnIndex("Title"));
                     String text = c.getString(c.getColumnIndex("Text"));
                     String time = c.getString(c.getColumnIndex("Time"));
                     int emotion = c.getInt(c.getColumnIndex("Mood"));
                     int weather = c.getInt(c.getColumnIndex("Weather"));
 
-                    Log.e("dangol_diary_loc", title + "   " + time);
-
+//                    Log.e("dangol_diary_loc", title + "   " + time);
                     myAdapter.addItem(title, text, time, locName, emotion, weather);
                 }while(c.moveToNext());
             }
@@ -74,10 +72,7 @@ public class DiaryLocationActivity extends AppCompatActivity {
         if(c != null && !c.isClosed())  c.close();
         mDB.close();
 
-        Log.e("dangol_diary_loc", "여기까지 ㅇㅋ?");
         ListView lv = (ListView)findViewById(R.id.diary_location_list);
-        Log.e("dangol_diary_loc", "ㅇㅋ");
         lv.setAdapter(myAdapter);
-        Log.e("dangol_diary_loc", "???");
     }
 }
