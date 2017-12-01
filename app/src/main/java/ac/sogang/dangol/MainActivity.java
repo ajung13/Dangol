@@ -18,8 +18,14 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -62,7 +68,39 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         fragment_num = 0;
 
         checkDangerousPermissions();
+        setLayout();
+    }
 
+    private void setLayout(){
+        int realData = realDataCnt();
+        if(realData <= 0)   return;
+
+        FrameLayout fl = (FrameLayout)findViewById(R.id.main_frame_layout);
+        LinearLayout ll = new LinearLayout(this);
+        ll.setOrientation(LinearLayout.HORIZONTAL);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 100);
+        params.gravity = Gravity.CENTER;
+        ll.setLayoutParams(params);
+        ll.setBackgroundColor(getResources().getColor(R.color.white));
+        ll.setAlpha((float)0.8);
+
+        LinearLayout.LayoutParams params2 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        TextView tv = new TextView(this);
+        tv.setLayoutParams(params2);
+        tv.setText("현재 " + realData + "개 장소에 대한 기록을 남길 수 있습니다.");
+        tv.setTextColor(getResources().getColor(R.color.contents));
+        ImageView iv = new ImageView(this);
+        iv.setBackgroundResource(R.drawable.diary_next);
+        iv.setLayoutParams(params2);
+
+        ll.addView(tv, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        ll.addView(iv);
+        fl.addView(ll);
+//        fl.addView(tv);
+    }
+
+    private int realDataCnt(){
+        return 3;
     }
 
     public void onWriteClicked(View v) {
@@ -111,6 +149,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
+
+
         mMap = googleMap;
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
@@ -140,8 +180,12 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
         Toast.makeText(this, "Check log", Toast.LENGTH_SHORT).show();
 
+        TimeThread timethread = new TimeThread();
+        timethread.start();
         addMarkerOnView();
-        setCameraZoomToMarker();
+        if(!markers.isEmpty())
+            setCameraZoomToMarker();
+
 
         if(dangolApp.th == null) {
             dangolApp.th = new TimeThread();
@@ -168,8 +212,9 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_gray)));
                 markers.add(marker);
             }
+
+            mMap.setOnMarkerClickListener(this);
         }
-        mMap.setOnMarkerClickListener(this);
     }
 
     void setCameraZoomToMarker() {
@@ -192,6 +237,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public boolean onMarkerClick(Marker marker) {
         MapDialog mDialog = new MapDialog();
+        mDialog.dialogInit(marker.getPosition());
 
         mDialog.show(getSupportFragmentManager(), "0");
         return false;
@@ -217,6 +263,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             Log.e("dangol_main(5)", "Location Changed: " + latitude + "\t" + longitude);
 
             LatLng myLocation = new LatLng(latitude, longitude);
+            lastlocation = location;
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 19));
             mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         }
@@ -232,7 +279,10 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     public class TimeThread extends Thread {
-        long sleepTime = 5000;
+        String dbName = "Dangol";
+        long sleepTime = 180000;
+
+        SQLiteDatabase mDB;
 
         public void run() {
 //            LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -240,55 +290,143 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             long minTime = 10000;
             float minDistance = 0;
 
+            String sql = "";
+            String nowDateTime = "";
+
             try {
-                Log.e("dangol_main(6)", "start thread");
-  /*              if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    // TODO: Consider calling
-                    //    ActivityCompat#requestPermissions
-                    // here to request the missing permissions, and then overriding
-                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                    //                                          int[] grantResults)
-                    // to handle the case where the user grants the permission. See the documentation
-                    // for ActivityCompat#requestPermissions for more details.
-                    return;
-                }*/
 
+                Log.e("dangol_main", "start thread");
+
+                //제일 처음 위치를 받아옴 (초기화)
+                manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 10, gpsListener );
+
+                sleep(2000);
+                Location location1 = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                if(location1 == null)   location1 = lastlocation;
+                Double latitude = location1.getLatitude();
+                Double longitude = location1.getLongitude();
+                nowDateTime = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss").format(System.currentTimeMillis());
+
+                int count = 0;
                 while(true){
-                    manager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, minTime, minDistance, gpsListener);
-                    manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, minTime, minDistance, gpsListener );
-                    Location location = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                    if(location == null)    break;
-                    double latitude = location.getLatitude();
-                    double longitude = location.getLongitude();
-                    String nowTime = new SimpleDateFormat("yyyy-MM-DD HH:mm:ss").format(System.currentTimeMillis());
 
-                    insertLocationDB(latitude, longitude, nowTime);
-                    sleep(sleepTime);
+                    //                  manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, minTime, minDistance, gpsListener);
+                    //                   manager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, minTime, minDistance, gpsListener);
+                    try{
+                        //잠을 재운다
+                        sleep(sleepTime);
+
+                        //3분 후 값을 읽어온다
+                        manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 10, gpsListener );
+                        Location location2 = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+                        if(location2 == null)   location2 = lastlocation;
+                        if(location2 == null)   break;
+                        String nowDateTime2 = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss").format(System.currentTimeMillis());
+
+                        Log.e("insert_sql0", "location(prev): " + location1.getLatitude() + ", " + location1.getLongitude());
+                        Log.e("insert_sql0", "location(now): " + location2.getLatitude() + ", " + location2.getLongitude());
+                        //                  SQLiteDatabase mDB = openOrCreateDatabase(dbName, MODE_PRIVATE, null);
+                        if (location1.distanceTo(location2) <= 10) {
+                             /* Location Class에 존재하는 distanceTo 함수, 두 지점 사이의 거리를 Meter 단위로 반환, 만약 두 지점 사이가 10m 이하이면 count++ */
+                            count++;
+                            String str = location2.getLatitude() + ", "+ location2.getLongitude()+", ";
+                            Log.e("check_data", str + Integer.toString(count));
+                        }
+                        else {
+                            if(count >= 7) {
+                                // 유효한 데이터일 경우 데이터 저장
+                                mDB = openOrCreateDatabase(dbName, MODE_PRIVATE, null);
+
+                                sql = "INSERT INTO realData(Latitude, Longitude, Time) VALUES (" + latitude + ", "+ longitude +", '"+ nowDateTime + "');";
+
+                                mDB.execSQL(sql);
+                                Log.e("check_data", sql);
+                                mDB.close();
+
+                            }
+
+                            // 데이터 리셋, 위치 재설정
+                            count = 0;
+                            location1 = location2;
+                            latitude = location2.getLatitude();
+                            longitude = location2.getLongitude();
+                            nowDateTime = nowDateTime2;
+                        }
+                    }catch(SQLiteException se){
+                        Log.e("insert_sql", se.toString());
+                    }catch(Exception e){
+                        Log.e("insert", e.toString());
+                    }
                 }
+
             }catch(SecurityException se){
                 Log.e("dangol_main(8)", se.toString());
             }catch(Exception e){
                 Log.e("dangol_main(9)", e.toString());
             }
-
-            Log.e("dangol_main(10)", "주금");
-
+            Log.e("dangol_main", "thread dead at " + nowDateTime);
         }
     }
 
-    private void insertLocationDB(double lat, double lon, String time){
-        SQLiteDatabase mDB = openOrCreateDatabase("Dangol", MODE_PRIVATE, null);
-        try{
-            String sql = "insert into readData(Latitude, Longitude, Time) values (" + lat + ", " +
-                    lon + ", '" + time + "');";
-            Log.e("dangol_main_readData", sql);
-            mDB.execSQL(sql);
+    public void  dataFilter(SQLiteDatabase mDB){
+//        SQLiteDatabase mDB = this.openOrCreateDatabase(dbName, MODE_PRIVATE, null);
+        try {
+//            String sql = "SELECT * FROM readData where readDate = date('now', '-1 days')";
+//            String sql = "SELECT * FROM readData where readDate = date('now')";
+            String sql = "SELECT * FROM readData;";
+            Cursor c = mDB.rawQuery(sql, null);
+            String data = "";
+            if (c != null) {
+                if (c.moveToFirst()) {
+                    int i = 0;
+                    data += getPackageName() + ": ";
+                    do {
+                        data += c.getString(i++) + "\t";
+                        Log.e("dangol_checkdata", c.getString(i));
+                    } while (c.moveToNext());
+                    Log.e("checkData", data);
+                    Toast.makeText(this, data, Toast.LENGTH_SHORT).show();
+                }
+                if(!c.isClosed())   c.close();
+            }
         }catch(SQLiteException se){
-            Log.e("dangol_main(14)", se.toString());
+            Log.e("check_sql", se.toString());
         }catch(Exception e){
-            Log.e("dangol_main(15)", e.toString());
+            Log.e("check", e.toString());
         }
-        mDB.close();
+//        mDB.close();
+    }
+
+    public void  dataFilter(){
+
+        SQLiteDatabase mDB = this.openOrCreateDatabase("Dangol", MODE_PRIVATE, null);
+
+        try {
+//            String sql = "SELECT * FROM readData where readDate = date('now', '-1 days')";
+//            String sql = "SELECT * FROM readData where readDate = date('now')";
+            String sql = "SELECT * FROM readData;";
+            Cursor c = mDB.rawQuery(sql, null);
+            String data = "";
+            if (c != null) {
+                if (c.moveToFirst()) {
+                    int i = 0;
+                    data += getPackageName() + ": ";
+                    do {
+                        data += c.getString(i++) + "\t";
+                        Log.e("dangol_checkdata", c.getString(i));
+                    } while (c.moveToNext());
+                    Log.e("checkData", data);
+                    Toast.makeText(this, data, Toast.LENGTH_SHORT).show();
+                }
+                if(!c.isClosed())   c.close();
+            }
+        }catch(SQLiteException se){
+            Log.e("check_sql", se.toString());
+        }catch(Exception e){
+            Log.e("check", e.toString());
+        }
+//        mDB.close();
     }
 
     public void changeFragment(View v){
@@ -352,25 +490,25 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         try{
             mDB = this.openOrCreateDatabase("Dangol", MODE_PRIVATE, null);
             c = mDB.rawQuery("SELECT * FROM Location", null);
-            result = new LatLng[c.getCount()];
-            int idx = 0;
 
-            if(c.getCount() != 0){
-                if(c.moveToFirst()){
-                    do{
-                        double lat = c.getDouble(c.getColumnIndexOrThrow("Latitude"));
-                        double lon = c.getDouble(c.getColumnIndexOrThrow("Longitude"));
-                        result[idx] = new LatLng(lat, lon);
+
+            if(c.getCount() != 0 && c.moveToFirst()){
+                result = new LatLng[c.getCount()];
+                int idx = 0;
+                do{
+                    double lat = c.getDouble(c.getColumnIndexOrThrow("Latitude"));
+                    double lon = c.getDouble(c.getColumnIndexOrThrow("Longitude"));
+                    result[idx] = new LatLng(lat, lon);
 //                        Log.e("dangol_main_marker", idx + ") " + result[idx].latitude + ", " + result[idx].longitude);
-                        idx++;
-                    }while(c.moveToNext());
-                }
-                else{
-                    Toast.makeText(this, "아직 기록이 없어요!", Toast.LENGTH_SHORT).show();
-                    Log.e("dangol_main_marker", "not write yet");
-                }
-                if(!c.isClosed())   c.close();
+                    idx++;
+                }while(c.moveToNext());
             }
+            else{
+                Toast.makeText(this, "아직 기록이 없어요!", Toast.LENGTH_SHORT).show();
+                Log.e("dangol_main_marker", "not write yet");
+                return null;
+            }
+            if(!c.isClosed())   c.close();
             mDB.close();
             return result;
         }catch(SQLiteException se){
@@ -380,35 +518,5 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         }
 
         return null;
-    }
-
-    public void onDBUpdateClicked(View v){
-        SQLiteDatabase mDB;
-        try{
-            mDB = openOrCreateDatabase("Dangol", MODE_PRIVATE, null);
-            Cursor c = mDB.rawQuery("SELECT * FROM readData", null);
-            if(c != null && c.getCount() > 0){
-                if(c.moveToFirst()){
-                    do{
-                        double lat = c.getDouble(c.getColumnIndexOrThrow("Latitude"));
-                        double lon = c.getDouble(c.getColumnIndexOrThrow("Longitude"));
-                        String time = c.getString(c.getColumnIndexOrThrow("Time"));
-                        String date = time.substring(0, time.indexOf(" "));
-                        time = time.substring(time.indexOf(" ")+1);
-                        //TODO: do your logic here
-                        Log.e("dangol_main_update", "lat: " + lat + ", lon: " + lon + ", date: " + date + "time:" + time);
-                    }while(c.moveToNext());
-                }
-            }
-            if(c != null && !c.isClosed())    c.close();
-
-            //delete all
-            mDB.execSQL("DELETE FROM readData");
-            mDB.close();
-        }catch(SQLiteException se){
-            Log.e("dangol_main(16)", se.toString());
-        }catch(Exception e){
-            Log.e("dangol_main(17)", e.toString());
-        }
     }
 }
