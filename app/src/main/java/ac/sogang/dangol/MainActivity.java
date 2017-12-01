@@ -152,6 +152,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
+
+
         mMap = googleMap;
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
@@ -181,6 +183,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
         Toast.makeText(this, "Check log", Toast.LENGTH_SHORT).show();
 
+        TimeThread timethread = new TimeThread();
+        timethread.start();
         addMarkerOnView();
         if(!markers.isEmpty())
             setCameraZoomToMarker();
@@ -276,7 +280,9 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     public class TimeThread extends Thread {
+        String dbName = "Dangol";
         long sleepTime = 180000;
+
         SQLiteDatabase mDB;
 
         public void run() {
@@ -284,7 +290,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 //            GPSListener gpsListener = new GPSListener();
             long minTime = 10000;
             float minDistance = 0;
-            String dbName = "Dangol";
+
             String sql = "";
             String nowDateTime = "";
 
@@ -293,12 +299,14 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
                 //제일 처음 위치를 받아옴 (초기화)
                 manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 10, gpsListener );
+
                 sleep(2000);
                 Location location1 = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                 if(location1 == null)   location1 = lastlocation;
                 Double latitude = location1.getLatitude();
                 Double longitude = location1.getLongitude();
                 nowDateTime = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss").format(System.currentTimeMillis());
+
                 int count = 0;
                 while(true){
                     //                  manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, minTime, minDistance, gpsListener);
@@ -310,6 +318,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                         //3분 후 값을 읽어온다
                         manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 10, gpsListener );
                         Location location2 = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
                         if(location2 == null)   location2 = lastlocation;
                         if(location2 == null)   break;
                         String nowDateTime2 = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss").format(System.currentTimeMillis());
@@ -320,17 +329,18 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                         if (location1.distanceTo(location2) <= 10) {
                              /* Location Class에 존재하는 distanceTo 함수, 두 지점 사이의 거리를 Meter 단위로 반환, 만약 두 지점 사이가 10m 이하이면 count++ */
                             count++;
+                            String str = location2.getLatitude() + ", "+ location2.getLongitude()+", ";
+                            Log.e("check_data", str + Integer.toString(count));
                         }
                         else {
-                            Log.e("insert_sql1", "different location");
                             if(count >= 7) {
                                 // 유효한 데이터일 경우 데이터 저장
                                 mDB = openOrCreateDatabase(dbName, MODE_PRIVATE, null);
 
                                 sql = "INSERT INTO realData(Latitude, Longitude, Time) VALUES (" + latitude + ", "+ longitude +", '"+ nowDateTime + "');";
-                                Log.e("insert_sql", sql);
 
                                 mDB.execSQL(sql);
+                                Log.e("check_data", sql);
                                 mDB.close();
 
                             }
@@ -347,10 +357,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                     }catch(Exception e){
                         Log.e("insert", e.toString());
                     }
-//                    mDB.close();
-                    //                String str = "Time : "+ nowTime; //"Latitude: "+latitude + ", Longitude : "+ longitude;
-                    //                Toast.makeText(getApplicationContext(), str, Toast.LENGTH_SHORT).show();
                 }
+
             }catch(SecurityException se){
                 Log.e("dangol_main", se.toString());
             }catch(Exception e){
@@ -362,6 +370,37 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
     public void  dataFilter(SQLiteDatabase mDB){
 //        SQLiteDatabase mDB = this.openOrCreateDatabase(dbName, MODE_PRIVATE, null);
+        try {
+//            String sql = "SELECT * FROM readData where readDate = date('now', '-1 days')";
+//            String sql = "SELECT * FROM readData where readDate = date('now')";
+            String sql = "SELECT * FROM readData;";
+            Cursor c = mDB.rawQuery(sql, null);
+            String data = "";
+            if (c != null) {
+                if (c.moveToFirst()) {
+                    int i = 0;
+                    data += getPackageName() + ": ";
+                    do {
+                        data += c.getString(i++) + "\t";
+                        Log.e("dangol_checkdata", c.getString(i));
+                    } while (c.moveToNext());
+                    Log.e("checkData", data);
+                    Toast.makeText(this, data, Toast.LENGTH_SHORT).show();
+                }
+                if(!c.isClosed())   c.close();
+            }
+        }catch(SQLiteException se){
+            Log.e("check_sql", se.toString());
+        }catch(Exception e){
+            Log.e("check", e.toString());
+        }
+//        mDB.close();
+    }
+
+    public void  dataFilter(){
+
+        SQLiteDatabase mDB = this.openOrCreateDatabase("Dangol", MODE_PRIVATE, null);
+
         try {
 //            String sql = "SELECT * FROM readData where readDate = date('now', '-1 days')";
 //            String sql = "SELECT * FROM readData where readDate = date('now')";
@@ -441,7 +480,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         }
         super.onBackPressed();
     }
-
     private LatLng[] selectLocations(){
         LatLng[] result;
         SQLiteDatabase mDB;
@@ -480,3 +518,4 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
 }
+
