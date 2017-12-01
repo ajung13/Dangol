@@ -231,7 +231,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     public class TimeThread extends Thread {
         String dbName = "Dangol";
         String sql = "";
-        long sleepTime = 18000;
+        long sleepTime = 180000;
 
         public void run() {
 //            LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -266,6 +266,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                         if (location1.distanceTo(location2) <= 10) {
                              /* Location Class에 존재하는 distanceTo 함수, 두 지점 사이의 거리를 Meter 단위로 반환, 만약 두 지점 사이가 10m 이하이면 count++ */
                             count++;
+                            String str = location2.getLatitude() + ", "+ location2.getLongitude()+", ";
+                            Log.e("check_data", str + Integer.toString(count));
                         }
                         else {
                             if(count >= 7) {
@@ -273,11 +275,11 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
                                 mDB = openOrCreateDatabase(dbName, MODE_PRIVATE, null);
 
-                                sql = "INSERT INTO reaㅣData(Latitude, Longitude, Time) VALUES (" + latitude + ", "+ longitude +", '"+ nowDateTime + "');";
-                                Log.e("insert_sql", sql);
+                                sql = "INSERT INTO realData(Latitude, Longitude, Time) VALUES (" + latitude + ", "+ longitude +", '"+ nowDateTime + "');";
 
                                 mDB.execSQL(sql);
 
+                                Log.e("check_data", sql);
                             }
 
                             // 데이터 리셋, 위치 재설정
