@@ -49,7 +49,6 @@ public class IntroActivity extends AppCompatActivity {
                 }
                 sql += tableNameData[tableNameData.length - 1] + ");";
 //                Log.e("dangol_intro", sql);
-
                 mDB.execSQL(sql);
             }
         }catch(SQLiteException se){

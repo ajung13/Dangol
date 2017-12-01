@@ -21,12 +21,13 @@
         android:required="true" />
 
     <application
+        android:name=".MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher_round"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AppCompat.NoActionBar">
+        android:theme="@style/Theme.AppCompat.Light.NoActionBar">
 
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -54,7 +55,9 @@
         <activity android:name=".Writing2Activity" />
         <activity
             android:name=".WritingMapActivity"
-            android:label="@string/title_activity_writing_map"/>
+            android:label="@string/title_activity_writing_map" />
+        <activity android:name=".Diary_detail" />
+        <activity android:name=".DiaryLocationActivity"></activity>
     </application>
 
 </manifest>
