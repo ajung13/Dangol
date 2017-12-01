@@ -18,8 +18,14 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -62,7 +68,39 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         fragment_num = 0;
 
         checkDangerousPermissions();
+        setLayout();
+    }
 
+    private void setLayout(){
+        int realData = realDataCnt();
+        if(realData <= 0)   return;
+
+        FrameLayout fl = (FrameLayout)findViewById(R.id.main_frame_layout);
+        LinearLayout ll = new LinearLayout(this);
+        ll.setOrientation(LinearLayout.HORIZONTAL);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 100);
+        params.gravity = Gravity.CENTER;
+        ll.setLayoutParams(params);
+        ll.setBackgroundColor(getResources().getColor(R.color.white));
+        ll.setAlpha((float)0.8);
+
+        LinearLayout.LayoutParams params2 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        TextView tv = new TextView(this);
+        tv.setLayoutParams(params2);
+        tv.setText("현재 " + realData + "개 장소에 대한 기록을 남길 수 있습니다.");
+        tv.setTextColor(getResources().getColor(R.color.contents));
+        ImageView iv = new ImageView(this);
+        iv.setBackgroundResource(R.drawable.diary_next);
+        iv.setLayoutParams(params2);
+
+        ll.addView(tv, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        ll.addView(iv);
+        fl.addView(ll);
+//        fl.addView(tv);
+    }
+
+    private int realDataCnt(){
+        return 3;
     }
 
     public void onWriteClicked(View v) {
@@ -238,7 +276,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     public class TimeThread extends Thread {
-        long sleepTime = 18000;
+        long sleepTime = 180000;
         SQLiteDatabase mDB;
 
         public void run() {
@@ -248,16 +286,19 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             float minDistance = 0;
             String dbName = "Dangol";
             String sql = "";
+            String nowDateTime = "";
 
             try {
                 Log.e("dangol_main", "start thread");
 
                 //제일 처음 위치를 받아옴 (초기화)
                 manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 10, gpsListener );
+                sleep(2000);
                 Location location1 = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                if(location1 == null)   location1 = lastlocation;
                 Double latitude = location1.getLatitude();
                 Double longitude = location1.getLongitude();
-                String nowDateTime = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss").format(System.currentTimeMillis());
+                nowDateTime = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss").format(System.currentTimeMillis());
                 int count = 0;
                 while(true){
                     //                  manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, minTime, minDistance, gpsListener);
@@ -269,6 +310,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                         //3분 후 값을 읽어온다
                         manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 10, gpsListener );
                         Location location2 = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                        if(location2 == null)   location2 = lastlocation;
+                        if(location2 == null)   break;
                         String nowDateTime2 = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss").format(System.currentTimeMillis());
 
                         Log.e("insert_sql0", "location(prev): " + location1.getLatitude() + ", " + location1.getLongitude());
@@ -305,21 +348,15 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                         Log.e("insert", e.toString());
                     }
 //                    mDB.close();
-
                     //                String str = "Time : "+ nowTime; //"Latitude: "+latitude + ", Longitude : "+ longitude;
                     //                Toast.makeText(getApplicationContext(), str, Toast.LENGTH_SHORT).show();
-
                 }
-
             }catch(SecurityException se){
                 Log.e("dangol_main", se.toString());
             }catch(Exception e){
-                Log.e("Dangol_main", e.toString());
+                Log.e("dangol_main", e.toString());
             }
-
-            Log.e("dangol_main", "주금");
-
-
+            Log.e("dangol_main", "thread dead at " + nowDateTime);
         }
     }
 
