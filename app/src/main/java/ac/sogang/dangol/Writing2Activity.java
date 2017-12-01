@@ -4,11 +4,15 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -19,11 +23,66 @@ public class Writing2Activity extends AppCompatActivity {
     final double minDiff = 0.000001;
     boolean locationFlag;
 
+    // imageView
+    ImageView thumbnailImageView;
+    String imagePath = "";
+    Integer lastDiaryId = 1;
+    String imageName = "";
+    String extension = "";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_writing2);
         intent = getIntent();
+
+        thumbnailImageView = (ImageView) findViewById(R.id.thumbnail);
+
+        setThumbnail();
+        getLastDiaryId();
+
+    }
+
+    void setThumbnail() {
+        imagePath = intent.getStringExtra("thumbnail");
+
+        if (imagePath != "") {
+            Uri imageUri = Uri.parse(imagePath);
+            thumbnailImageView.setImageURI(imageUri);
+        } else {
+            thumbnailImageView.setVisibility(View.GONE);
+        }
+    }
+
+    void getLastDiaryId() {
+        SQLiteDatabase mDB = this.openOrCreateDatabase(dbName, MODE_PRIVATE, null);
+
+        try {
+            String sql;
+            sql = "SELECT DiaryID FROM Diary ORDER BY DiaryID ASC LIMIT 1";
+
+            Cursor c = mDB.rawQuery(sql, null);
+
+            if (c.moveToFirst()){
+                do {
+                    // Passing values
+                    String id = c.getString(0);
+
+                    if (id != null && id != "") {
+                        lastDiaryId = Integer.parseInt(id);
+                        lastDiaryId += 1;
+                    }
+
+                } while(c.moveToNext());
+            }
+            c.close();
+
+        }catch(SQLiteException se){
+            Log.e("dangol_select_sql", se.toString());
+        }catch(Exception e){
+            Log.e("dangol_select_sql", e.toString());
+        }
+        mDB.close();
     }
 
     public void onBackPressed(View v){
@@ -51,8 +110,32 @@ public class Writing2Activity extends AppCompatActivity {
         Log.e("dangol_write2", "location: " + location.latitude + ", " + location.longitude);
         Log.e("dangol_write2", "location name: " + location_name);
 
+
+        saveImageToStorage();
+
         uploadDB(year, month, date, emotion, weather, location.latitude, location.longitude, location_name, title, contents);
         finish();
+    }
+
+    /*
+       (내부)로컬 저장소에 이미지 저장
+       형태 : DiaryImage1.png(번호는 DiaryID)
+    */
+    void saveImageToStorage() {
+
+        if (imagePath != "" || imagePath != null) {
+            Bitmap bitmap = ((BitmapDrawable) thumbnailImageView.getDrawable()).getBitmap();
+
+            String id = Integer.toString(lastDiaryId);
+            imageName = "DiaryImage" + id + ".png";
+
+            Log.e("dangol_write2", "imageFile name: " + imageName);
+
+            new ImageSaver(getApplicationContext()).
+                    setFileName(imageName).
+                    setDirectoryName("images").
+                    save(bitmap);
+        }
     }
 
     public void uploadDB(int year, int month, int date, int emotion, int weather, double lat, double lon, String name, String title, String contents){
@@ -69,9 +152,16 @@ public class Writing2Activity extends AppCompatActivity {
                 mDB.execSQL(sql);
             }
 
-            sql = "INSERT INTO Diary(LocationID, Mood, Weather, Title, Text, Time) VALUES (" +
-                    locID + ", " + emotion + ", " + weather +
-                    ", '" + title + "', '" + contents + "', '" + year + "-" + month + "-" + date + " 00:00:00');";
+            if (imagePath != "") {
+                sql = "INSERT INTO Diary(LocationID, Mood, Weather, Title, Text, Time, Photo) VALUES (" +
+                        locID + ", " + emotion + ", " + weather +
+                        ", '" + title + "', '" + contents + "', '" + year + "-" + month + "-" + date + " 00:00:00'" + ", '" + imageName + "' " + ");";
+            } else {
+                sql = "INSERT INTO Diary(LocationID, Mood, Weather, Title, Text, Time) VALUES (" +
+                        locID + ", " + emotion + ", " + weather +
+                        ", '" + title + "', '" + contents + "', '" + year + "-" + month + "-" + date + " 00:00:00');";
+            }
+
             Log.e("dangol_insert", "sql(2): " + sql);
             mDB.execSQL(sql);
         }catch(SQLiteException se){

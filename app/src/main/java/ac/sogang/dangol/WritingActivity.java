@@ -1,18 +1,30 @@
 package ac.sogang.dangol;
 
 import android.app.DatePickerDialog;
+import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -27,6 +39,13 @@ public class WritingActivity extends AppCompatActivity {
     String location_name;
 
     private static final int MAP_ACTIVITY_RESULT_CODE = 0;
+
+
+    // 이미지용
+    Context context;
+    private static int RESULT_LOAD_IMAGE = 1;
+    ImageView myImageView;
+    String imagePath = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +68,47 @@ public class WritingActivity extends AppCompatActivity {
         location_name = intent.getStringExtra("name");
         if(location_name == null)   location_name = "현재 위치";
         setLocation();
+
+
+        myImageView = (ImageView) findViewById(R.id.thumbnail);
+
+
+        getImageTest();
+
+    }
+
+    // 이미지 저장 테스트
+    void getImageTest() {
+        SQLiteDatabase mDB = openOrCreateDatabase("Dangol", MODE_PRIVATE, null);
+
+        try{
+            String sql = "SELECT Photo FROM Diary";
+            Cursor c = mDB.rawQuery(sql, null);
+            Log.e("dangol_write_test", sql);
+
+            if (c != null) {
+                if (c.moveToLast()) {
+                        String imageName;
+                        imageName = c.getString(c.getColumnIndexOrThrow("Photo"));
+                        Log.e("dangol_write_test", "image Path: " + imageName);
+
+                        Bitmap bitmap = new ImageSaver(getApplicationContext()).
+                            setFileName(imageName).
+                            setDirectoryName("images").
+                            load();
+
+                        Log.e("dangol_write", "bitmap: " + bitmap);
+                        myImageView.setImageBitmap(bitmap);
+
+                    if(!c.isClosed()) c.close();
+                }
+            }
+        }catch(SQLiteException se){
+            Log.e("dangol_write_test", se.toString());
+        }catch(Exception e){
+            Log.e("dangol_write_test", e.toString());
+        }
+        mDB.close();
     }
 
     public void onBackPressed(View v) {
@@ -78,6 +138,16 @@ public class WritingActivity extends AppCompatActivity {
                 + location.longitude + " (" + location_name + ")");
                 setLocation();
             }
+        }
+
+        // 이미지 가져오기
+        if(requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK){
+            Uri imageUri = data.getData();
+            myImageView.setImageURI(imageUri);
+
+            imagePath = imageUri.toString();
+
+            Log.e("dangol_write", "imageUri: " + imageUri);
         }
     }
 
@@ -118,8 +188,15 @@ public class WritingActivity extends AppCompatActivity {
         intent.putExtra("location", location);
         intent.putExtra("location_name", location_name);
 
+        intent.putExtra("thumbnail", imagePath);
         startActivity(intent);
         finish();
+    }
+
+    public void onGetImageButtonClicked(View v) {
+        Intent gallery = new Intent(Intent.ACTION_GET_CONTENT);
+        gallery.setType("image/*");
+        startActivityForResult(gallery, RESULT_LOAD_IMAGE);
     }
 
     private void setDate(){
@@ -150,4 +227,5 @@ public class WritingActivity extends AppCompatActivity {
             setDate();
         }
     };
+
 }

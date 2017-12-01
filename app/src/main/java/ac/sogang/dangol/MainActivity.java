@@ -109,9 +109,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             intent.putExtra("lat", lastlocation.getLatitude());
             intent.putExtra("lon", lastlocation.getLongitude());
         }
-        else{
-            Log.e("dangol_mainToWrite", "last location is null");
-        }
         startActivity(intent);
     }
 
@@ -189,6 +186,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         if(!markers.isEmpty())
             setCameraZoomToMarker();
 
+
         if(dangolApp.th == null) {
             dangolApp.th = new TimeThread();
             dangolApp.th.start();
@@ -214,6 +212,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_gray)));
                 markers.add(marker);
             }
+
             mMap.setOnMarkerClickListener(this);
         }
     }
@@ -295,6 +294,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             String nowDateTime = "";
 
             try {
+
                 Log.e("dangol_main", "start thread");
 
                 //제일 처음 위치를 받아옴 (초기화)
@@ -309,6 +309,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
                 int count = 0;
                 while(true){
+
                     //                  manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, minTime, minDistance, gpsListener);
                     //                   manager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, minTime, minDistance, gpsListener);
                     try{
@@ -360,9 +361,9 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 }
 
             }catch(SecurityException se){
-                Log.e("dangol_main", se.toString());
+                Log.e("dangol_main(8)", se.toString());
             }catch(Exception e){
-                Log.e("dangol_main", e.toString());
+                Log.e("dangol_main(9)", e.toString());
             }
             Log.e("dangol_main", "thread dead at " + nowDateTime);
         }
@@ -480,6 +481,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         }
         super.onBackPressed();
     }
+
     private LatLng[] selectLocations(){
         LatLng[] result;
         SQLiteDatabase mDB;
@@ -488,6 +490,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         try{
             mDB = this.openOrCreateDatabase("Dangol", MODE_PRIVATE, null);
             c = mDB.rawQuery("SELECT * FROM Location", null);
+
 
             if(c.getCount() != 0 && c.moveToFirst()){
                 result = new LatLng[c.getCount()];
@@ -516,6 +519,4 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
         return null;
     }
-
 }
-
