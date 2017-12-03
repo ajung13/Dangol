@@ -14,7 +14,6 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
@@ -51,6 +50,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     ArrayList<Marker> markers = new ArrayList<>();
     private int fragment_num;
 
+    private boolean startFlag = false;
+
     Context context;
 
     @Override
@@ -69,15 +70,24 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         checkDangerousPermissions();
         setLayout();
 
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Intent intent = new Intent(MainActivity.this, RealDataListActivity.class);
-                startActivity(intent);
-                finish();
-            }
-        }, 3000);
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        if(!startFlag){
+            startFlag = true;
+            return;
+        }
+        Log.e("dangol_main", "refresh");
+
+        if(fragment_num == 0)
+            addMarkerOnView();
+        else{
+            changeFragment(findViewById(R.id.menu_pin));
+            changeFragment(findViewById(R.id.menu_diary));
+        }
+
     }
 
     private void setLayout(){
@@ -90,23 +100,29 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         rl.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, 150));
         rl.setBackgroundColor(getResources().getColor(R.color.white));
         rl.setAlpha((float)0.9);
-
-        RelativeLayout.LayoutParams params1 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-
-        LinearLayout ll = new LinearLayout(this);
-        ll.setOrientation(LinearLayout.HORIZONTAL);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 100);
-        params.gravity = Gravity.CENTER;
-        ll.setLayoutParams(params);
-        ll.setBackgroundColor(getResources().getColor(R.color.white));
-        ll.setAlpha((float)0.8);
-        ll.setOnClickListener(new View.OnClickListener() {
+        rl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, RealDataListActivity.class);
                 startActivity(intent);
             }
         });
+
+        RelativeLayout.LayoutParams params1 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        TextView tv = new TextView(this);
+        params1.addRule(RelativeLayout.CENTER_IN_PARENT);
+        tv.setLayoutParams(params1);
+        tv.setText("현재 " + realData + "개 장소에 대한 기록을 남길 수 있습니다.");
+        tv.setTextColor(getResources().getColor(R.color.contents));
+        tv.setTextSize(15);
+
+        RelativeLayout.LayoutParams params2 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        ImageView iv = new ImageView(this);
+        iv.setImageResource(R.drawable.diary_next);
+        params2.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        params2.setMargins(20, 20, 20, 20);
+        iv.setLayoutParams(params2);
+        iv.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
 
         rl.addView(tv);
         rl.addView(iv);
@@ -231,6 +247,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 new LatLng(37.559030, 126.9370623)
         };*/
         LatLng[] positions = selectLocations();
+        mMap.clear();
         if(positions != null) {
             for (int i = 0; i < positions.length; i++) {
                 Marker marker = mMap.addMarker(new MarkerOptions()
@@ -478,6 +495,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             ib_d.setBackgroundResource(R.drawable.menu_diary_gray);
             ib_p.setBackgroundResource(R.drawable.menu_pin_blue);
             setLayout();
+            addMarkerOnView();
             super.onBackPressed();
         }
         else if(flag == 1){
@@ -507,6 +525,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             ib_d.setBackgroundResource(R.drawable.menu_diary_gray);
             ib_p.setBackgroundResource(R.drawable.menu_pin_blue);
             setLayout();
+            addMarkerOnView();
         }
         super.onBackPressed();
     }
