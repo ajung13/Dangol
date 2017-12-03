@@ -1,18 +1,16 @@
 package ac.sogang.dangol;
 
 import android.app.Fragment;
-import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -127,6 +125,21 @@ public class DiaryDetailFragment extends Fragment {
             case 2: iv.setImageResource(R.drawable.weather_cloudy); break;
             case 3: iv.setImageResource(R.drawable.weather_rainy);  break;
             case 4: iv.setImageResource(R.drawable.weather_snow);   break;
+        }
+
+        iv = (ImageView)view.findViewById(R.id.diary_image);
+        String imagePath = c_diary.getString(c_diary.getColumnIndexOrThrow("Photo"));
+        if (imagePath != null) {
+            Bitmap bitmap = new ImageSaver(getActivity()).
+                    setFileName(imagePath).
+                    setDirectoryName("images").
+                    load();
+
+            Log.e("dangol_detail_frag", "bitmap: " + bitmap);
+            iv.setImageBitmap(bitmap);
+        } else {
+            Log.e("dangol_detail_frag", "no image");
+            iv.setVisibility(View.GONE);
         }
 
         tv = (TextView)view.findViewById(R.id.diary_title);

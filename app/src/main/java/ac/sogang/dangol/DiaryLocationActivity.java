@@ -50,6 +50,7 @@ public class DiaryLocationActivity extends AppCompatActivity {
         Log.e("dangol_diary_loc", "addList start " + locID);
         MyAdapter myAdapter = new MyAdapter();
         myAdapter.changeFlag(true);
+        myAdapter.setThisActivity(getApplicationContext());
         SQLiteDatabase mDB = openOrCreateDatabase("Dangol", MODE_PRIVATE, null);
         Cursor c = mDB.rawQuery("SELECT * FROM Diary WHERE LocationID=" + locID, null);
         if(c != null && c.getCount() > 0){
@@ -60,9 +61,10 @@ public class DiaryLocationActivity extends AppCompatActivity {
                     String time = c.getString(c.getColumnIndex("Time"));
                     int emotion = c.getInt(c.getColumnIndex("Mood"));
                     int weather = c.getInt(c.getColumnIndex("Weather"));
+                    String imagePath = c.getString(c.getColumnIndexOrThrow("Photo"));
 
 //                    Log.e("dangol_diary_loc", title + "   " + time);
-                    myAdapter.addItem(title, text, time, locName, emotion, weather);
+                    myAdapter.addItem(title, text, time, locName, emotion, weather, imagePath);
                 }while(c.moveToNext());
             }
         }

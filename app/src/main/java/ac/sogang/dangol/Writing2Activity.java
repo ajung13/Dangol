@@ -25,10 +25,10 @@ public class Writing2Activity extends AppCompatActivity {
 
     // imageView
     ImageView thumbnailImageView;
-    String imagePath = "";
+    String imagePath = null;
     Integer lastDiaryId = 1;
     String imageName = "";
-    String extension = "";
+//    String extension = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,9 +38,11 @@ public class Writing2Activity extends AppCompatActivity {
 
         thumbnailImageView = (ImageView) findViewById(R.id.thumbnail);
 
-        setThumbnail();
-        getLastDiaryId();
-
+        imagePath = intent.getStringExtra("thumbnail");
+        if(imagePath != null){
+            setThumbnail();
+            getLastDiaryId();
+        }
     }
 
     void setThumbnail() {
@@ -110,7 +112,6 @@ public class Writing2Activity extends AppCompatActivity {
         Log.e("dangol_write2", "location: " + location.latitude + ", " + location.longitude);
         Log.e("dangol_write2", "location name: " + location_name);
 
-
         saveImageToStorage();
 
         uploadDB(year, month, date, emotion, weather, location.latitude, location.longitude, location_name, title, contents);
@@ -123,7 +124,8 @@ public class Writing2Activity extends AppCompatActivity {
     */
     void saveImageToStorage() {
 
-        if (imagePath != "" || imagePath != null) {
+        if (imagePath != "" && imagePath != null) {
+            Log.e("dangol_write2", "oing");
             Bitmap bitmap = ((BitmapDrawable) thumbnailImageView.getDrawable()).getBitmap();
 
             String id = Integer.toString(lastDiaryId);
@@ -144,6 +146,7 @@ public class Writing2Activity extends AppCompatActivity {
         try{
             String sql;
             locationFlag = false;
+            Log.e("dangol_write2", "upload db");
             int locID = checkLocationID(mDB, name, lat, lon);
             if(!locationFlag){
                 sql = "INSERT INTO Location(Name, Latitude, Longitude) VALUES ('" + name + "', " +
@@ -176,14 +179,18 @@ public class Writing2Activity extends AppCompatActivity {
     private int checkLocationID(SQLiteDatabase db, String name, double lat, double lon){
         int position = 1;
         try {
+            Log.e("dangol_write2", "start");
             Cursor c = db.rawQuery("SELECT * FROM Location", null);
+            Log.e("dangol_write2", "start2");
             if (c != null) {
                 if (c.moveToFirst()) {
                     do {
                         position++;
+                        Log.e("dangol_write2", "start3");
                         String tmpName = c.getString(c.getColumnIndexOrThrow("Name"));
                         double tmpLat = c.getDouble(c.getColumnIndexOrThrow("Latitude"));
                         double tmpLon = c.getDouble(c.getColumnIndexOrThrow("Longitude"));
+                        Log.e("dangol_write2", "start4");
                         Log.e("dangol_write2_check!", "(" + c.getInt(c.getColumnIndexOrThrow("LocationID"))
                                 + ") " + tmpName);
 

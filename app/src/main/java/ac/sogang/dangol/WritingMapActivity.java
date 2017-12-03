@@ -47,11 +47,9 @@ public class WritingMapActivity extends FragmentActivity implements OnMapReadyCa
         position = getIntent().getParcelableExtra("location");
 
         PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment) getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
-        //addition (from)
 //        AutocompleteFilter typeFilter = new AutocompleteFilter.Builder().setTypeFilter(AutocompleteFilter.TYPE_FILTER_ADDRESS).build();
         AutocompleteFilter typeFilter = new AutocompleteFilter.Builder().setTypeFilter(Place.TYPE_COUNTRY).setCountry("KR").build();
         autocompleteFragment.setFilter(typeFilter);
-        //addition (to)
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(Place place) {
@@ -93,6 +91,7 @@ public class WritingMapActivity extends FragmentActivity implements OnMapReadyCa
     private void updateMap(){
         // Add a marker in Sydney and move the camera
 
+        mMap.clear();
         mMarker = mMap.addMarker(new MarkerOptions()
                 .position(position).title("저장된 위치")
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_brown)).draggable(true));
@@ -105,14 +104,14 @@ public class WritingMapActivity extends FragmentActivity implements OnMapReadyCa
 
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
         builder.include(mMarker.getPosition());
-        LatLngBounds bounds = builder.build();
+/*        LatLngBounds bounds = builder.build();
 
         int width = getResources().getDisplayMetrics().widthPixels;
         int height = getResources().getDisplayMetrics().heightPixels;
         int padding = (int) (width * 0.05); // offset from edges of the map 10% of screen
 
-        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding);
-
+        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding);*/
+        CameraUpdate cu = CameraUpdateFactory.newLatLngZoom(mMarker.getPosition(), 15);
         mMap.moveCamera(cu);
     }
 
