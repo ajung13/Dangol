@@ -50,9 +50,9 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     ArrayList<Marker> markers = new ArrayList<>();
     private int fragment_num;
 
-    Context context;
+    private boolean startFlag = false;
 
-    private static final int WRITE_RESULT_CODE = 0;
+    Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +69,24 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
         checkDangerousPermissions();
         setLayout();
+
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        if(!startFlag){
+            startFlag = true;
+            return;
+        }
+        Log.e("dangol_main", "refresh");
+
+        if(fragment_num == 0)
+            addMarkerOnView();
+        else{
+            changeFragment(findViewById(R.id.menu_pin));
+            changeFragment(findViewById(R.id.menu_diary));
+        }
 
     }
 
@@ -229,6 +247,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 new LatLng(37.559030, 126.9370623)
         };*/
         LatLng[] positions = selectLocations();
+        mMap.clear();
         if(positions != null) {
             for (int i = 0; i < positions.length; i++) {
                 Marker marker = mMap.addMarker(new MarkerOptions()
@@ -476,6 +495,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             ib_d.setBackgroundResource(R.drawable.menu_diary_gray);
             ib_p.setBackgroundResource(R.drawable.menu_pin_blue);
             setLayout();
+            addMarkerOnView();
             super.onBackPressed();
         }
         else if(flag == 1){
@@ -505,6 +525,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             ib_d.setBackgroundResource(R.drawable.menu_diary_gray);
             ib_p.setBackgroundResource(R.drawable.menu_pin_blue);
             setLayout();
+            addMarkerOnView();
         }
         super.onBackPressed();
     }
