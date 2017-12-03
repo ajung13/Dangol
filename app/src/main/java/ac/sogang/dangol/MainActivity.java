@@ -78,6 +78,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         FrameLayout fl = (FrameLayout)findViewById(R.id.main_frame_layout);
         LinearLayout ll = new LinearLayout(this);
         ll.setOrientation(LinearLayout.HORIZONTAL);
+        ll.setId(R.id.realDataLayout);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 100);
         params.gravity = Gravity.CENTER;
         ll.setLayoutParams(params);
@@ -99,7 +100,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private int realDataCnt(){
-        String dbName = "Dangol";
+/*        String dbName = "Dangol";
         SQLiteDatabase mDB;
         int cnt = 0;
         String sql = "SELECT * from realData;";
@@ -111,7 +112,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
         c.close();
         mDB.close();
-
+*/
+        int cnt =3;
         return cnt;
     }
 
@@ -463,6 +465,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             fragment_num = 0;
             ib_d.setBackgroundResource(R.drawable.menu_diary_gray);
             ib_p.setBackgroundResource(R.drawable.menu_pin_blue);
+            setLayout();
             super.onBackPressed();
         }
         else if(flag == 1){
@@ -470,6 +473,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             fragment_num = 1;
             ib_d.setBackgroundResource(R.drawable.menu_diary_blue);
             ib_p.setBackgroundResource(R.drawable.menu_pin_gray);
+            FrameLayout fl = (FrameLayout)findViewById(R.id.main_frame_layout);
+            fl.removeView(findViewById(R.id.realDataLayout));
             Fragment fragment = new DiaryFragment();
             FragmentManager fm = getFragmentManager();
             FragmentTransaction ft = fm.beginTransaction();
@@ -489,6 +494,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             ImageButton ib_p = (ImageButton)findViewById(R.id.menu_pin);
             ib_d.setBackgroundResource(R.drawable.menu_diary_gray);
             ib_p.setBackgroundResource(R.drawable.menu_pin_blue);
+            setLayout();
         }
         super.onBackPressed();
     }
