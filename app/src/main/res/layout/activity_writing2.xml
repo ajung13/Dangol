@@ -20,13 +20,15 @@
             android:src="@drawable/back_gray"
             android:scaleType="centerCrop"
             android:layout_centerVertical="true"
-            android:onClick="onBackPressed"/>
+            android:onClick="onBackPressed"
+            android:contentDescription="@string/description"/>
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:src="@drawable/menu_pen_blue"
             android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"/>
+            android:layout_centerHorizontal="true"
+            android:contentDescription="@string/description"/>
         <Button
             android:layout_width="wrap_content"
             android:layout_height="40dp"
@@ -55,8 +57,7 @@
             <ImageView
                 android:id="@+id/thumbnail"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:srcCompat="@drawable/album_blue" />
+                android:layout_height="wrap_content"/>
 
             <TextView
                 android:layout_width="match_parent"

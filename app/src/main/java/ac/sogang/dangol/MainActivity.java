@@ -19,13 +19,11 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -87,6 +85,14 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         if(realData <= 0)   return;
 
         FrameLayout fl = (FrameLayout)findViewById(R.id.main_frame_layout);
+        RelativeLayout rl = new RelativeLayout(this);
+        rl.setId(R.id.realDataLayout);
+        rl.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, 150));
+        rl.setBackgroundColor(getResources().getColor(R.color.white));
+        rl.setAlpha((float)0.9);
+
+        RelativeLayout.LayoutParams params1 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+
         LinearLayout ll = new LinearLayout(this);
         ll.setOrientation(LinearLayout.HORIZONTAL);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 100);
@@ -102,19 +108,9 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
-        LinearLayout.LayoutParams params2 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        TextView tv = new TextView(this);
-        tv.setLayoutParams(params2);
-        tv.setText("현재 " + realData + "개 장소에 대한 기록을 남길 수 있습니다.");
-        tv.setTextColor(getResources().getColor(R.color.contents));
-        ImageView iv = new ImageView(this);
-        iv.setBackgroundResource(R.drawable.diary_next);
-        iv.setLayoutParams(params2);
-
-        ll.addView(tv, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        ll.addView(iv);
-        fl.addView(ll);
-//        fl.addView(tv);
+        rl.addView(tv);
+        rl.addView(iv);
+        fl.addView(rl);
     }
 
     private int realDataCnt(){
@@ -130,7 +126,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
         c.close();
         mDB.close();
-
         return cnt;
     }
 
@@ -390,7 +385,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                         Log.e("insert", e.toString());
                     }
                 }
-
             }catch(SecurityException se){
                 Log.e("dangol_main(8)", se.toString());
             }catch(Exception e){
@@ -483,6 +477,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             fragment_num = 0;
             ib_d.setBackgroundResource(R.drawable.menu_diary_gray);
             ib_p.setBackgroundResource(R.drawable.menu_pin_blue);
+            setLayout();
             super.onBackPressed();
         }
         else if(flag == 1){
@@ -490,6 +485,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             fragment_num = 1;
             ib_d.setBackgroundResource(R.drawable.menu_diary_blue);
             ib_p.setBackgroundResource(R.drawable.menu_pin_gray);
+            FrameLayout fl = (FrameLayout)findViewById(R.id.main_frame_layout);
+            fl.removeView(findViewById(R.id.realDataLayout));
             Fragment fragment = new DiaryFragment();
             FragmentManager fm = getFragmentManager();
             FragmentTransaction ft = fm.beginTransaction();
@@ -509,6 +506,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             ImageButton ib_p = (ImageButton)findViewById(R.id.menu_pin);
             ib_d.setBackgroundResource(R.drawable.menu_diary_gray);
             ib_p.setBackgroundResource(R.drawable.menu_pin_blue);
+            setLayout();
         }
         super.onBackPressed();
     }
