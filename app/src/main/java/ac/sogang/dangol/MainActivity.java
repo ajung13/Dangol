@@ -400,66 +400,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-    public void  dataFilter(SQLiteDatabase mDB){
-//        SQLiteDatabase mDB = this.openOrCreateDatabase(dbName, MODE_PRIVATE, null);
-        try {
-//            String sql = "SELECT * FROM readData where readDate = date('now', '-1 days')";
-//            String sql = "SELECT * FROM readData where readDate = date('now')";
-            String sql = "SELECT * FROM readData;";
-            Cursor c = mDB.rawQuery(sql, null);
-            String data = "";
-            if (c != null) {
-                if (c.moveToFirst()) {
-                    int i = 0;
-                    data += getPackageName() + ": ";
-                    do {
-                        data += c.getString(i++) + "\t";
-                        Log.e("dangol_checkdata", c.getString(i));
-                    } while (c.moveToNext());
-                    Log.e("checkData", data);
-                    Toast.makeText(this, data, Toast.LENGTH_SHORT).show();
-                }
-                if(!c.isClosed())   c.close();
-            }
-        }catch(SQLiteException se){
-            Log.e("check_sql", se.toString());
-        }catch(Exception e){
-            Log.e("check", e.toString());
-        }
-//        mDB.close();
-    }
-
-    public void  dataFilter(){
-
-        SQLiteDatabase mDB = this.openOrCreateDatabase("Dangol", MODE_PRIVATE, null);
-
-        try {
-//            String sql = "SELECT * FROM readData where readDate = date('now', '-1 days')";
-//            String sql = "SELECT * FROM readData where readDate = date('now')";
-            String sql = "SELECT * FROM readData;";
-            Cursor c = mDB.rawQuery(sql, null);
-            String data = "";
-            if (c != null) {
-                if (c.moveToFirst()) {
-                    int i = 0;
-                    data += getPackageName() + ": ";
-                    do {
-                        data += c.getString(i++) + "\t";
-                        Log.e("dangol_checkdata", c.getString(i));
-                    } while (c.moveToNext());
-                    Log.e("checkData", data);
-                    Toast.makeText(this, data, Toast.LENGTH_SHORT).show();
-                }
-                if(!c.isClosed())   c.close();
-            }
-        }catch(SQLiteException se){
-            Log.e("check_sql", se.toString());
-        }catch(Exception e){
-            Log.e("check", e.toString());
-        }
-//        mDB.close();
-    }
-
     public void changeFragment(View v){
         int flag = 0;
         switch(v.getId()){
@@ -482,13 +422,13 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             Log.e("dangol_main(11)", "return to map");
             fragment_num = 0;
             ib_d.setBackgroundResource(R.drawable.menu_diary_gray);
-            ib_p.setBackgroundResource(R.drawable.menu_pin_blue);
+            ib_p.setBackgroundResource(R.drawable.menu_pin_brown);
             super.onBackPressed();
         }
         else if(flag == 1){
             Log.e("dangol_main(12)", "show diary");
             fragment_num = 1;
-            ib_d.setBackgroundResource(R.drawable.menu_diary_blue);
+            ib_d.setBackgroundResource(R.drawable.menu_diary_brown);
             ib_p.setBackgroundResource(R.drawable.menu_pin_gray);
             Fragment fragment = new DiaryFragment();
             FragmentManager fm = getFragmentManager();
@@ -508,7 +448,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             ImageButton ib_d = (ImageButton)findViewById(R.id.menu_diary);
             ImageButton ib_p = (ImageButton)findViewById(R.id.menu_pin);
             ib_d.setBackgroundResource(R.drawable.menu_diary_gray);
-            ib_p.setBackgroundResource(R.drawable.menu_pin_blue);
+            ib_p.setBackgroundResource(R.drawable.menu_pin_brown);
         }
         super.onBackPressed();
     }

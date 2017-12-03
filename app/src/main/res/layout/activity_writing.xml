@@ -22,7 +22,7 @@
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:src="@drawable/menu_pen_blue"
+            android:src="@drawable/menu_pen_brown"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"/>
         <Button
@@ -49,7 +49,7 @@
         <ImageView
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:src="@drawable/menu_pin_blue_2"
+            android:src="@drawable/pin_brown"
             android:scaleType="centerInside"
             android:layout_marginRight="10dp"/>
         <TextView
@@ -69,7 +69,7 @@
         <ImageView
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:src="@drawable/calendar_blue"
+            android:src="@drawable/calendar_brown"
             android:scaleType="centerInside"
             android:layout_marginRight="10dp"/>
         <Button
@@ -243,5 +243,5 @@
         android:id="@+id/thumbnail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:srcCompat="@drawable/album_blue" />
+        app:srcCompat="@drawable/album_brown" />
 </LinearLayout>

@@ -24,7 +24,7 @@
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:src="@drawable/menu_pen_blue"
+            android:src="@drawable/menu_pen_brown"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"/>
         <Button
@@ -56,7 +56,7 @@
                 android:id="@+id/thumbnail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:srcCompat="@drawable/album_blue" />
+                app:srcCompat="@drawable/album_brown" />
 
             <TextView
                 android:layout_width="match_parent"
