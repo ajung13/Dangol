@@ -14,6 +14,7 @@ import java.text.SimpleDateFormat;
 public class RealDataListActivity extends AppCompatActivity {
 
     private ListView mListView;
+    myAdapter_RealData adapter = new myAdapter_RealData();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,7 +22,6 @@ public class RealDataListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_real_data_list);
         mListView = (ListView)findViewById(R.id.realDataList);
 
-        addList();
     }
 
     void addTestRealData(int i){
@@ -63,7 +63,8 @@ public class RealDataListActivity extends AppCompatActivity {
     }
 
     private void addList(){
-        myAdapter_RealData adapter = new myAdapter_RealData();
+
+        adapter.removeAll();
 
         SQLiteDatabase mDB = openOrCreateDatabase("Dangol", MODE_PRIVATE, null);
 
@@ -84,7 +85,6 @@ public class RealDataListActivity extends AppCompatActivity {
 
                         String sortedDate[] = dateParse(date);
                         Log.e("dangol_realDataList", sortedDate[0] + " " + sortedDate[3]);
-
 
                         String finalDate = sortedDate[0] + "년 " + sortedDate[1] + "월 " + sortedDate[2] + "일";
                         String finalTime = sortedDate[3] + "시 " + sortedDate[4] + "분";

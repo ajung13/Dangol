@@ -2,6 +2,9 @@ package ac.sogang.dangol;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.location.Location;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,6 +15,8 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+
+import static android.content.Context.MODE_PRIVATE;
 
 /**
  * Created by serin on 2017-12-01.
@@ -51,7 +56,6 @@ public class myAdapter_RealData extends BaseAdapter {
             convertView = inflater.inflate(R.layout.before_writing_fragment, parent, false);
         }
 
-
         TextView tv_date = (TextView)convertView.findViewById(R.id.real_date);
         TextView tv_time = (TextView)convertView.findViewById(R.id.real_time);
 
@@ -90,8 +94,36 @@ public class myAdapter_RealData extends BaseAdapter {
         public void onClick(View v) {
             Log.e("dangol_realData", "delete");
 
+            deleteRow(Integer.toString(myItem.getRealDataId()));
         }
     };
+
+    void deleteRow(String id) {
+
+        SQLiteDatabase mDB = context.openOrCreateDatabase("Dangol", MODE_PRIVATE, null);
+
+        try {
+            Cursor c = mDB.rawQuery("Delete FROM realData WHERE realData.realDataID =" + id, null);
+
+            if (c != null) {
+                if (c.moveToLast()) {
+                    do {
+                        Log.e("dangol_realDataList", "delete Success");
+
+
+                    } while (c.moveToPrevious());
+                }
+                if(!c.isClosed())   c.close();
+            }
+        }catch(SQLiteException se) {
+            Log.e("dangol_realDataList", se.toString());
+        }catch(NullPointerException ne){
+            Log.e("dangol_realDataList", ne.toString());
+        }catch(Exception e){
+            Log.e("dangol_realDataList", e.toString());
+        }
+        mDB.close();
+    }
 
     Button.OnClickListener locationBtnListener = new View.OnClickListener(){
         public void onClick(View v) {
@@ -100,7 +132,7 @@ public class myAdapter_RealData extends BaseAdapter {
         }
     };
 
-    public void addItem(Integer id, String date, String time, Double lat, Double lng){
+    public void addItem(Integer id, String date, String time, Double lat, Double lng) {
         MyItem_RealData myItem = new MyItem_RealData();
         myItem.setRealDataId(id);
         myItem.setDate(date);
@@ -109,5 +141,8 @@ public class myAdapter_RealData extends BaseAdapter {
         myItem.setLongitude(lng);
 
         mItems.add(myItem);
+    }
+    public void removeAll() {
+        mItems.clear();
     }
 }
