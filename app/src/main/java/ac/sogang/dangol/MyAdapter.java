@@ -1,6 +1,7 @@
 package ac.sogang.dangol;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,12 +18,16 @@ import java.util.ArrayList;
 
 public class MyAdapter extends BaseAdapter {
     private ArrayList<MyItem> mItems = new ArrayList<>();
+    private Context thisActivity;
     private boolean adapterFlag = false;
 
     public void changeFlag(boolean flag){
         //flag: false - Simple List(diary_frag)
         //      true - Full List(diary_detail)
         adapterFlag = flag;
+    }
+    public void setThisActivity(Context activity){
+        this.thisActivity = activity;
     }
 
     @Override
@@ -60,6 +65,7 @@ public class MyAdapter extends BaseAdapter {
             TextView tv_contents = (TextView)convertView.findViewById(R.id.diary_text);
             ImageView iv_emotion = (ImageView)convertView.findViewById(R.id.diary_emotion);
             ImageView iv_weather = (ImageView)convertView.findViewById(R.id.diary_weather);
+            ImageView thumbnailImageView = (ImageView)convertView.findViewById(R.id.diary_image);
 
             MyItem myItem = getItem(position);
 
@@ -81,6 +87,14 @@ public class MyAdapter extends BaseAdapter {
                 case 3: iv_weather.setImageResource(R.drawable.weather_rainy);  break;
                 case 4: iv_weather.setImageResource(R.drawable.weather_snow);   break;
             }
+
+            Bitmap bitmap = new ImageSaver(thisActivity).
+                    setFileName(myItem.getImageAddr()).
+                    setDirectoryName("images").
+                    load();
+
+            Log.e("dangol_detail_frag", "bitmap: " + bitmap);
+            thumbnailImageView.setImageBitmap(bitmap);
         }
         else{
             Log.e("dangol_adapter", "no..");
@@ -105,7 +119,7 @@ public class MyAdapter extends BaseAdapter {
         myItem.setID(id);
         mItems.add(myItem);
     }
-    public void addItem(String title, String contents, String date, String location, int emo, int wea){
+    public void addItem(String title, String contents, String date, String location, int emo, int wea, String img){
         MyItem myItem = new MyItem();
         myItem.setTitle(title);
         myItem.setContent(contents);
@@ -113,6 +127,7 @@ public class MyAdapter extends BaseAdapter {
         myItem.setLocation(location);
         myItem.setEmotion(emo);
         myItem.setWeather(wea);
+        myItem.setImageAddr(img);
         mItems.add(myItem);
     }
 }

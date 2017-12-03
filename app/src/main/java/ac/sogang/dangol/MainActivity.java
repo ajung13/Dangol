@@ -96,11 +96,23 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         ll.addView(tv, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         ll.addView(iv);
         fl.addView(ll);
-//        fl.addView(tv);
     }
 
     private int realDataCnt(){
-        return 3;
+        String dbName = "Dangol";
+        SQLiteDatabase mDB;
+        int cnt = 0;
+        String sql = "SELECT * from realData;";
+
+        mDB = openOrCreateDatabase(dbName, MODE_PRIVATE, null);
+
+        Cursor c = mDB.rawQuery(sql,null);
+        cnt = c.getCount();
+
+        c.close();
+        mDB.close();
+
+        return cnt;
     }
 
     public void onWriteClicked(View v) {

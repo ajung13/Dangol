@@ -1,21 +1,13 @@
 package ac.sogang.dangol;
 
 import android.app.DatePickerDialog;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteException;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ImageView;
@@ -24,7 +16,6 @@ import android.widget.TextView;
 
 import com.google.android.gms.maps.model.LatLng;
 
-import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -45,7 +36,7 @@ public class WritingActivity extends AppCompatActivity {
     Context context;
     private static int RESULT_LOAD_IMAGE = 1;
     ImageView myImageView;
-    String imagePath = "";
+    String imagePath = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,16 +60,13 @@ public class WritingActivity extends AppCompatActivity {
         if(location_name == null)   location_name = "현재 위치";
         setLocation();
 
-
         myImageView = (ImageView) findViewById(R.id.thumbnail);
-
-
-        getImageTest();
+//        getImageTest();
 
     }
 
     // 이미지 저장 테스트
-    void getImageTest() {
+/*    void getImageTest() {
         SQLiteDatabase mDB = openOrCreateDatabase("Dangol", MODE_PRIVATE, null);
 
         try{
@@ -109,7 +97,7 @@ public class WritingActivity extends AppCompatActivity {
             Log.e("dangol_write_test", e.toString());
         }
         mDB.close();
-    }
+    }*/
 
     public void onBackPressed(View v) {
         super.onBackPressed();
@@ -188,7 +176,8 @@ public class WritingActivity extends AppCompatActivity {
         intent.putExtra("location", location);
         intent.putExtra("location_name", location_name);
 
-        intent.putExtra("thumbnail", imagePath);
+        if(imagePath != null)
+            intent.putExtra("thumbnail", imagePath);
         startActivity(intent);
         finish();
     }
