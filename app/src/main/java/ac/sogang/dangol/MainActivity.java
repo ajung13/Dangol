@@ -70,6 +70,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         checkDangerousPermissions();
         setLayout();
 
+
     }
 
     @Override

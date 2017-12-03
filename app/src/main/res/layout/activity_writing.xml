@@ -43,16 +43,8 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="20dp">
-        <ImageView
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:src="@drawable/pin_brown"
-            android:scaleType="centerInside"
-            android:layout_marginRight="10dp"/>
-        <TextView
+        android:layout_height="match_parent">
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
@@ -64,7 +56,7 @@
                 <ImageView
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:src="@drawable/menu_pin_blue_2"
+                    android:src="@drawable/pin_brown"
                     android:scaleType="centerInside"
                     android:layout_marginRight="10dp"/>
                 <TextView
@@ -76,27 +68,25 @@
                     android:layout_gravity="center_vertical"/>
             </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp">
-        <ImageView
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:src="@drawable/calendar_brown"
-            android:scaleType="centerInside"
-            android:layout_marginRight="10dp"/>
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/write_calendar"
-            android:background="#00FFFFFF"
-            android:textColor="@color/contents"
-            android:onClick="onCalendarClicked"
-            android:layout_gravity="center_vertical"
-            android:gravity="start|center_vertical"/>
-    </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp">
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:src="@drawable/calendar_brown"
+                    android:scaleType="centerInside"
+                    android:layout_marginRight="10dp"/>
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/write_calendar"
+                    android:background="#00FFFFFF"
+                    android:textColor="@color/contents"
+                    android:onClick="onCalendarClicked"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="start|center_vertical"/>
+            </LinearLayout>
 
             <TextView
                 android:layout_width="match_parent"
@@ -256,9 +246,12 @@
                 android:layout_gravity="center_horizontal"
                 android:onClick="onGetImageButtonClicked"/>
 
-    <ImageView
-        android:id="@+id/thumbnail"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:srcCompat="@drawable/album_brown" />
+            <ImageView
+                android:id="@+id/thumbnail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:contentDescription="@string/description"/>
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>
