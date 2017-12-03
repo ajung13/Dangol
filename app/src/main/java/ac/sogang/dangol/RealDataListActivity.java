@@ -21,13 +21,7 @@ public class RealDataListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_real_data_list);
         mListView = (ListView)findViewById(R.id.realDataList);
 
-
-//        for(int i=0; i<10; i++)
-//            addTestRealData(i);
-
-
         addList();
-
     }
 
     void addTestRealData(int i){
@@ -95,8 +89,8 @@ public class RealDataListActivity extends AppCompatActivity {
                         String finalDate = sortedDate[0] + "년 " + sortedDate[1] + "월 " + sortedDate[2] + "일";
                         String finalTime = sortedDate[3] + "시 " + sortedDate[4] + "분";
 
-                        adapter.addItem(finalDate, finalTime);
-
+                        Log.e("dangol_realDataList", "lat: " + lat + " lng: " + lng);
+                        adapter.addItem(realDataId, finalDate, finalTime, lat, lng);
                     } while (c.moveToPrevious());
                 }
                 if(!c.isClosed())   c.close();
@@ -116,73 +110,3 @@ public class RealDataListActivity extends AppCompatActivity {
 
     }
 }
-
-
-//
-//public class DiaryFragment extends Fragment {
-//    String dbName = "Dangol";
-//    View view;
-//
-//    private ListView mListView;
-//
-//    @Override
-//    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState ) {
-//        view = inflater.inflate( R.layout.fragment_diary, container, false );
-//
-//        mListView = (ListView)view.findViewById(R.id.main_diary_list);
-//        dataSetting();
-//
-//        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id){
-//                MyItem listItem = (MyItem) parent.getAdapter().getItem(position);
-//                Intent intent = new Intent(getActivity(), Diary_detail.class);
-//                intent.putExtra("id", listItem.getID());
-//                startActivity(intent);
-//            }
-//        });
-//
-//        return view;
-//    }
-//
-//    private void dataSetting(){
-//        SQLiteDatabase mDB = getActivity().openOrCreateDatabase(dbName, MODE_PRIVATE, null);
-//        MyAdapter mMyAdapter = new MyAdapter();
-//
-//        try {
-//            Cursor c = mDB.rawQuery("SELECT DiaryID, Title, Text, Time FROM Diary", null);
-//
-//            if (c != null) {
-//                if (c.moveToLast()) {
-//                    do {
-//                        String title, content, date, imageName;
-//                        title = c.getString(c.getColumnIndexOrThrow("Title"));
-//                        content = c.getString(c.getColumnIndexOrThrow("Text"));
-//                        date = c.getString(c.getColumnIndexOrThrow("Time"));
-//
-//                        int id = c.getInt(c.getColumnIndexOrThrow("DiaryID"));
-//
-//                        if(title.length() > 30)
-//                            title = title.substring(0, 30) + "...";
-//                        if(content.length() > 30)
-//                            content = content.substring(0, 30) + "...";
-//                        if(date != null)
-//                            date = date.substring(0, date.indexOf(" "));
-//
-//                        mMyAdapter.addItem(title, content, date, id);
-//                    } while (c.moveToPrevious());
-//                }
-//                if(!c.isClosed())   c.close();
-//            }
-//        }catch(SQLiteException se) {
-//            Log.e("dangol_diary(se)", se.toString());
-//        }catch(NullPointerException ne){
-//            Log.e("dangol_diary(ne)", ne.toString());
-//        }catch(Exception e){
-//            Log.e("dangol_diary(e)", e.toString());
-//        }
-//        mDB.close();
-//
-//        mListView.setAdapter(mMyAdapter);
-//    }
-//}

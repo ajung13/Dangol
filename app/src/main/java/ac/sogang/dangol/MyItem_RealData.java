@@ -5,11 +5,15 @@ package ac.sogang.dangol;
  */
 
 public class MyItem_RealData {
+    private Integer realDataId;
     private String date;
     private String time;
     private Double latitude;
     private Double longitude;
-    
+
+    public Integer getRealDataId() { return realDataId; }
+    public void setRealDataId(Integer id) {this.realDataId = id; }
+
     public String getDate(){
         return date;
     }
@@ -34,7 +38,7 @@ public class MyItem_RealData {
     public Double getLongitude(){
         return longitude;
     }
-    public void setLongitude(Double Longitude){
+    public void setLongitude(Double longitude){
         this.longitude = longitude;
     }
 }

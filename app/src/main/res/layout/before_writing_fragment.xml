@@ -57,5 +57,4 @@
         android:text="삭제"
         android:id="@+id/real_delete"/>
 
-
 </LinearLayout>

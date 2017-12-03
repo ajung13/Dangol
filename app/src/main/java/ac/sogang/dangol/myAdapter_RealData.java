@@ -1,10 +1,14 @@
 package ac.sogang.dangol;
 
 import android.content.Context;
+import android.content.Intent;
+import android.location.Location;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -13,8 +17,15 @@ import java.util.ArrayList;
  * Created by serin on 2017-12-01.
  */
 
+
 public class myAdapter_RealData extends BaseAdapter {
     private ArrayList<MyItem_RealData> mItems = new ArrayList<>();
+    Context context;
+    private MyItem_RealData myItem;
+
+    public myAdapter_RealData() {
+        this.myItem = new MyItem_RealData();
+    }
 
     @Override
     public int getCount(){
@@ -33,7 +44,7 @@ public class myAdapter_RealData extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent){
-        Context context = parent.getContext();
+        context = parent.getContext();
 
         if(convertView == null){
             LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -44,19 +55,59 @@ public class myAdapter_RealData extends BaseAdapter {
         TextView tv_date = (TextView)convertView.findViewById(R.id.real_date);
         TextView tv_time = (TextView)convertView.findViewById(R.id.real_time);
 
-        MyItem_RealData myItem = getItem(position);
+        myItem = getItem(position);
 
         tv_date.setText(myItem.getDate());
         tv_time.setText(myItem.getTime());
 
+        Button locationBtn = (Button)convertView.findViewById(R.id.real_show_location);
+        Button writeBtn = (Button)convertView.findViewById(R.id.real_write);
+        Button deleteBtn = (Button)convertView.findViewById(R.id.real_delete);
+
+        locationBtn.setOnClickListener(locationBtnListener);
+        writeBtn.setOnClickListener(writeBtnListener);
+        deleteBtn.setOnClickListener(deleteBtnListener);
 
         return convertView;
     }
 
-    public void addItem(String date, String time){
+    Button.OnClickListener writeBtnListener = new View.OnClickListener(){
+        public void onClick(View v) {
+            Log.e("dangol_realData", "write");
+
+            Intent intent = new Intent(context, WritingActivity.class);
+
+            Location location = new Location("");
+            location.setLatitude(myItem.getLatitude());
+            location.setLongitude(myItem.getLongitude());
+            intent.putExtra("lat", location.getLatitude());
+            intent.putExtra("lon", location.getLongitude());
+            context.startActivity(intent);
+        }
+    };
+
+    Button.OnClickListener deleteBtnListener = new View.OnClickListener(){
+        public void onClick(View v) {
+            Log.e("dangol_realData", "delete");
+
+        }
+    };
+
+    Button.OnClickListener locationBtnListener = new View.OnClickListener(){
+        public void onClick(View v) {
+            Log.e("dangol_realData", "location");
+
+        }
+    };
+
+    public void addItem(Integer id, String date, String time, Double lat, Double lng){
         MyItem_RealData myItem = new MyItem_RealData();
+        myItem.setRealDataId(id);
         myItem.setDate(date);
         myItem.setTime(time);
+        myItem.setLatitude(lat);
+        myItem.setLongitude(lng);
+
         mItems.add(myItem);
     }
 }
