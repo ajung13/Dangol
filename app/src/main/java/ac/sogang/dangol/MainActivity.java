@@ -14,6 +14,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
@@ -67,6 +68,16 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
         checkDangerousPermissions();
         setLayout();
+
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Intent intent = new Intent(MainActivity.this, RealDataListActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        }, 3000);
     }
 
     private void setLayout(){
@@ -81,20 +92,21 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         rl.setAlpha((float)0.9);
 
         RelativeLayout.LayoutParams params1 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        TextView tv = new TextView(this);
-        params1.addRule(RelativeLayout.CENTER_IN_PARENT);
-        tv.setLayoutParams(params1);
-        tv.setText("현재 " + realData + "개 장소에 대한 기록을 남길 수 있습니다.");
-        tv.setTextColor(getResources().getColor(R.color.contents));
-        tv.setTextSize(15);
 
-        RelativeLayout.LayoutParams params2 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        ImageView iv = new ImageView(this);
-        iv.setImageResource(R.drawable.diary_next);
-        params2.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-        params2.setMargins(20, 20, 20, 20);
-        iv.setLayoutParams(params2);
-        iv.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+        LinearLayout ll = new LinearLayout(this);
+        ll.setOrientation(LinearLayout.HORIZONTAL);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 100);
+        params.gravity = Gravity.CENTER;
+        ll.setLayoutParams(params);
+        ll.setBackgroundColor(getResources().getColor(R.color.white));
+        ll.setAlpha((float)0.8);
+        ll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, RealDataListActivity.class);
+                startActivity(intent);
+            }
+        });
 
         rl.addView(tv);
         rl.addView(iv);
@@ -102,7 +114,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private int realDataCnt(){
-/*        String dbName = "Dangol";
+        String dbName = "Dangol";
         SQLiteDatabase mDB;
         int cnt = 0;
         String sql = "SELECT * from realData;";
@@ -114,8 +126,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
         c.close();
         mDB.close();
-*/
-        int cnt =3;
         return cnt;
     }
 
