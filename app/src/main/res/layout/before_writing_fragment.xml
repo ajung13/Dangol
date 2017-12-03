@@ -14,47 +14,56 @@
             android:layout_height="wrap_content"
             android:layout_weight="2">
             <TableRow>
-                <TextView
+                <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="날짜 : "/>
+                    android:src="@drawable/calendar_brown"/>
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="날짜가 들어갈 공간이죠"
+                    android:hint="날짜 꺄꺄"
                     android:id="@+id/real_date"/>
-
             </TableRow>
             <TableRow>
-                <TextView
+                <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="시간 : "/>
+                    android:src="@drawable/clock_brown"/>
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="시간을 써줄거랍니다"
+                    android:hint="시간"
                     android:id="@+id/real_time"/>
             </TableRow>
         </TableLayout>
-
-        <Button
+        <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="지도 보기"
+            android:src="@drawable/map_brown"
             android:layout_weight="1"
-            android:id="@+id/real_show_location"/>
-
+            android:id="@+id/real_show_location"
+            />
     </LinearLayout>
-    <Button
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="작성"
-        android:id="@+id/real_write"/>
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="삭제"
-        android:id="@+id/real_delete"/>
-
+        android:orientation="horizontal"
+        android:weightSum="2"
+        android:gravity="center_vertical">
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="작성"
+            android:src="@drawable/pen_brown"
+            android:layout_weight="1"
+            android:id="@+id/real_write"/>
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="삭제"
+            android:src="@drawable/trash_brown"
+            android:layout_weight="1"
+            android:id="@+id/real_delete"/>
+    </LinearLayout>
 </LinearLayout>

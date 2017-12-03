@@ -11,6 +11,7 @@ public class MyItem {
     private String date;
     private String location;
     private int emotion, weather;
+    private String imageAddr;
 
     public String getTitle(){
         return title;
@@ -59,5 +60,12 @@ public class MyItem {
     }
     public void setWeather(int weather){
         this.weather = weather;
+    }
+
+    public String getImageAddr(){
+        return imageAddr;
+    }
+    public void setImageAddr(String addr){
+        this.imageAddr = addr;
     }
 }

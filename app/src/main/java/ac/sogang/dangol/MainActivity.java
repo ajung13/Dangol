@@ -14,18 +14,15 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -53,6 +50,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     ArrayList<Marker> markers = new ArrayList<>();
     private int fragment_num;
 
+    private boolean startFlag = false;
+
     Context context;
 
     @Override
@@ -71,6 +70,25 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         checkDangerousPermissions();
         setLayout();
 
+
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        if(!startFlag){
+            startFlag = true;
+            return;
+        }
+        Log.e("dangol_main", "refresh");
+
+        if(fragment_num == 0)
+            addMarkerOnView();
+        else{
+            changeFragment(findViewById(R.id.menu_pin));
+            changeFragment(findViewById(R.id.menu_diary));
+        }
+
     }
 
     private void setLayout(){
@@ -78,14 +96,12 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         if(realData <= 0)   return;
 
         FrameLayout fl = (FrameLayout)findViewById(R.id.main_frame_layout);
-        LinearLayout ll = new LinearLayout(this);
-        ll.setOrientation(LinearLayout.HORIZONTAL);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 100);
-        params.gravity = Gravity.CENTER;
-        ll.setLayoutParams(params);
-        ll.setBackgroundColor(getResources().getColor(R.color.white));
-        ll.setAlpha((float)0.8);
-        ll.setOnClickListener(new View.OnClickListener() {
+        RelativeLayout rl = new RelativeLayout(this);
+        rl.setId(R.id.realDataLayout);
+        rl.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, 150));
+        rl.setBackgroundColor(getResources().getColor(R.color.white));
+        rl.setAlpha((float)0.9);
+        rl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, RealDataListActivity.class);
@@ -93,19 +109,25 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
-        LinearLayout.LayoutParams params2 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        RelativeLayout.LayoutParams params1 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         TextView tv = new TextView(this);
-        tv.setLayoutParams(params2);
+        params1.addRule(RelativeLayout.CENTER_IN_PARENT);
+        tv.setLayoutParams(params1);
         tv.setText("현재 " + realData + "개 장소에 대한 기록을 남길 수 있습니다.");
         tv.setTextColor(getResources().getColor(R.color.contents));
-        ImageView iv = new ImageView(this);
-        iv.setBackgroundResource(R.drawable.diary_next);
-        iv.setLayoutParams(params2);
+        tv.setTextSize(15);
 
-        ll.addView(tv, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        ll.addView(iv);
-        fl.addView(ll);
-//        fl.addView(tv);
+        RelativeLayout.LayoutParams params2 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        ImageView iv = new ImageView(this);
+        iv.setImageResource(R.drawable.diary_next);
+        params2.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        params2.setMargins(20, 20, 20, 20);
+        iv.setLayoutParams(params2);
+        iv.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+
+        rl.addView(tv);
+        rl.addView(iv);
+        fl.addView(rl);
     }
 
     private int realDataCnt(){
@@ -121,7 +143,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
         c.close();
         mDB.close();
-
         return cnt;
     }
 
@@ -227,6 +248,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 new LatLng(37.559030, 126.9370623)
         };*/
         LatLng[] positions = selectLocations();
+        mMap.clear();
         if(positions != null) {
             for (int i = 0; i < positions.length; i++) {
                 Marker marker = mMap.addMarker(new MarkerOptions()
@@ -381,7 +403,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                         Log.e("insert", e.toString());
                     }
                 }
-
             }catch(SecurityException se){
                 Log.e("dangol_main(8)", se.toString());
             }catch(Exception e){
@@ -389,66 +410,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             }
             Log.e("dangol_main", "thread dead at " + nowDateTime);
         }
-    }
-
-    public void  dataFilter(SQLiteDatabase mDB){
-//        SQLiteDatabase mDB = this.openOrCreateDatabase(dbName, MODE_PRIVATE, null);
-        try {
-//            String sql = "SELECT * FROM readData where readDate = date('now', '-1 days')";
-//            String sql = "SELECT * FROM readData where readDate = date('now')";
-            String sql = "SELECT * FROM readData;";
-            Cursor c = mDB.rawQuery(sql, null);
-            String data = "";
-            if (c != null) {
-                if (c.moveToFirst()) {
-                    int i = 0;
-                    data += getPackageName() + ": ";
-                    do {
-                        data += c.getString(i++) + "\t";
-                        Log.e("dangol_checkdata", c.getString(i));
-                    } while (c.moveToNext());
-                    Log.e("checkData", data);
-                    Toast.makeText(this, data, Toast.LENGTH_SHORT).show();
-                }
-                if(!c.isClosed())   c.close();
-            }
-        }catch(SQLiteException se){
-            Log.e("check_sql", se.toString());
-        }catch(Exception e){
-            Log.e("check", e.toString());
-        }
-//        mDB.close();
-    }
-
-    public void  dataFilter(){
-
-        SQLiteDatabase mDB = this.openOrCreateDatabase("Dangol", MODE_PRIVATE, null);
-
-        try {
-//            String sql = "SELECT * FROM readData where readDate = date('now', '-1 days')";
-//            String sql = "SELECT * FROM readData where readDate = date('now')";
-            String sql = "SELECT * FROM readData;";
-            Cursor c = mDB.rawQuery(sql, null);
-            String data = "";
-            if (c != null) {
-                if (c.moveToFirst()) {
-                    int i = 0;
-                    data += getPackageName() + ": ";
-                    do {
-                        data += c.getString(i++) + "\t";
-                        Log.e("dangol_checkdata", c.getString(i));
-                    } while (c.moveToNext());
-                    Log.e("checkData", data);
-                    Toast.makeText(this, data, Toast.LENGTH_SHORT).show();
-                }
-                if(!c.isClosed())   c.close();
-            }
-        }catch(SQLiteException se){
-            Log.e("check_sql", se.toString());
-        }catch(Exception e){
-            Log.e("check", e.toString());
-        }
-//        mDB.close();
     }
 
     public void changeFragment(View v){
@@ -473,14 +434,20 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             Log.e("dangol_main(11)", "return to map");
             fragment_num = 0;
             ib_d.setBackgroundResource(R.drawable.menu_diary_gray);
-            ib_p.setBackgroundResource(R.drawable.menu_pin_blue);
+
+            ib_p.setBackgroundResource(R.drawable.menu_pin_brown);
+            setLayout();
+            addMarkerOnView();
+
             super.onBackPressed();
         }
         else if(flag == 1){
             Log.e("dangol_main(12)", "show diary");
             fragment_num = 1;
-            ib_d.setBackgroundResource(R.drawable.menu_diary_blue);
+            ib_d.setBackgroundResource(R.drawable.menu_diary_brown);
             ib_p.setBackgroundResource(R.drawable.menu_pin_gray);
+            FrameLayout fl = (FrameLayout)findViewById(R.id.main_frame_layout);
+            fl.removeView(findViewById(R.id.realDataLayout));
             Fragment fragment = new DiaryFragment();
             FragmentManager fm = getFragmentManager();
             FragmentTransaction ft = fm.beginTransaction();
@@ -499,7 +466,9 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             ImageButton ib_d = (ImageButton)findViewById(R.id.menu_diary);
             ImageButton ib_p = (ImageButton)findViewById(R.id.menu_pin);
             ib_d.setBackgroundResource(R.drawable.menu_diary_gray);
-            ib_p.setBackgroundResource(R.drawable.menu_pin_blue);
+            ib_p.setBackgroundResource(R.drawable.menu_pin_brown);
+            setLayout();
+            addMarkerOnView();
         }
         super.onBackPressed();
     }

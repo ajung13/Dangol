@@ -15,7 +15,7 @@
             android:id="@+id/menu_pin"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:background="@drawable/menu_pin_blue"
+            android:background="@drawable/menu_pin_brown"
             android:scaleType="centerInside"
             android:contentDescription="@string/description"
             android:onClick="changeFragment"
