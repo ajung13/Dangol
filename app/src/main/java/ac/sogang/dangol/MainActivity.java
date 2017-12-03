@@ -52,6 +52,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
     Context context;
 
+    private static final int WRITE_RESULT_CODE = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
