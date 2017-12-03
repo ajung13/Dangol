@@ -71,15 +71,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         checkDangerousPermissions();
         setLayout();
 
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Intent intent = new Intent(MainActivity.this, RealDataListActivity.class);
-                startActivity(intent);
-                finish();
-            }
-        }, 3000);
     }
 
     private void setLayout(){

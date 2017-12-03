@@ -51,7 +51,7 @@ public class DiaryFragment extends Fragment {
         MyAdapter mMyAdapter = new MyAdapter();
 
         try {
-            Cursor c = mDB.rawQuery("SELECT DiaryID, Title, Text, Time FROM Diary", null);
+            Cursor c = mDB.rawQuery("SELECT DiaryID, Title, Text, Time FROM Diary ORDER BY Time, DiaryID DESC;", null);
 
             if (c != null) {
                 if (c.moveToLast()) {
