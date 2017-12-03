@@ -18,13 +18,11 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -76,27 +74,32 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         if(realData <= 0)   return;
 
         FrameLayout fl = (FrameLayout)findViewById(R.id.main_frame_layout);
-        LinearLayout ll = new LinearLayout(this);
-        ll.setOrientation(LinearLayout.HORIZONTAL);
-        ll.setId(R.id.realDataLayout);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 100);
-        params.gravity = Gravity.CENTER;
-        ll.setLayoutParams(params);
-        ll.setBackgroundColor(getResources().getColor(R.color.white));
-        ll.setAlpha((float)0.8);
+        RelativeLayout rl = new RelativeLayout(this);
+        rl.setId(R.id.realDataLayout);
+        rl.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, 150));
+        rl.setBackgroundColor(getResources().getColor(R.color.white));
+        rl.setAlpha((float)0.9);
 
-        LinearLayout.LayoutParams params2 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        RelativeLayout.LayoutParams params1 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         TextView tv = new TextView(this);
-        tv.setLayoutParams(params2);
+        params1.addRule(RelativeLayout.CENTER_IN_PARENT);
+        tv.setLayoutParams(params1);
         tv.setText("현재 " + realData + "개 장소에 대한 기록을 남길 수 있습니다.");
         tv.setTextColor(getResources().getColor(R.color.contents));
-        ImageView iv = new ImageView(this);
-        iv.setBackgroundResource(R.drawable.diary_next);
-        iv.setLayoutParams(params2);
+        tv.setTextSize(15);
 
-        ll.addView(tv, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        ll.addView(iv);
-        fl.addView(ll);
+        RelativeLayout.LayoutParams params2 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        ImageView iv = new ImageView(this);
+//        iv.setBackgroundResource(R.drawable.diary_next);
+        iv.setImageResource(R.drawable.diary_next);
+        params2.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        params2.setMargins(20, 20, 20, 20);
+        iv.setLayoutParams(params2);
+        iv.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+
+        rl.addView(tv);
+        rl.addView(iv);
+        fl.addView(rl);
     }
 
     private int realDataCnt(){
