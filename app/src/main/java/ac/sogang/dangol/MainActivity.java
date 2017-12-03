@@ -90,7 +90,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
         RelativeLayout.LayoutParams params2 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         ImageView iv = new ImageView(this);
-//        iv.setBackgroundResource(R.drawable.diary_next);
         iv.setImageResource(R.drawable.diary_next);
         params2.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         params2.setMargins(20, 20, 20, 20);
