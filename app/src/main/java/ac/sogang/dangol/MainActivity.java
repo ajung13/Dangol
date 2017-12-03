@@ -14,6 +14,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
@@ -69,6 +70,16 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
         checkDangerousPermissions();
         setLayout();
+
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Intent intent = new Intent(MainActivity.this, RealDataListActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        }, 3000);
     }
 
     private void setLayout(){
@@ -83,6 +94,13 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         ll.setLayoutParams(params);
         ll.setBackgroundColor(getResources().getColor(R.color.white));
         ll.setAlpha((float)0.8);
+        ll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, RealDataListActivity.class);
+                startActivity(intent);
+            }
+        });
 
         LinearLayout.LayoutParams params2 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         TextView tv = new TextView(this);
@@ -100,7 +118,20 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private int realDataCnt(){
-        return 3;
+        String dbName = "Dangol";
+        SQLiteDatabase mDB;
+        int cnt = 0;
+        String sql = "SELECT * from realData;";
+
+        mDB = openOrCreateDatabase(dbName, MODE_PRIVATE, null);
+
+        Cursor c = mDB.rawQuery(sql,null);
+        cnt = c.getCount();
+
+        c.close();
+        mDB.close();
+
+        return cnt;
     }
 
     public void onWriteClicked(View v) {

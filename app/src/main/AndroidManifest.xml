@@ -59,9 +59,8 @@
             android:name=".WritingMapActivity"
             android:label="@string/title_activity_writing_map" />
         <activity android:name=".Diary_detail" />
-
-        <activity android:name=".DiaryLocationActivity"></activity>
-
+        <activity android:name=".DiaryLocationActivity" />
+        <activity android:name=".RealDataListActivity"></activity>
     </application>
 
 </manifest>
