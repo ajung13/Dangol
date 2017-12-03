@@ -3,4 +3,5 @@
     <string name="title_activity_main">Map</string>
     <string name="description">description</string>
     <string name="title_activity_writing_map">Map</string>
+    <string name="title_activity_real_data_map">Map</string>
 </resources>

@@ -22,6 +22,7 @@ public class RealDataListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_real_data_list);
         mListView = (ListView)findViewById(R.id.realDataList);
 
+        addList();
     }
 
     void addTestRealData(int i){
@@ -63,8 +64,6 @@ public class RealDataListActivity extends AppCompatActivity {
     }
 
     private void addList(){
-
-        adapter.removeAll();
 
         SQLiteDatabase mDB = openOrCreateDatabase("Dangol", MODE_PRIVATE, null);
 

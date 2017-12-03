@@ -14,6 +14,8 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import java.util.ArrayList;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -128,6 +130,13 @@ public class myAdapter_RealData extends BaseAdapter {
     Button.OnClickListener locationBtnListener = new View.OnClickListener(){
         public void onClick(View v) {
             Log.e("dangol_realData", "location");
+
+            Intent intent = new Intent(context, RealDataMapActivity.class);
+
+            LatLng location = new LatLng(intent.getDoubleExtra("lat", myItem.getLatitude()), intent.getDoubleExtra("lon", myItem.getLongitude()));
+
+            intent.putExtra("location", location);
+            context.startActivity(intent);
 
         }
     };
