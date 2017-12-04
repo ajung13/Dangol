@@ -46,7 +46,7 @@ public class RealDataMapActivity extends FragmentActivity implements OnMapReadyC
 
         mMarker = mMap.addMarker(new MarkerOptions()
                 .position(position).title("저장된 위치")
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_blue)).draggable(true));
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_brown)).draggable(true));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(position));
         setCameraZoomToMarker();
     }

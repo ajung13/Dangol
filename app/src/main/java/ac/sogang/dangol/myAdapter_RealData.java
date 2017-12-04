@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -66,9 +67,9 @@ public class myAdapter_RealData extends BaseAdapter {
         tv_date.setText(myItem.getDate());
         tv_time.setText(myItem.getTime());
 
-        Button locationBtn = (Button)convertView.findViewById(R.id.real_show_location);
-        Button writeBtn = (Button)convertView.findViewById(R.id.real_write);
-        Button deleteBtn = (Button)convertView.findViewById(R.id.real_delete);
+        ImageButton locationBtn = (ImageButton)convertView.findViewById(R.id.real_show_location);
+        ImageButton writeBtn = (ImageButton)convertView.findViewById(R.id.real_write);
+        ImageButton deleteBtn = (ImageButton)convertView.findViewById(R.id.real_delete);
 
         locationBtn.setOnClickListener(locationBtnListener);
         writeBtn.setOnClickListener(writeBtnListener);
@@ -88,6 +89,7 @@ public class myAdapter_RealData extends BaseAdapter {
             location.setLongitude(myItem.getLongitude());
             intent.putExtra("lat", location.getLatitude());
             intent.putExtra("lon", location.getLongitude());
+            intent.putExtra("name", "저장된 위치");
             context.startActivity(intent);
         }
     };
