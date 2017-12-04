@@ -3,10 +3,11 @@ package ac.sogang.dangol;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
 
@@ -22,7 +23,9 @@ public class RealDataListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_real_data_list);
         mListView = (ListView)findViewById(R.id.realDataList);
 
-        addList();
+        int cnt = addList();
+        TextView tv = (TextView)findViewById(R.id.real_data_txt);
+        tv.setText(cnt + "개의 기록이 있어요");
     }
 
     void addTestRealData(int i){
@@ -63,8 +66,8 @@ public class RealDataListActivity extends AppCompatActivity {
         return result;
     }
 
-    private void addList(){
-
+    private int addList(){
+        int cnt = 0;
         SQLiteDatabase mDB = openOrCreateDatabase("Dangol", MODE_PRIVATE, null);
 
         try {
@@ -92,6 +95,7 @@ public class RealDataListActivity extends AppCompatActivity {
                         adapter.addItem(realDataId, finalDate, finalTime, lat, lng);
                     } while (c.moveToPrevious());
                 }
+                cnt = c.getCount();
                 if(!c.isClosed())   c.close();
             } else {
                 Log.e("dangol_realDataList", "Cursor is null");
@@ -106,6 +110,6 @@ public class RealDataListActivity extends AppCompatActivity {
         mDB.close();
 
         mListView.setAdapter(adapter);
-
+        return cnt;
     }
 }

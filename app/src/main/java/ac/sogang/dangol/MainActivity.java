@@ -13,6 +13,7 @@ import android.database.sqlite.SQLiteException;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
@@ -40,12 +41,14 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
+import static java.lang.Thread.sleep;
+
 public class MainActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
-    private GoogleMap mMap;
-    private LocationManager manager = null;
-    private GPSListener gpsListener = null;
-    private Location lastlocation;
+    static private GoogleMap mMap;
+    static private LocationManager manager = null;
+    static private GPSListener gpsListener = null;
+    static private Location lastlocation;
 
     ArrayList<Marker> markers = new ArrayList<>();
     private int fragment_num;
@@ -69,7 +72,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
         checkDangerousPermissions();
         setLayout();
-
 
     }
 
@@ -223,20 +225,16 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
         Toast.makeText(this, "Check log", Toast.LENGTH_SHORT).show();
 
-        TimeThread timethread = new TimeThread();
-        timethread.start();
+        if(dangolApp.th == null) {
+            dangolApp.th = new TimeThread(getApplicationContext());
+            dangolApp.th.execute();
+        }
+        else if(dangolApp.th.isCancelled())
+            dangolApp.th.execute();
+
         addMarkerOnView();
         if(!markers.isEmpty())
             setCameraZoomToMarker();
-
-
-        if(dangolApp.th == null) {
-            dangolApp.th = new TimeThread();
-            dangolApp.th.start();
-        }
-        else if(!dangolApp.th.isAlive()){
-            dangolApp.th.start();
-        }
     }
 
     void addMarkerOnView() {
@@ -299,7 +297,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-    private class GPSListener implements LocationListener {
+    static private class GPSListener implements LocationListener {
         public void onLocationChanged(Location location) {
             Double latitude = location.getLatitude();
             Double longitude = location.getLongitude();
@@ -322,27 +320,32 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-    public class TimeThread extends Thread {
-        String dbName = "Dangol";
-        long sleepTime = 180000;
+    static public class TimeThread extends AsyncTask<Void, Void, Void>{
+        private Context context;
+        public TimeThread(Context con){
+            this.context = con;
+        }
+        @Override
+        protected void onPreExecute(){
+            super.onPreExecute();
+            Log.e("dangol_task", "task pre-execute");
+        }
+        @Override
+        protected Void doInBackground(Void... params){
+            String dbName = "Dangol";
+            long sleepTime = 180000;
+//            long sleepTime = 10000;
+            long minTime = 5000;
+            float minDistance = 10;
 
-        SQLiteDatabase mDB;
-
-        public void run() {
-//            LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-//            GPSListener gpsListener = new GPSListener();
-            long minTime = 10000;
-            float minDistance = 0;
-
-            String sql = "";
+            SQLiteDatabase mDB;
             String nowDateTime = "";
 
             try {
-
-                Log.e("dangol_main", "start thread");
-
+                String sql = "";
                 //제일 처음 위치를 받아옴 (초기화)
-                manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 10, gpsListener );
+                manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, minTime, minDistance, gpsListener );
+                manager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, minTime, minDistance, gpsListener);
 
                 sleep(2000);
                 Location location1 = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
@@ -352,63 +355,64 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 nowDateTime = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss").format(System.currentTimeMillis());
 
                 int count = 0;
-                while(true){
+                while(true) {
+                    //잠을 재운다
+                    sleep(sleepTime);
 
-                    //                  manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, minTime, minDistance, gpsListener);
-                    //                   manager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, minTime, minDistance, gpsListener);
-                    try{
-                        //잠을 재운다
-                        sleep(sleepTime);
+                    //3분 후 값을 읽어온다
+                    manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 10, gpsListener);
+                    Location location2 = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
-                        //3분 후 값을 읽어온다
-                        manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 10, gpsListener );
-                        Location location2 = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                    if (location2 == null) location2 = lastlocation;
+                    if (location2 == null) break;
+                    String nowDateTime2 = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss").format(System.currentTimeMillis());
 
-                        if(location2 == null)   location2 = lastlocation;
-                        if(location2 == null)   break;
-                        String nowDateTime2 = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss").format(System.currentTimeMillis());
-
-                        Log.e("insert_sql0", "location(prev): " + location1.getLatitude() + ", " + location1.getLongitude());
-                        Log.e("insert_sql0", "location(now): " + location2.getLatitude() + ", " + location2.getLongitude());
-                        //                  SQLiteDatabase mDB = openOrCreateDatabase(dbName, MODE_PRIVATE, null);
-                        if (location1.distanceTo(location2) <= 10) {
-                             /* Location Class에 존재하는 distanceTo 함수, 두 지점 사이의 거리를 Meter 단위로 반환, 만약 두 지점 사이가 10m 이하이면 count++ */
-                            count++;
-                            String str = location2.getLatitude() + ", "+ location2.getLongitude()+", ";
-                            Log.e("check_data", str + Integer.toString(count));
+                    if (location1.distanceTo(location2) <= 10) {
+                        // Location Class에 존재하는 distanceTo 함수, 두 지점 사이의 거리를 Meter 단위로 반환, 만약 두 지점 사이가 10m 이하이면 count++
+                        count++;
+                        String str = location2.getLatitude() + ", "+ location2.getLongitude()+", ";
+                        Log.e("dangol_task_check_data", str + Integer.toString(count));
+                    } else {
+                        if (count >= 7) {
+                            // 유효한 데이터일 경우 데이터 저장
+                            mDB = context.openOrCreateDatabase(dbName, MODE_PRIVATE, null);
+                            sql = "INSERT INTO realData(Latitude, Longitude, Time) VALUES (" + latitude + ", " + longitude + ", '" + nowDateTime + "');";
+                            mDB.execSQL(sql);
+                            Log.e("dangol_task", sql);
+                            mDB.close();
                         }
-                        else {
-                            if(count >= 7) {
-                                // 유효한 데이터일 경우 데이터 저장
-                                mDB = openOrCreateDatabase(dbName, MODE_PRIVATE, null);
 
-                                sql = "INSERT INTO realData(Latitude, Longitude, Time) VALUES (" + latitude + ", "+ longitude +", '"+ nowDateTime + "');";
-
-                                mDB.execSQL(sql);
-                                Log.e("check_data", sql);
-                                mDB.close();
-
-                            }
-
-                            // 데이터 리셋, 위치 재설정
-                            count = 0;
-                            location1 = location2;
-                            latitude = location2.getLatitude();
-                            longitude = location2.getLongitude();
-                            nowDateTime = nowDateTime2;
-                        }
-                    }catch(SQLiteException se){
-                        Log.e("insert_sql", se.toString());
-                    }catch(Exception e){
-                        Log.e("insert", e.toString());
+                        // 데이터 리셋, 위치 재설정
+                        count = 0;
+                        location1 = location2;
+                        latitude = location2.getLatitude();
+                        longitude = location2.getLongitude();
+                        nowDateTime = nowDateTime2;
                     }
                 }
             }catch(SecurityException se){
-                Log.e("dangol_main(8)", se.toString());
+                Log.e("dangol_task", "se: " + se.toString());
+            }catch(InterruptedException ie){
+                Log.e("dangol_task", "ie: " + ie.toString());
+            }catch(SQLiteException sqe){
+                Log.e("dangol_task", "sqe: " + sqe.toString());
             }catch(Exception e){
-                Log.e("dangol_main(9)", e.toString());
+                Log.e("dangol_task", e.toString());
             }
             Log.e("dangol_main", "thread dead at " + nowDateTime);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void param){
+            super.onPostExecute(param);
+            Toast.makeText(context, "Dangol thread dead", Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        protected void onCancelled(){
+            super.onCancelled();
+            Log.e("dangol_task", "cancelled");
         }
     }
 
@@ -434,11 +438,9 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             Log.e("dangol_main(11)", "return to map");
             fragment_num = 0;
             ib_d.setBackgroundResource(R.drawable.menu_diary_gray);
-
             ib_p.setBackgroundResource(R.drawable.menu_pin_brown);
             setLayout();
             addMarkerOnView();
-
             super.onBackPressed();
         }
         else if(flag == 1){
