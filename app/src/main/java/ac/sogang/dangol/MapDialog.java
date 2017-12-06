@@ -108,7 +108,7 @@ public class MapDialog extends DialogFragment {
 
         tmp = "";
         try{
-            String sql = "SELECT Time FROM Diary WHERE LocationID=" + locID;
+            String sql = "SELECT Time FROM Diary WHERE LocationID=" + locID + " ORDER BY Time";
             c = mDB.rawQuery(sql, null);
             if(c != null && c.getCount() > 0){
                 c.moveToFirst();
