@@ -1,5 +1,6 @@
 package ac.sogang.dangol;
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -16,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.tsengvn.typekit.TypekitContextWrapper;
 
 public class Writing2Activity extends AppCompatActivity {
     String dbName = "Dangol";
@@ -222,5 +224,10 @@ public class Writing2Activity extends AppCompatActivity {
         if(str.contains("'"))
             str = str.replace("'", " ");
         return str;
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(TypekitContextWrapper.wrap(newBase));
     }
 }
