@@ -13,15 +13,15 @@
         android:id="@+id/write_bar"
         style="@style/CustomActionBar">
         <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="22dp"
+            android:layout_height="18dp"
             android:src="@drawable/back_gray"
             android:scaleType="centerCrop"
             android:layout_centerVertical="true"
             android:onClick="onBackPressed"/>
         <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="48dp"
+            android:layout_height="38dp"
             android:src="@drawable/menu_pen_brown"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"/>
@@ -99,7 +99,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:layout_marginTop="8dp">
                 <RadioButton
                     android:layout_height="20dp"
                     android:layout_width="20dp"
@@ -132,32 +133,32 @@
             </RadioGroup>
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="39dp"
                 android:gravity="center_horizontal"
                 android:layout_marginTop="10dp">
                 <ImageView
-                    android:layout_width="40dp"
+                    android:layout_width="30dp"
                     android:layout_height="40dp"
-                    android:layout_marginRight="20dp"
+                    android:layout_marginRight="30dp"
                     android:src="@drawable/feel_best"/>
                 <ImageView
-                    android:layout_width="40dp"
+                    android:layout_width="30dp"
                     android:layout_height="40dp"
-                    android:layout_marginRight="20dp"
+                    android:layout_marginRight="30dp"
                     android:src="@drawable/feel_good"/>
                 <ImageView
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_marginRight="20dp"
+                    android:layout_width="30dp"
+                    android:layout_height="39dp"
+                    android:layout_marginRight="30dp"
                     android:src="@drawable/feel_soso"/>
                 <ImageView
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_marginRight="20dp"
+                    android:layout_width="30dp"
+                    android:layout_height="39dp"
+                    android:layout_marginRight="30dp"
                     android:src="@drawable/feel_notgood"/>
                 <ImageView
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
+                    android:layout_width="30dp"
+                    android:layout_height="39dp"
                     android:src="@drawable/feel_bad"/>
             </LinearLayout>
 
@@ -172,7 +173,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:layout_marginTop="8dp">
                 <RadioButton
                     android:layout_height="20dp"
                     android:layout_width="20dp"
@@ -209,28 +211,28 @@
                 android:gravity="center_horizontal"
                 android:layout_marginTop="10dp">
                 <ImageView
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_marginRight="20dp"
+                    android:layout_width="30dp"
+                    android:layout_height="39dp"
+                    android:layout_marginRight="30dp"
                     android:src="@drawable/weather_sunny"/>
                 <ImageView
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_marginRight="20dp"
+                    android:layout_width="30dp"
+                    android:layout_height="39dp"
+                    android:layout_marginRight="30dp"
                     android:src="@drawable/weather_sunny_cloud"/>
                 <ImageView
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_marginRight="20dp"
+                    android:layout_width="30dp"
+                    android:layout_height="39dp"
+                    android:layout_marginRight="30dp"
                     android:src="@drawable/weather_cloudy"/>
                 <ImageView
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_marginRight="20dp"
+                    android:layout_width="30dp"
+                    android:layout_height="39dp"
+                    android:layout_marginRight="30dp"
                     android:src="@drawable/weather_rainy"/>
                 <ImageView
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
+                    android:layout_width="30dp"
+                    android:layout_height="39dp"
                     android:src="@drawable/weather_snow"/>
 
             </LinearLayout>

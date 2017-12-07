@@ -41,15 +41,15 @@
                         android:textSize="15sp"/>
                 </LinearLayout>
                 <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:layout_width="25dp"
+                    android:layout_height="32dp"
                     android:id="@+id/diary_emotion"
                     android:contentDescription="@string/description"
                     android:layout_marginRight="10dp"
                     app:layout_constraintRight_toLeftOf="@id/diary_weather"/>
                 <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:layout_width="25dp"
+                    android:layout_height="32dp"
                     android:id="@+id/diary_weather"
                     android:contentDescription="@string/description"
                     app:layout_constraintRight_toRightOf="parent"/>

@@ -13,8 +13,8 @@
         style="@style/CustomActionBar">
         <ImageButton
             android:id="@+id/menu_pin"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="48dp"
+            android:layout_height="39dp"
             android:background="@drawable/menu_pin_brown"
             android:scaleType="centerInside"
             android:contentDescription="@string/description"
@@ -24,8 +24,8 @@
             app:layout_constraintBottom_toBottomOf="parent"/>
         <ImageButton
             android:id="@+id/menu_diary"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="48dp"
+            android:layout_height="41dp"
             android:background="@drawable/menu_diary_gray"
             android:scaleType="centerInside"
             android:contentDescription="@string/description"
@@ -54,7 +54,7 @@
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_gravity="bottom|end"
-            android:background="@drawable/new_diary"
+            android:background="@drawable/floating_brown"
             android:layout_marginBottom="10dp"
             android:layout_marginRight="10dp"
             android:onClick="onWriteClicked"/>
