@@ -15,16 +15,16 @@
         android:id="@+id/write_bar"
         style="@style/CustomActionBar">
         <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="22dp"
+            android:layout_height="18dp"
             android:src="@drawable/back_gray"
             android:scaleType="centerCrop"
             android:layout_centerVertical="true"
             android:onClick="onBackPressed"
             android:contentDescription="@string/description"/>
         <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="48dp"
+            android:layout_height="38dp"
             android:src="@drawable/menu_pen_brown"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"

@@ -100,6 +100,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         FrameLayout fl = (FrameLayout)findViewById(R.id.main_frame_layout);
         RelativeLayout rl = new RelativeLayout(this);
         rl.setId(R.id.realDataLayout);
+
         rl.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, 150));
         rl.setBackgroundColor(getResources().getColor(R.color.white));
         rl.setAlpha((float)0.9);
@@ -112,6 +113,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         });
 
         RelativeLayout.LayoutParams params1 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+//        RelativeLayout.LayoutParams params1 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, 66);
         TextView tv = new TextView(this);
         params1.addRule(RelativeLayout.CENTER_IN_PARENT);
         tv.setLayoutParams(params1);
