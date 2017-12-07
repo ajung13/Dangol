@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -66,39 +67,54 @@ public class myAdapter_RealData extends BaseAdapter {
         tv_date.setText(myItem.getDate());
         tv_time.setText(myItem.getTime());
 
-        Button locationBtn = (Button)convertView.findViewById(R.id.real_show_location);
-        Button writeBtn = (Button)convertView.findViewById(R.id.real_write);
-        Button deleteBtn = (Button)convertView.findViewById(R.id.real_delete);
+        ImageButton locationBtn = (ImageButton)convertView.findViewById(R.id.real_show_location);
+        ImageButton writeBtn = (ImageButton)convertView.findViewById(R.id.real_write);
+        ImageButton deleteBtn = (ImageButton)convertView.findViewById(R.id.real_delete);
 
-        locationBtn.setOnClickListener(locationBtnListener);
+/*        locationBtn.setOnClickListener(locationBtnListener);
         writeBtn.setOnClickListener(writeBtnListener);
-        deleteBtn.setOnClickListener(deleteBtnListener);
+        deleteBtn.setOnClickListener(deleteBtnListener);*/
+
+        final int pos = position;
+        locationBtn.setOnClickListener(new Button.OnClickListener(){
+            public void onClick(View v){
+                Log.e("dangol_realData", "location " + pos);
+                myItem = getItem(pos);
+
+                Intent intent = new Intent(context, RealDataMapActivity.class);
+
+                LatLng location = new LatLng(intent.getDoubleExtra("lat", myItem.getLatitude()), intent.getDoubleExtra("lon", myItem.getLongitude()));
+
+                intent.putExtra("location", location);
+                context.startActivity(intent);
+            }
+        });
+        deleteBtn.setOnClickListener(new Button.OnClickListener(){
+            public void onClick(View v){
+                Log.e("dangol_realData", "delete");
+                myItem = getItem(pos);
+                deleteRow(Integer.toString(myItem.getRealDataId()));
+            }
+        });
+        writeBtn.setOnClickListener(new Button.OnClickListener(){
+            public void onClick(View v) {
+                Log.e("dangol_realData", "write");
+
+                Intent intent = new Intent(context, WritingActivity.class);
+
+                Location location = new Location("");
+                location.setLatitude(myItem.getLatitude());
+                location.setLongitude(myItem.getLongitude());
+                intent.putExtra("lat", location.getLatitude());
+                intent.putExtra("lon", location.getLongitude());
+                intent.putExtra("name", "저장된 위치");
+                Log.e("dangol_adapter", "position: " + v.getId());
+                context.startActivity(intent);
+            }
+        });
 
         return convertView;
     }
-
-    Button.OnClickListener writeBtnListener = new View.OnClickListener(){
-        public void onClick(View v) {
-            Log.e("dangol_realData", "write");
-
-            Intent intent = new Intent(context, WritingActivity.class);
-
-            Location location = new Location("");
-            location.setLatitude(myItem.getLatitude());
-            location.setLongitude(myItem.getLongitude());
-            intent.putExtra("lat", location.getLatitude());
-            intent.putExtra("lon", location.getLongitude());
-            context.startActivity(intent);
-        }
-    };
-
-    Button.OnClickListener deleteBtnListener = new View.OnClickListener(){
-        public void onClick(View v) {
-            Log.e("dangol_realData", "delete");
-
-            deleteRow(Integer.toString(myItem.getRealDataId()));
-        }
-    };
 
     void deleteRow(String id) {
 
@@ -126,20 +142,6 @@ public class myAdapter_RealData extends BaseAdapter {
         }
         mDB.close();
     }
-
-    Button.OnClickListener locationBtnListener = new View.OnClickListener(){
-        public void onClick(View v) {
-            Log.e("dangol_realData", "location");
-
-            Intent intent = new Intent(context, RealDataMapActivity.class);
-
-            LatLng location = new LatLng(intent.getDoubleExtra("lat", myItem.getLatitude()), intent.getDoubleExtra("lon", myItem.getLongitude()));
-
-            intent.putExtra("location", location);
-            context.startActivity(intent);
-
-        }
-    };
 
     public void addItem(Integer id, String date, String time, Double lat, Double lng) {
         MyItem_RealData myItem = new MyItem_RealData();

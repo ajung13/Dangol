@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="15dp">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -19,51 +20,56 @@
                     android:layout_height="wrap_content"
                     android:src="@drawable/calendar_brown"/>
                 <TextView
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:hint="날짜 꺄꺄"
-                    android:id="@+id/real_date"/>
+                    android:id="@+id/real_date"
+                    android:layout_marginLeft="10dp"/>
             </TableRow>
             <TableRow>
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/clock_brown"/>
+                    android:src="@drawable/clock_brown"
+                    android:layout_marginTop="10dp"/>
                 <TextView
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:hint="시간"
-                    android:id="@+id/real_time"/>
+                    android:id="@+id/real_time"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"/>
             </TableRow>
         </TableLayout>
         <ImageButton
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="지도 보기"
+            android:layout_height="match_parent"
             android:src="@drawable/map_brown"
             android:layout_weight="1"
             android:id="@+id/real_show_location"
-            />
+            android:background="@color/lightGray"
+            android:contentDescription="@string/description"/>
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:weightSum="2"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        android:layout_marginTop="10dp">
         <ImageButton
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="작성"
+            android:layout_height="40dp"
             android:src="@drawable/pen_brown"
             android:layout_weight="1"
-            android:id="@+id/real_write"/>
+            android:id="@+id/real_write"
+            android:contentDescription="@string/description"/>
         <ImageButton
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="삭제"
+            android:layout_height="40dp"
             android:src="@drawable/trash_brown"
             android:layout_weight="1"
-            android:id="@+id/real_delete"/>
+            android:id="@+id/real_delete"
+            android:contentDescription="@string/description"/>
     </LinearLayout>
 </LinearLayout>
