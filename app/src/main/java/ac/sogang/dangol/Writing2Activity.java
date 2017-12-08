@@ -18,9 +18,8 @@ import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
@@ -195,18 +194,14 @@ public class Writing2Activity extends AppCompatActivity {
     private int checkLocationID(SQLiteDatabase db, String name, double lat, double lon){
         int position = 1;
         try {
-            Log.e("dangol_write2", "start");
             Cursor c = db.rawQuery("SELECT * FROM Location", null);
-            Log.e("dangol_write2", "start2");
             if (c != null) {
                 if (c.moveToFirst()) {
                     do {
                         position++;
-                        Log.e("dangol_write2", "start3");
                         String tmpName = c.getString(c.getColumnIndexOrThrow("Name"));
                         double tmpLat = c.getDouble(c.getColumnIndexOrThrow("Latitude"));
                         double tmpLon = c.getDouble(c.getColumnIndexOrThrow("Longitude"));
-                        Log.e("dangol_write2", "start4");
                         Log.e("dangol_write2_check!", "(" + c.getInt(c.getColumnIndexOrThrow("LocationID"))
                                 + ") " + tmpName);
 
@@ -266,22 +261,18 @@ public class Writing2Activity extends AppCompatActivity {
         if(contents.equals(""))
             return locName;
 
-        //---------------UNSTABLE---------------
         String result = "";
         try {
             JSONParser parser = new JSONParser();
             JSONObject obj = (JSONObject) parser.parse(contents);
-            Log.e("dangol_write_setLocName", "status: " + obj.getString("status"));
-            JSONArray array = (JSONArray) obj.get("results");
-            obj = (JSONObject) array.get(0);
-            Log.e("dangol_write_setLocName", "addr: " + obj.getString("formatted_address"));
-            array = (JSONArray)obj.get("address_components");
-            obj = (JSONObject) array.get(0);
-            result = obj.getString("short_name");
+            if(obj.get("status").equals("OK")) {
+                JSONArray array = (JSONArray) obj.get("results");
+                obj = (JSONObject) array.get(0);
+                array = (JSONArray) obj.get("address_components");
+                obj = (JSONObject) array.get(0);
+            }
         }catch(ParseException pe){
             Log.e("dangol_write_setLocName", pe.toString());
-        }catch(JSONException je){
-            Log.e("dangol_write_setLocName", je.toString());
         }catch(Exception e){
             Log.e("dangol_write_setLocName", e.toString());
         }
