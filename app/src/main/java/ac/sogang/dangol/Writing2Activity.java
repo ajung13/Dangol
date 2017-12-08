@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -16,6 +17,20 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 public class Writing2Activity extends AppCompatActivity {
     String dbName = "Dangol";
@@ -114,7 +129,8 @@ public class Writing2Activity extends AppCompatActivity {
 
         saveImageToStorage();
 
-        uploadDB(year, month, date, emotion, weather, location.latitude, location.longitude, location_name, title, contents);
+        uploadDB(year, month, date, emotion, weather, location.latitude, location.longitude,
+                setLocationName(location_name, location.latitude, location.longitude), title, contents);
         finish();
     }
 
@@ -212,6 +228,71 @@ public class Writing2Activity extends AppCompatActivity {
             Log.e("dangol_write2_save", e.toString());
         }
         return position;
+    }
+
+    private String setLocationName(String locName, double lat, double lon){
+        if(!locName.equals("저장된 위치") && !locName.equals("현재 위치") && !locName.equals("선택된 위치"))
+            return locName;
+
+        Log.e("dangol_write_setLocName", "***1");
+
+//        URL url = null;
+        HttpURLConnection connection;
+        String contents = "";
+        try{
+            String urlAddr = "https://maps.googleapis.com/maps/api/geocode/json?latlng=" +
+                    lat + "," + lon + "&key=AIzaSyCQDYqsXSluix59rNn9WNHaSYUwluSyFIc";
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+            connection = (HttpURLConnection)new URL(urlAddr).openConnection();
+            connection.connect();
+
+            InputStream is = connection.getInputStream();
+            InputStreamReader ir = new InputStreamReader(is);
+            BufferedReader in = new BufferedReader(ir);
+            String tmp;
+            while((tmp=in.readLine()) != null)
+                contents = contents.concat(tmp);
+
+            in.close();
+            ir.close();
+            is.close();
+        }catch(MalformedURLException mue){
+            Log.e("dangol_write_setLocName", mue.toString());
+        }catch(IOException ie){
+            Log.e("dangol_write_setLocName", ie.toString());
+        }
+
+        if(contents.equals(""))
+            return locName;
+
+        //---------------UNSTABLE---------------
+        String result = "";
+        try {
+            JSONParser parser = new JSONParser();
+            JSONObject obj = (JSONObject) parser.parse(contents);
+            Log.e("dangol_write_setLocName", "status: " + obj.getString("status"));
+            JSONArray array = (JSONArray) obj.get("results");
+            obj = (JSONObject) array.get(0);
+            Log.e("dangol_write_setLocName", "addr: " + obj.getString("formatted_address"));
+            array = (JSONArray)obj.get("address_components");
+            obj = (JSONObject) array.get(0);
+            result = obj.getString("short_name");
+        }catch(ParseException pe){
+            Log.e("dangol_write_setLocName", pe.toString());
+        }catch(JSONException je){
+            Log.e("dangol_write_setLocName", je.toString());
+        }catch(Exception e){
+            Log.e("dangol_write_setLocName", e.toString());
+        }
+        //-----------------------------------------
+
+        if(result.equals(""))
+            return locName;
+
+        Log.e("dangol_write_setLocName", "***" + result);
+
+        return result;
     }
 
     private String checkString(String str, int flag){
