@@ -93,6 +93,7 @@ public class MyAdapter extends BaseAdapter {
                     setDirectoryName("images").
                     load();
 
+            Log.e("dangol_detail_frag", "imageName: " + myItem.getImageAddr());
             Log.e("dangol_detail_frag", "bitmap: " + bitmap);
             thumbnailImageView.setImageBitmap(bitmap);
         }

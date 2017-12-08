@@ -63,7 +63,7 @@ public class Writing2Activity extends AppCompatActivity {
 
         try {
             String sql;
-            sql = "SELECT DiaryID FROM Diary ORDER BY DiaryID ASC LIMIT 1";
+            sql = "SELECT DiaryID FROM Diary ORDER BY DiaryID DESC LIMIT 1";
 
             Cursor c = mDB.rawQuery(sql, null);
 
@@ -127,6 +127,8 @@ public class Writing2Activity extends AppCompatActivity {
     void saveImageToStorage() {
 
         if (imagePath != "" && imagePath != null) {
+            SQLiteDatabase mDB = this.openOrCreateDatabase(dbName, MODE_PRIVATE, null);
+
             Log.e("dangol_write2", "oing");
             Bitmap bitmap = ((BitmapDrawable) thumbnailImageView.getDrawable()).getBitmap();
 
