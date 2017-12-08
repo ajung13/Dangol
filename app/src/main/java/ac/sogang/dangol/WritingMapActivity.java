@@ -8,6 +8,7 @@ import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.AutocompleteFilter;
@@ -95,13 +96,6 @@ public class WritingMapActivity extends FragmentActivity implements OnMapReadyCa
 
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
         builder.include(mMarker.getPosition());
-/*        LatLngBounds bounds = builder.build();
-
-        int width = getResources().getDisplayMetrics().widthPixels;
-        int height = getResources().getDisplayMetrics().heightPixels;
-        int padding = (int) (width * 0.05); // offset from edges of the map 10% of screen
-
-        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding);*/
         CameraUpdate cu = CameraUpdateFactory.newLatLngZoom(mMarker.getPosition(), 15);
         mMap.moveCamera(cu);
     }
@@ -117,11 +111,14 @@ public class WritingMapActivity extends FragmentActivity implements OnMapReadyCa
         ad.setPositiveButton("완료", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                String name = et.getText().toString();
+                if(name.equals("")){
+                    Toast.makeText(getApplicationContext(), "장소 이름이 없으면 정확도가 떨어질 수 있습니다.", Toast.LENGTH_SHORT).show();
+                }
                 //put the location into basket
                 final LatLng position2 = new LatLng(mMarker.getPosition().latitude, mMarker.getPosition().longitude);
                 Bundle basket = new Bundle();
                 basket.putParcelable(EXTRA_STUFF, position2);
-                String name = et.getText().toString();
                 basket.putString("name", name);
                 dialog.dismiss();
                 intent.putExtras(basket);

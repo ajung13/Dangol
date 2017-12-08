@@ -51,26 +51,29 @@ public class DiaryFragment extends Fragment {
         MyAdapter mMyAdapter = new MyAdapter();
 
         try {
-            Cursor c = mDB.rawQuery("SELECT DiaryID, Title, Text, Time FROM Diary ORDER BY Time, DiaryID DESC;", null);
+            Cursor c = mDB.rawQuery("SELECT DiaryID, Title, LocationID, Time FROM Diary ORDER BY Time, DiaryID DESC;", null);
 
             if (c != null) {
                 if (c.moveToLast()) {
                     do {
-                        String title, content, date, imageName;
+                        String title, content, date;
                         title = c.getString(c.getColumnIndexOrThrow("Title"));
-                        content = c.getString(c.getColumnIndexOrThrow("Text"));
+//                        content = c.getString(c.getColumnIndexOrThrow("Text"));
                         date = c.getString(c.getColumnIndexOrThrow("Time"));
 
                         int id = c.getInt(c.getColumnIndexOrThrow("DiaryID"));
 
                         if(title.length() > 30)
                             title = title.substring(0, 30) + "...";
-                        if(content.length() > 30)
-                            content = content.substring(0, 30) + "...";
+//                        if(content.length() > 30)
+//                            content = content.substring(0, 30) + "...";
                         if(date != null)
                             date = date.substring(0, date.indexOf(" "));
 
-                        mMyAdapter.addItem(title, content, date, id);
+                        String locName = findLocationName(mDB, c.getInt(c.getColumnIndexOrThrow("LocationID")));
+
+//                        mMyAdapter.addItem(title, content, date, id);
+                        mMyAdapter.addItem(title, locName, date, id);
                     } while (c.moveToPrevious());
                 }
                 if(!c.isClosed())   c.close();
@@ -85,5 +88,25 @@ public class DiaryFragment extends Fragment {
         mDB.close();
 
         mListView.setAdapter(mMyAdapter);
+    }
+
+    private String findLocationName(SQLiteDatabase mDB, int id){
+        String result = "";
+        Cursor c = null;
+        try{
+            c = mDB.rawQuery("SELECT Name FROM Location WHERE LocationID="+id, null);
+            if(c != null && c.moveToFirst())
+                result = c.getString(c.getColumnIndexOrThrow("Name"));
+            if(!c.isClosed())   c.close();
+        }catch(SQLiteException se){
+            Log.e("dangol_diary(se2)", se.toString());
+        }catch(NullPointerException ne){
+            Log.e("dangol_diary(ne2)", ne.toString());
+        }catch(Exception e){
+            Log.e("dangol_diary(e2)", e.toString());
+        }
+        if(c != null)   c = null;
+
+        return result;
     }
 }
