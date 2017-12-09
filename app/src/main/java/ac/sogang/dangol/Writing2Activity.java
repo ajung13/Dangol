@@ -1,5 +1,6 @@
 package ac.sogang.dangol;
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -17,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.tsengvn.typekit.TypekitContextWrapper;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -75,7 +77,7 @@ public class Writing2Activity extends AppCompatActivity {
 
         try {
             String sql;
-            sql = "SELECT DiaryID FROM Diary ORDER BY DiaryID ASC LIMIT 1";
+            sql = "SELECT DiaryID FROM Diary ORDER BY DiaryID DESC LIMIT 1";
 
             Cursor c = mDB.rawQuery(sql, null);
 
@@ -232,6 +234,11 @@ public class Writing2Activity extends AppCompatActivity {
         return str;
     }
 
+<<<<<<< HEAD
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(TypekitContextWrapper.wrap(newBase));
+=======
     private String setLocationName(String locName, double lat, double lon){
         if(!locName.equals("저장된 위치") && !locName.equals("현재 위치") && !locName.equals("선택된 위치"))
             return locName;
@@ -294,5 +301,6 @@ public class Writing2Activity extends AppCompatActivity {
 
         Log.e("dangol_write_setLocName", "return " + result);
         return result;
+>>>>>>> master
     }
 }

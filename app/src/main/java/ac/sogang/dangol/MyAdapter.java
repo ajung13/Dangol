@@ -2,6 +2,7 @@ package ac.sogang.dangol;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -90,6 +91,9 @@ public class MyAdapter extends BaseAdapter {
                     setFileName(myItem.getImageAddr()).
                     setDirectoryName("images").
                     load();
+
+            Log.e("dangol_detail_frag", "imageName: " + myItem.getImageAddr());
+            Log.e("dangol_detail_frag", "bitmap: " + bitmap);
 
             thumbnailImageView.setImageBitmap(bitmap);
         }
