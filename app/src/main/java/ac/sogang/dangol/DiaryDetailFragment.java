@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,6 +37,15 @@ public class DiaryDetailFragment extends Fragment {
         Log.e("dangol_detail_frag", "id: " + dataID);
 
         setDB();
+
+        Button deleteBtn = (Button)view.findViewById(R.id.diary_delete);
+
+        deleteBtn.setOnClickListener(new Button.OnClickListener(){
+            public void onClick(View v) {
+                deleteDiary(dataID);
+                getActivity().finish();
+            }
+        });
 
         return view;
     }
@@ -68,6 +78,32 @@ public class DiaryDetailFragment extends Fragment {
         mDB.close();
     }
 
+    void deleteDiary(int id){
+        mDB = getActivity().openOrCreateDatabase("Dangol", MODE_PRIVATE, null);
+
+        try {
+            Cursor c = mDB.rawQuery("Delete FROM Diary WHERE Diary.DiaryID =" + id, null);
+
+            if (c != null) {
+                if (c.moveToLast()) {
+                    do {
+                        Log.e("dangol_realDataList", "delete Success");
+                    } while (c.moveToPrevious());
+                }
+                if(!c.isClosed())   c.close();
+            }
+        }catch(SQLiteException se) {
+            Log.e("dangol_realDataList", se.toString());
+        }catch(NullPointerException ne){
+            Log.e("dangol_realDataList", ne.toString());
+        }catch(Exception e){
+            Log.e("dangol_realDataList", e.toString());
+        }
+
+        mDB.close();
+
+    }
+
     private int setDiaryCursor(int id) {
         int locId = -1;
         try {
@@ -97,15 +133,23 @@ public class DiaryDetailFragment extends Fragment {
         TextView tv;
         ImageView iv;
         int imageFlag;
+        String []dateTime;
 
         String date = c_diary.getString(c_diary.getColumnIndexOrThrow("Time"));
         if(date != null)
             date = date.substring(0, date.indexOf(" "));
         tv = (TextView)view.findViewById(R.id.diary_date);
-        tv.setText(date);
+        dateTime = date.split(" ");
+        if(dateTime[1] == "00:00:00"){
+            tv.setText(dateTime[0]);
+        }
+        else{
+            tv.setText(date);
+        }
 
         tv = (TextView)view.findViewById(R.id.diary_location);
         tv.setText(c_location.getString(c_location.getColumnIndexOrThrow("Name")));
+
 
         iv = (ImageView)view.findViewById(R.id.diary_emotion);
         imageFlag = c_diary.getInt(c_diary.getColumnIndexOrThrow("Mood"));

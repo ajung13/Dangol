@@ -122,12 +122,10 @@ public class myAdapter_RealData extends BaseAdapter {
 
         try {
             Cursor c = mDB.rawQuery("Delete FROM realData WHERE realData.realDataID =" + id, null);
-
             if (c != null) {
                 if (c.moveToLast()) {
                     do {
                         Log.e("dangol_realDataList", "delete Success");
-
                     } while (c.moveToPrevious());
                 }
                 if(!c.isClosed())   c.close();
