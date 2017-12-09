@@ -130,22 +130,31 @@ public class DiaryDetailFragment extends Fragment {
     }
 
     private void setDiaryView(){
+        Log.e("dangol_diary_detail", "setDiaryView Start");
         TextView tv;
         ImageView iv;
         int imageFlag;
         String []dateTime;
 
+
         String date = c_diary.getString(c_diary.getColumnIndexOrThrow("Time"));
         if(date != null)
             date = date.substring(0, date.indexOf(" "));
         tv = (TextView)view.findViewById(R.id.diary_date);
+
         dateTime = date.split(" ");
-        if(dateTime[1] == "00:00:00"){
-            tv.setText(dateTime[0]);
-        }
-        else{
+
+        if (dateTime.length > 1) {
+            if(dateTime[1] == "00:00:00"){
+                tv.setText(dateTime[0]);
+            }
+            else{
+                tv.setText(date);
+            }
+        } else {
             tv.setText(date);
         }
+
 
         tv = (TextView)view.findViewById(R.id.diary_location);
         tv.setText(c_location.getString(c_location.getColumnIndexOrThrow("Name")));
@@ -171,6 +180,8 @@ public class DiaryDetailFragment extends Fragment {
             case 4: iv.setImageResource(R.drawable.weather_snow);   break;
         }
 
+        Log.e("dangol_diary_detail", "setDiaryView 2");
+
         iv = (ImageView)view.findViewById(R.id.diary_image);
         String imagePath = c_diary.getString(c_diary.getColumnIndexOrThrow("Photo"));
         if (imagePath != null) {
@@ -185,6 +196,8 @@ public class DiaryDetailFragment extends Fragment {
             Log.e("dangol_detail_frag", "no image");
             iv.setVisibility(View.GONE);
         }
+
+        Log.e("dangol_diary_detail", "setDiaryView 3");
 
         tv = (TextView)view.findViewById(R.id.diary_title);
         tv.setText(c_diary.getString(c_diary.getColumnIndexOrThrow("Title")));
