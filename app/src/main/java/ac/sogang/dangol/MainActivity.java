@@ -374,27 +374,30 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                     if (location2 == null) break;
                     String nowDateTime2 = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss").format(System.currentTimeMillis());
 
-                    if (location1.distanceTo(location2) <= 10) {
-                        // Location Class에 존재하는 distanceTo 함수, 두 지점 사이의 거리를 Meter 단위로 반환, 만약 두 지점 사이가 10m 이하이면 count++
-                        count++;
-                        String str = location2.getLatitude() + ", "+ location2.getLongitude()+", ";
-                        Log.e("dangol_task_check_data", str + Integer.toString(count));
-                    } else {
-                        if (count >= 7) {
-                            // 유효한 데이터일 경우 데이터 저장
-                            mDB = context.openOrCreateDatabase(dbName, MODE_PRIVATE, null);
-                            sql = "INSERT INTO realData(Latitude, Longitude, Time) VALUES (" + latitude + ", " + longitude + ", '" + nowDateTime + "');";
-                            mDB.execSQL(sql);
-                            Log.e("dangol_task", sql);
-                            mDB.close();
+                    if(count != 7){
+                        if (location1.distanceTo(location2) <= 10) {
+                            // Location Class에 존재하는 distanceTo 함수, 두 지점 사이의 거리를 Meter 단위로 반환, 만약 두 지점 사이가 10m 이하이면 count++
+                            count++;
+                            String str = location2.getLatitude() + ", " + location2.getLongitude() + ", ";
+                            Log.e("dangol_task_check_data", str + Integer.toString(count));
                         }
+                        else {
+                            // 데이터 리셋, 위치 재설정
+                            count = 0;
+                            location1 = location2;
+                            latitude = location2.getLatitude();
+                            longitude = location2.getLongitude();
+                            nowDateTime = nowDateTime2;
+                        }
+                    }
+                    else {
 
-                        // 데이터 리셋, 위치 재설정
-                        count = 0;
-                        location1 = location2;
-                        latitude = location2.getLatitude();
-                        longitude = location2.getLongitude();
-                        nowDateTime = nowDateTime2;
+                        // 유효한 데이터일 경우 데이터 저장
+                        mDB = context.openOrCreateDatabase(dbName, MODE_PRIVATE, null);
+                        sql = "INSERT INTO realData(Latitude, Longitude, Time) VALUES (" + latitude + ", " + longitude + ", '" + nowDateTime + "');";
+                        mDB.execSQL(sql);
+                        Log.e("dangol_task", sql);
+                        mDB.close();
                     }
                 }
             }catch(SecurityException se){
