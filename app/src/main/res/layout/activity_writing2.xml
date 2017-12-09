@@ -70,7 +70,7 @@
                 android:id="@+id/write_title"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
-                android:hint="Write your title"
+                android:hint="제목을 입력하세요"
                 android:textColor="@color/contents"
                 android:textColorHint="@color/contentsLight"/>
 
@@ -86,7 +86,7 @@
                 android:id="@+id/write_contents"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
-                android:hint="Write your memory"
+                android:hint="내용을 입력하세요"
                 android:textColor="@color/contents"
                 android:textColorHint="@color/contentsLight"/>
         </LinearLayout>

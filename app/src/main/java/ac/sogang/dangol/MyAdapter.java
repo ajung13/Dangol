@@ -66,7 +66,7 @@ public class MyAdapter extends BaseAdapter {
             ImageView iv_weather = (ImageView)convertView.findViewById(R.id.diary_weather);
             ImageView thumbnailImageView = (ImageView)convertView.findViewById(R.id.diary_image);
 
-            MyItem myItem = getItem(position);
+            final MyItem myItem = getItem(position);
 
             tv_date.setText(myItem.getDate());
             tv_location.setText(myItem.getLocation());
