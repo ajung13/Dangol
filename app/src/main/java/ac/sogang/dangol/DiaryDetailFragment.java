@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,8 +39,13 @@ public class DiaryDetailFragment extends Fragment {
 
         setDB();
 
-        Button deleteBtn = (Button)view.findViewById(R.id.diary_delete);
-
+        LinearLayout ll = (LinearLayout)view.findViewById(R.id.diary_detail_layout);
+        Button deleteBtn = new Button(getActivity());
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        params.setMargins(0, 30, 0, 50);
+        deleteBtn.setLayoutParams(params);
+        deleteBtn.setText("삭제");
+        ll.addView(deleteBtn);
         deleteBtn.setOnClickListener(new Button.OnClickListener(){
             public void onClick(View v) {
                 deleteDiary(dataID);
@@ -79,15 +85,23 @@ public class DiaryDetailFragment extends Fragment {
     }
 
     void deleteDiary(int id){
+        Log.e("dangol_real", "deleteDiary");
         mDB = getActivity().openOrCreateDatabase("Dangol", MODE_PRIVATE, null);
 
         try {
             Cursor c_loc = mDB.rawQuery("Select LocationID FROM Diary WHERE Diary.DiaryID =" + id, null);
             Cursor c_del = mDB.rawQuery("Delete FROM Diary WHERE Diary.DiaryID =" + id, null);
 
-            String locationID = c_loc.getString(c_loc.getColumnIndexOrThrow("LocationID"));
+            String locationID = "";
+            if(c_loc != null && c_loc.moveToFirst()) {
+                locationID = c_loc.getString(c_loc.getColumnIndexOrThrow("LocationID"));
+                Log.e("dangol_realDataList", "id: " + locationID);
+            }
+            else{
+                Log.e("dangol_realDataList", "location is null");
+            }
 
-            if(!c_loc.isClosed())   c_loc.close();
+            if(c_loc != null && !c_loc.isClosed())   c_loc.close();
 
             if (c_del != null) {
                 if (c_del.moveToLast()) {
