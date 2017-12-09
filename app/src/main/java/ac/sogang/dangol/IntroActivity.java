@@ -1,6 +1,7 @@
 package ac.sogang.dangol;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
@@ -26,15 +27,37 @@ public class IntroActivity extends AppCompatActivity {
 
         makeTables();
 
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Intent intent = new Intent(IntroActivity.this, MainActivity.class);
-                startActivity(intent);
-                finish();
-            }
-        }, 1000);
+        if(checkFirst()) {
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    Intent intent = new Intent(IntroActivity.this, GuideActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
+            }, 1000);
+        }
+        else{
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    Intent intent = new Intent(IntroActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
+            }, 1000);
+        }
+    }
+
+    private boolean checkFirst(){
+        SharedPreferences prefs = getSharedPreferences("ac.sogang.dangol", MODE_PRIVATE);
+        if(prefs.getBoolean("firstrun", true)) {
+            prefs.edit().putBoolean("firstrun", false).commit();
+            return true;
+        }
+        return false;
     }
 
     private void makeTables(){

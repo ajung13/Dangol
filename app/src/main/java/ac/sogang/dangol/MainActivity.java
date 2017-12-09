@@ -226,7 +226,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             Log.e("dangol_main(4)", "catch " + se.getMessage());
         }
 
-        Toast.makeText(this, "Check log", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "Check log", Toast.LENGTH_SHORT).show();
 
         if(dangolApp.th == null) {
             dangolApp.th = new TimeThread(getApplicationContext());
@@ -293,9 +293,11 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         if (requestCode == 1) {
             for (int i = 0; i < permissions.length; i++) {
                 if (grantResults[i] == PackageManager.PERMISSION_GRANTED)
-                    Toast.makeText(this, permissions[i] + " permission granted", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(this, permissions[i] + " permission granted", Toast.LENGTH_SHORT).show();
+                    Log.e("dangol_init", permissions[i] + " permission granted");
                 else
-                    Toast.makeText(this, permissions[i] + " permission denied", Toast.LENGTH_SHORT).show();
+                    Log.e("dangol_init", permissions[i] + " permission denied");
+//                    Toast.makeText(this, permissions[i] + " permission denied", Toast.LENGTH_SHORT).show();
             }
         }
     }
