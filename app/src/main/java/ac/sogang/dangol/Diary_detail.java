@@ -31,6 +31,7 @@ public class Diary_detail extends AppCompatActivity {
         ft.commit();
     }
 
+
     public int getDataID(){
         return dataID;
     }

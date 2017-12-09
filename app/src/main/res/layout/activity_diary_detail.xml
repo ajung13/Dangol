@@ -24,7 +24,9 @@
             android:gravity="center"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"/>
+            android:layout_centerVertical="true">
+
+        </TextView>
     </RelativeLayout>
 
     <View
