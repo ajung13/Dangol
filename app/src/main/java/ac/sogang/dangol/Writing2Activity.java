@@ -234,11 +234,11 @@ public class Writing2Activity extends AppCompatActivity {
         return str;
     }
 
-<<<<<<< HEAD
     @Override
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(TypekitContextWrapper.wrap(newBase));
-=======
+    }
+
     private String setLocationName(String locName, double lat, double lon){
         if(!locName.equals("저장된 위치") && !locName.equals("현재 위치") && !locName.equals("선택된 위치"))
             return locName;
@@ -301,6 +301,5 @@ public class Writing2Activity extends AppCompatActivity {
 
         Log.e("dangol_write_setLocName", "return " + result);
         return result;
->>>>>>> master
     }
 }
