@@ -67,9 +67,9 @@ public class myAdapter_RealData extends BaseAdapter {
         tv_date.setText(myItem.getDate());
         tv_time.setText(myItem.getTime());
 
-        ImageButton locationBtn = (ImageButton)convertView.findViewById(R.id.real_show_location);
-        ImageButton writeBtn = (ImageButton)convertView.findViewById(R.id.real_write);
-        ImageButton deleteBtn = (ImageButton)convertView.findViewById(R.id.real_delete);
+        Button locationBtn = (Button)convertView.findViewById(R.id.real_show_location);
+        Button writeBtn = (Button)convertView.findViewById(R.id.real_write);
+        Button deleteBtn = (Button)convertView.findViewById(R.id.real_delete);
 
 /*        locationBtn.setOnClickListener(locationBtnListener);
         writeBtn.setOnClickListener(writeBtnListener);
@@ -127,7 +127,6 @@ public class myAdapter_RealData extends BaseAdapter {
                 if (c.moveToLast()) {
                     do {
                         Log.e("dangol_realDataList", "delete Success");
-
 
                     } while (c.moveToPrevious());
                 }

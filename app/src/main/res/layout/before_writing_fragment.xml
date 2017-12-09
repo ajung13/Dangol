@@ -3,18 +3,22 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
+    android:background="#ffffff"
     android:padding="15dp">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:weightSum="3"
+        android:weightSum="5"
         android:gravity="center_vertical">
         <TableLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="2">
-            <TableRow>
+            android:layout_weight="4"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp">
+            <TableRow
+                android:layout_marginBottom="8dp">
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -41,35 +45,46 @@
                     android:layout_marginTop="10dp"/>
             </TableRow>
         </TableLayout>
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:src="@drawable/map_brown"
-            android:layout_weight="1"
-            android:id="@+id/real_show_location"
-            android:background="@color/lightGray"
-            android:contentDescription="@string/description"/>
+
+            <Button
+                android:id="@+id/real_show_location"
+                android:layout_width="wrap_content"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_height="60dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="1"
+                android:background="#ffffff"
+                android:drawableBottom="@drawable/map_brown"
+                android:text="위치보기" />
+
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:weightSum="2"
-        android:gravity="center_vertical"
+        android:gravity="center"
         android:layout_marginTop="10dp">
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:src="@drawable/pen_brown"
-            android:layout_weight="1"
+        <Button
             android:id="@+id/real_write"
-            android:contentDescription="@string/description"/>
-        <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="40dp"
-            android:src="@drawable/trash_brown"
+            android:background="@color/dangolGray"
+            android:drawableLeft="@drawable/pen_brown"
+            android:padding="8dp"
             android:layout_weight="1"
+            android:layout_marginRight="10dp"
+            android:text="작성"
+            android:textColor="#000" />
+        <Button
             android:id="@+id/real_delete"
-            android:contentDescription="@string/description"/>
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:background="@color/dangolGray"
+            android:drawableLeft="@drawable/trash_brown"
+            android:padding="8dp"
+            android:layout_weight="1"
+            android:text="삭제"
+            android:textColor="#000" />
     </LinearLayout>
 </LinearLayout>

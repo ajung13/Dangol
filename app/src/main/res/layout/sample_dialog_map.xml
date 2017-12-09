@@ -107,7 +107,7 @@
                     android:id="@+id/secondItem"
                     android:textSize="28sp"
                     android:layout_weight="1"
-                    android:textColor="@color/defaultBlue"
+                    android:textColor="@color/dangolBrown"
                     android:padding="8dip"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
