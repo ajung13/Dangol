@@ -121,8 +121,12 @@ public class WritingActivity extends AppCompatActivity {
             if(resultCode == RESULT_OK){
                 location = data.getParcelableExtra(EXTRA_STUFF);
                 location_name = data.getStringExtra("name");
-                if(location == null || location_name == null)
+
+                if(location == null)
                     return;
+                if(location_name == null || location_name.equals(""))
+                    location_name = "선택된 위치";
+
                 Log.e("dangol_write", "new location record: " + location.latitude + ", "
                 + location.longitude + " (" + location_name + ")");
                 setLocation();

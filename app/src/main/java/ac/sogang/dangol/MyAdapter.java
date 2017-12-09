@@ -58,7 +58,6 @@ public class MyAdapter extends BaseAdapter {
         }
 
         if(adapterFlag){
-            Log.e("dangol_adapter", "good");
             TextView tv_date = (TextView)convertView.findViewById(R.id.diary_date);
             TextView tv_location = (TextView)convertView.findViewById(R.id.diary_location);
             TextView tv_title = (TextView)convertView.findViewById(R.id.diary_title);
@@ -95,10 +94,10 @@ public class MyAdapter extends BaseAdapter {
 
             Log.e("dangol_detail_frag", "imageName: " + myItem.getImageAddr());
             Log.e("dangol_detail_frag", "bitmap: " + bitmap);
+
             thumbnailImageView.setImageBitmap(bitmap);
         }
         else{
-            Log.e("dangol_adapter", "no..");
             TextView tv_title = (TextView)convertView.findViewById(R.id.diary_list_title);
             TextView tv_date = (TextView)convertView.findViewById(R.id.diary_list_date);
             TextView tv_content = (TextView)convertView.findViewById(R.id.diary_list_content);

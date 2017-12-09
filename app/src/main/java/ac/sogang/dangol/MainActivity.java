@@ -301,6 +301,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     static private class GPSListener implements LocationListener {
+        boolean flag = true;
         public void onLocationChanged(Location location) {
             Double latitude = location.getLatitude();
             Double longitude = location.getLongitude();
@@ -309,7 +310,10 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
             LatLng myLocation = new LatLng(latitude, longitude);
             lastlocation = location;
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 19));
+            if(flag) {
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 19));
+                flag = false;
+            }
             mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         }
 

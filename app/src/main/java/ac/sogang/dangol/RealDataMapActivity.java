@@ -61,7 +61,8 @@ public class RealDataMapActivity extends FragmentActivity implements OnMapReadyC
         int height = getResources().getDisplayMetrics().heightPixels;
         int padding = (int) (width * 0.05); // offset from edges of the map 10% of screen
 
-        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding);
+        //        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding);
+        CameraUpdate cu = CameraUpdateFactory.newLatLngZoom(mMarker.getPosition(), 15);
 
         mMap.moveCamera(cu);
     }
