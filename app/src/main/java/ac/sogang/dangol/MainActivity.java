@@ -291,9 +291,15 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         if (requestCode == 1) {
             for (int i = 0; i < permissions.length; i++) {
-                if (grantResults[i] == PackageManager.PERMISSION_GRANTED)
-//                    Toast.makeText(this, permissions[i] + " permission granted", Toast.LENGTH_SHORT).show();
+                if (grantResults[i] == PackageManager.PERMISSION_GRANTED){
+                    //                    Toast.makeText(this, permissions[i] + " permission granted", Toast.LENGTH_SHORT).show();
                     Log.e("dangol_init", permissions[i] + " permission granted");
+                    if(mMap != null){
+                        LatLng tmp = new LatLng(37.551430, 126.943048);
+                        CameraUpdate cu = CameraUpdateFactory.newLatLngZoom(tmp, 15);
+                        mMap.moveCamera(cu);
+                    }
+                }
                 else
                     Log.e("dangol_init", permissions[i] + " permission denied");
 //                    Toast.makeText(this, permissions[i] + " permission denied", Toast.LENGTH_SHORT).show();
