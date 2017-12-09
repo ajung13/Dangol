@@ -9,8 +9,6 @@
     android:id="@+id/write_parent"
     tools:context="ac.sogang.dangol.WritingActivity">
 
-
-
     <RelativeLayout
         android:id="@+id/write_bar"
         style="@style/CustomActionBar">
@@ -34,10 +32,9 @@
             android:layout_height="40dp"
             android:text="저장"
             android:background="#00000000"
-            android:textColor="#000000"
+            android:textColor="@color/dangolBrown"
             android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:onClick="onSavePressed"/>
+            android:layout_centerVertical="true" />
     </RelativeLayout>
 
     <View
@@ -57,9 +54,7 @@
             <ImageView
                 android:id="@+id/thumbnail"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:srcCompat="@drawable/album_brown" />
-
+                android:layout_height="wrap_content" />
 
             <TextView
                 android:layout_width="match_parent"
