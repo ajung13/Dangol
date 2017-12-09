@@ -138,21 +138,19 @@ public class Writing2Activity extends AppCompatActivity {
        형태 : DiaryImage1.png(번호는 DiaryID)
     */
     void saveImageToStorage() {
+        if(imagePath == null || imagePath.equals(""))
+            return;
 
-        if (imagePath != "" && imagePath != null) {
-            Log.e("dangol_write2", "oing");
-            Bitmap bitmap = ((BitmapDrawable) thumbnailImageView.getDrawable()).getBitmap();
+        Bitmap bitmap = ((BitmapDrawable) thumbnailImageView.getDrawable()).getBitmap();
 
-            String id = Integer.toString(lastDiaryId);
-            imageName = "DiaryImage" + id + ".png";
+        String id = Integer.toString(lastDiaryId);
+        imageName = "DiaryImage" + id + ".png";
+        Log.e("dangol_write2", "imageFile name: " + imageName);
 
-            Log.e("dangol_write2", "imageFile name: " + imageName);
-
-            new ImageSaver(getApplicationContext()).
-                    setFileName(imageName).
-                    setDirectoryName("images").
-                    save(bitmap);
-        }
+        new ImageSaver(getApplicationContext()).
+                setFileName(imageName).
+                setDirectoryName("images").
+                save(bitmap);
     }
 
     public void uploadDB(int year, int month, int date, int emotion, int weather, double lat, double lon, String name, String title, String contents){
@@ -161,7 +159,6 @@ public class Writing2Activity extends AppCompatActivity {
         try{
             String sql;
             locationFlag = false;
-            Log.e("dangol_write2", "upload db");
             int locID = checkLocationID(mDB, name, lat, lon);
             if(!locationFlag){
                 sql = "INSERT INTO Location(Name, Latitude, Longitude) VALUES ('" + name + "', " +
@@ -170,7 +167,7 @@ public class Writing2Activity extends AppCompatActivity {
                 mDB.execSQL(sql);
             }
 
-            if (imagePath != "") {
+            if (imagePath!= null && !imagePath.equals("")) {
                 sql = "INSERT INTO Diary(LocationID, Mood, Weather, Title, Text, Time, Photo) VALUES (" +
                         locID + ", " + emotion + ", " + weather +
                         ", '" + title + "', '" + contents + "', '" + year + "-" + month + "-" + date + " 00:00:00'" + ", '" + imageName + "' " + ");";
@@ -225,13 +222,20 @@ public class Writing2Activity extends AppCompatActivity {
         return position;
     }
 
+    private String checkString(String str, int flag){
+        if(str.length() == 0){
+            if(flag == 0)   str = "제목 없음";
+            else            str = "내용 없음";
+        }
+        if(str.contains("'"))
+            str = str.replace("'", " ");
+        return str;
+    }
+
     private String setLocationName(String locName, double lat, double lon){
         if(!locName.equals("저장된 위치") && !locName.equals("현재 위치") && !locName.equals("선택된 위치"))
             return locName;
 
-        Log.e("dangol_write_setLocName", "***1");
-
-//        URL url = null;
         HttpURLConnection connection;
         String contents = "";
         try{
@@ -252,6 +256,7 @@ public class Writing2Activity extends AppCompatActivity {
             in.close();
             ir.close();
             is.close();
+            connection.disconnect();
         }catch(MalformedURLException mue){
             Log.e("dangol_write_setLocName", mue.toString());
         }catch(IOException ie){
@@ -268,31 +273,26 @@ public class Writing2Activity extends AppCompatActivity {
             if(obj.get("status").equals("OK")) {
                 JSONArray array = (JSONArray) obj.get("results");
                 obj = (JSONObject) array.get(0);
-                array = (JSONArray) obj.get("address_components");
-                obj = (JSONObject) array.get(0);
+//                array = (JSONArray) obj.get("address_components");
+//                obj = (JSONObject) array.get(0);
+//                result = obj.get("short_name").toString();
+                result = obj.get("formatted_address").toString();
             }
+
+            String[] tokenResult = result.split(" ");
+            result = "";
+            for(int i = tokenResult.length - 1; i >= 0 && i > tokenResult.length - 4; i--)
+                result = tokenResult[i] + " " + result;
         }catch(ParseException pe){
             Log.e("dangol_write_setLocName", pe.toString());
         }catch(Exception e){
             Log.e("dangol_write_setLocName", e.toString());
         }
-        //-----------------------------------------
 
         if(result.equals(""))
             return locName;
 
-        Log.e("dangol_write_setLocName", "***" + result);
-
+        Log.e("dangol_write_setLocName", "return " + result);
         return result;
-    }
-
-    private String checkString(String str, int flag){
-        if(str.length() == 0){
-            if(flag == 0)   str = "제목 없음";
-            else            str = "내용 없음";
-        }
-        if(str.contains("'"))
-            str = str.replace("'", " ");
-        return str;
     }
 }
