@@ -82,16 +82,37 @@ public class DiaryDetailFragment extends Fragment {
         mDB = getActivity().openOrCreateDatabase("Dangol", MODE_PRIVATE, null);
 
         try {
-            Cursor c = mDB.rawQuery("Delete FROM Diary WHERE Diary.DiaryID =" + id, null);
+            Cursor c_loc = mDB.rawQuery("Select LocationID FROM Diary WHERE Diary.DiaryID =" + id, null);
+            Cursor c_del = mDB.rawQuery("Delete FROM Diary WHERE Diary.DiaryID =" + id, null);
 
-            if (c != null) {
-                if (c.moveToLast()) {
+            String locationID = c_loc.getString(c_loc.getColumnIndexOrThrow("LocationID"));
+
+            if(!c_loc.isClosed())   c_loc.close();
+
+            if (c_del != null) {
+                if (c_del.moveToLast()) {
                     do {
                         Log.e("dangol_realDataList", "delete Success");
-                    } while (c.moveToPrevious());
+                    } while (c_del.moveToPrevious());
                 }
-                if(!c.isClosed())   c.close();
+                if(!c_del.isClosed())   c_del.close();
             }
+
+            Cursor c_cnt = mDB.rawQuery("SELECT * FROM Diary WHERE Diary.LocationID =" + locationID, null);
+            if(c_cnt.getCount() == 0){
+                Cursor c_del_loc = mDB.rawQuery("Delete FROM Location WHERE Location.LocationID =" + locationID, null);
+                if (c_del_loc != null) {
+                    if (c_del_loc.moveToLast()) {
+                        do {
+                            Log.e("dangol_realDataList", "delete Success");
+                        } while (c_del_loc.moveToPrevious());
+                    }
+                    if(!c_del_loc.isClosed())   c_del_loc.close();
+                }
+            }
+
+            if(!c_cnt.isClosed())   c_cnt.close();
+
         }catch(SQLiteException se) {
             Log.e("dangol_realDataList", se.toString());
         }catch(NullPointerException ne){
