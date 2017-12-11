@@ -166,11 +166,11 @@ public class DiaryDetailFragment extends Fragment {
 
     private void setDiaryView(){
         Log.e("dangol_diary_detail", "setDiaryView Start");
+        LinearLayout linearLayout;
         TextView tv;
         ImageView iv;
         int imageFlag;
         String []dateTime;
-
 
         String date = c_diary.getString(c_diary.getColumnIndexOrThrow("Time"));
         if(date != null)
@@ -189,7 +189,6 @@ public class DiaryDetailFragment extends Fragment {
         } else {
             tv.setText(date);
         }
-
 
         tv = (TextView)view.findViewById(R.id.diary_location);
         tv.setText(c_location.getString(c_location.getColumnIndexOrThrow("Name")));
@@ -219,17 +218,20 @@ public class DiaryDetailFragment extends Fragment {
 
         iv = (ImageView)view.findViewById(R.id.diary_image);
         String imagePath = c_diary.getString(c_diary.getColumnIndexOrThrow("Photo"));
-        if (imagePath != null) {
+
+        Log.e("dangol_detail_flag", "imagePath " + imagePath);
+        if (imagePath == null || imagePath == "") {
+            Log.e("dangol_detail_flag", "no image");
+            iv.setVisibility(View.GONE);
+
+        } else {
             Bitmap bitmap = new ImageSaver(getActivity()).
                     setFileName(imagePath).
                     setDirectoryName("images").
                     load();
 
-            Log.e("dangol_detail_frag", "bitmap: " + bitmap);
+            Log.e("dangol_detail_flag", "bitmap: " + bitmap);
             iv.setImageBitmap(bitmap);
-        } else {
-            Log.e("dangol_detail_frag", "no image");
-            iv.setVisibility(View.GONE);
         }
 
         Log.e("dangol_diary_detail", "setDiaryView 3");

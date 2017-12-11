@@ -57,10 +57,10 @@
             </android.support.constraint.ConstraintLayout>
 
             <ImageView
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:adjustViewBounds="true"
-                android:scaleType="fitCenter"
+                android:scaleType="fitXY"
                 android:layout_weight="1"
                 android:id="@+id/diary_image"
                 android:layout_marginTop="20dp"
@@ -73,7 +73,7 @@
                 android:layout_marginTop="30dp"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                android:textColor="@color/title"/>
+                android:textColor="@color/dangolBrown"/>
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

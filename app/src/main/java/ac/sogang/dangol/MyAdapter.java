@@ -68,7 +68,24 @@ public class MyAdapter extends BaseAdapter {
 
             final MyItem myItem = getItem(position);
 
-            tv_date.setText(myItem.getDate());
+            String date = myItem.getDate();
+            if(date != null)
+                date = date.substring(0, date.indexOf(" "));
+
+            String dateTime[] = date.split(" ");
+
+            if (dateTime.length > 1) {
+                if(dateTime[1] == "00:00:00"){
+                    tv_date.setText(dateTime[0]);
+                }
+                else{
+                    tv_date.setText(date);
+                }
+            } else {
+                tv_date.setText(date);
+            }
+
+
             tv_location.setText(myItem.getLocation());
             tv_title.setText(myItem.getTitle());
             tv_contents.setText(myItem.getContent());
@@ -87,15 +104,23 @@ public class MyAdapter extends BaseAdapter {
                 case 4: iv_weather.setImageResource(R.drawable.weather_snow);   break;
             }
 
-            Bitmap bitmap = new ImageSaver(thisActivity).
-                    setFileName(myItem.getImageAddr()).
-                    setDirectoryName("images").
-                    load();
 
+            String imagePath = myItem.getImageAddr();
             Log.e("dangol_detail_frag", "imageName: " + myItem.getImageAddr());
-            Log.e("dangol_detail_frag", "bitmap: " + bitmap);
 
-            thumbnailImageView.setImageBitmap(bitmap);
+            if (imagePath == null || imagePath == "") {
+                Log.e("dangol_detail_flag", "no image");
+                thumbnailImageView.setVisibility(View.GONE);
+
+            } else {
+                Bitmap bitmap = new ImageSaver(thisActivity).
+                        setFileName(myItem.getImageAddr()).
+                        setDirectoryName("images").
+                        load();
+
+                Log.e("dangol_detail_flag", "bitmap: " + bitmap);
+                thumbnailImageView.setImageBitmap(bitmap);
+            }
         }
         else{
             TextView tv_title = (TextView)convertView.findViewById(R.id.diary_list_title);
