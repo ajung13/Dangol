@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="ac.sogang.dangol">
+    package="ac.sogang.dangol"
+    android:versionCode="1"
+    android:versionName="1.0">
 
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
@@ -21,6 +23,10 @@
     <uses-feature
         android:glEsVersion="0x00020000"
         android:required="true" />
+
+    <uses-sdk
+        android:minSdkVersion="8"
+        android:targetSdkVersion="19"/>
 
     <application
         android:name="ac.sogang.dangol.MyApplication"
@@ -69,6 +75,5 @@
         <service
             android:name=".TimeThread"/>
     </application>
-
 
 </manifest>
