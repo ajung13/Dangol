@@ -13,7 +13,6 @@ import android.database.sqlite.SQLiteException;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
@@ -41,8 +40,6 @@ import com.tsengvn.typekit.TypekitContextWrapper;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-
-import static java.lang.Thread.sleep;
 
 public class MainActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
@@ -221,18 +218,25 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 Double longitude = lastlocation.getLongitude();
                 Log.e("dangol_main(3)", "Last known location: " + latitude + "\t" + longitude);
             }
+            else
+                Toast.makeText(this, "위치 설정을 켜주세요", Toast.LENGTH_LONG).show();
         } catch (SecurityException se) {
             Log.e("dangol_main(4)", "catch " + se.getMessage());
         }
 
-//        Toast.makeText(this, "Check log", Toast.LENGTH_SHORT).show();
-
-        if(dangolApp.th == null) {
+/*        if(dangolApp.th == null) {
             dangolApp.th = new TimeThread(getApplicationContext());
             dangolApp.th.execute();
         }
         else if(dangolApp.th.isCancelled())
-            dangolApp.th.execute();
+            dangolApp.th.execute();*/
+
+        if(dangolApp.th == null){
+            dangolApp.th = new TimeThread(getApplicationContext());
+            dangolApp.th.start();
+        }
+        else if(dangolApp.th.isInterrupted())
+            dangolApp.th.start();
 
         addMarkerOnView();
         if(!markers.isEmpty())
@@ -332,7 +336,91 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-    static public class TimeThread extends AsyncTask<Void, Void, Void>{
+    public class TimeThread extends Thread{
+        private Context context;
+        public TimeThread(Context con){
+            this.context = con;
+        }
+        public void run(){
+            String dbName = "Dangol";
+//            long sleepTime = 180000;
+            long sleepTime = 3000;
+            long minTime = 5000;
+            float minDistance = 10;
+
+            SQLiteDatabase mDB;
+            String nowDateTime = "";
+
+            try {
+                String sql = "";
+                //제일 처음 위치를 받아옴 (초기화)
+                manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, minTime, minDistance, gpsListener );
+                manager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, minTime, minDistance, gpsListener);
+
+                sleep(5000);
+                Location location1 = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                if(location1 == null)   location1 = lastlocation;
+                Double latitude = location1.getLatitude();
+                Double longitude = location1.getLongitude();
+                nowDateTime = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss").format(System.currentTimeMillis());
+
+                int count = 0;
+                while(true) {
+                    //잠을 재운다
+                    sleep(sleepTime);
+
+                    //3분 후 값을 읽어온다
+                    manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 10, gpsListener);
+                    Location location2 = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+                    if (location2 == null) location2 = lastlocation;
+                    if (location2 == null){
+                        Toast.makeText(context, "위치 설정을 켜주세요", Toast.LENGTH_LONG).show();
+                        sleep(60000);
+                        location2 = lastlocation;
+                    }
+                    if(location2 == null)   break;
+                    String nowDateTime2 = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss").format(System.currentTimeMillis());
+
+                    if(count < 7){
+                        if (location1.distanceTo(location2) <= 10) {
+                            // Location Class에 존재하는 distanceTo 함수, 두 지점 사이의 거리를 Meter 단위로 반환, 만약 두 지점 사이가 10m 이하이면 count++
+                            count++;
+                            String str = location2.getLatitude() + ", " + location2.getLongitude() + ", ";
+                            Log.e("dangol_task_check_data", str + Integer.toString(count));
+                        }
+                        else {
+                            // 데이터 리셋, 위치 재설정
+                            count = 0;
+                            location1 = location2;
+                            latitude = location2.getLatitude();
+                            longitude = location2.getLongitude();
+                            nowDateTime = nowDateTime2;
+                        }
+                    }
+                    else if(location1.distanceTo(location2) > 10){
+                        // 유효한 데이터일 경우 데이터 저장
+                        mDB = context.openOrCreateDatabase(dbName, MODE_PRIVATE, null);
+                        sql = "INSERT INTO realData(Latitude, Longitude, Time) VALUES (" + latitude + ", " + longitude + ", '" + nowDateTime + "');";
+                        mDB.execSQL(sql);
+                        Log.e("dangol_task", sql);
+                        mDB.close();
+                    }
+                }
+            }catch(SecurityException se){
+                Log.e("dangol_task", "se: " + se.toString());
+            }catch(InterruptedException ie){
+                Log.e("dangol_task", "ie: " + ie.toString());
+            }catch(SQLiteException sqe){
+                Log.e("dangol_task", "sqe: " + sqe.toString());
+            }catch(Exception e){
+                Log.e("dangol_task", e.toString());
+            }
+            Log.e("dangol_main", "thread dead at " + nowDateTime);
+        }
+    }
+
+/*    static public class TimeThread extends AsyncTask<Void, Void, Void>{
         private Context context;
         public TimeThread(Context con){
             this.context = con;
@@ -359,7 +447,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, minTime, minDistance, gpsListener );
                 manager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, minTime, minDistance, gpsListener);
 
-                sleep(2000);
+                sleep(5000);
                 Location location1 = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                 if(location1 == null)   location1 = lastlocation;
                 Double latitude = location1.getLatitude();
@@ -376,7 +464,12 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                     Location location2 = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
                     if (location2 == null) location2 = lastlocation;
-                    if (location2 == null) break;
+                    if (location2 == null){
+                        Toast.makeText(context, "위치 설정을 켜주세요", Toast.LENGTH_LONG).show();
+                        sleep(60000);
+                        location2 = lastlocation;
+                    }
+                    if(location2 == null)   break;
                     String nowDateTime2 = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss").format(System.currentTimeMillis());
 
                     if(count != 7){
@@ -396,7 +489,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                         }
                     }
                     else {
-
                         // 유효한 데이터일 경우 데이터 저장
                         mDB = context.openOrCreateDatabase(dbName, MODE_PRIVATE, null);
                         sql = "INSERT INTO realData(Latitude, Longitude, Time) VALUES (" + latitude + ", " + longitude + ", '" + nowDateTime + "');";
@@ -429,7 +521,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             super.onCancelled();
             Log.e("dangol_task", "cancelled");
         }
-    }
+    }*/
 
     public void changeFragment(View v){
         int flag = 0;
