@@ -292,7 +292,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         if (requestCode == 1) {
             for (int i = 0; i < permissions.length; i++) {
                 if (grantResults[i] == PackageManager.PERMISSION_GRANTED){
-                    //                    Toast.makeText(this, permissions[i] + " permission granted", Toast.LENGTH_SHORT).show();
                     Log.e("dangol_init", permissions[i] + " permission granted");
                     if(mMap != null){
                         LatLng tmp = new LatLng(37.551430, 126.943048);
@@ -302,7 +301,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 }
                 else
                     Log.e("dangol_init", permissions[i] + " permission denied");
-//                    Toast.makeText(this, permissions[i] + " permission denied", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -383,7 +381,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
                     if(count != 7){
                         if (location1.distanceTo(location2) <= 10) {
-                            // Location Class에 존재하는 distanceTo 함수, 두 지점 사이의 거리를 Meter 단위로 반환, 만약 두 지점 사이가 10m 이하이면 count++
+                            // Location Class에 존재하는 distanceTo 함수, 두 지점 사이의 거리를 Meter 단위로 반환, 만'약 두 지점 사이가 10m 이하이면 count++
                             count++;
                             String str = location2.getLatitude() + ", " + location2.getLongitude() + ", ";
                             Log.e("dangol_task_check_data", str + Integer.toString(count));

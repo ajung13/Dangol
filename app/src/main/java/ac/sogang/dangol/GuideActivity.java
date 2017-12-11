@@ -20,6 +20,9 @@ public class GuideActivity extends AppCompatActivity {
         iv = (ImageView)findViewById(R.id.guideImage);
         flag = 0;
         iv.setImageResource(R.drawable.guide0);
+
+//        Intent intent = new Intent(this, TimeThread.class);
+//        startService(intent);
     }
 
     public void guideImageChange(View v){
