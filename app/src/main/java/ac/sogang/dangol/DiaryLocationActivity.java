@@ -1,5 +1,6 @@
 package ac.sogang.dangol;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
@@ -8,6 +9,7 @@ import android.util.Log;
 import android.widget.ListView;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.tsengvn.typekit.TypekitContextWrapper;
 
 public class DiaryLocationActivity extends AppCompatActivity {
     String locName = "";
@@ -76,5 +78,10 @@ public class DiaryLocationActivity extends AppCompatActivity {
 
         ListView lv = (ListView)findViewById(R.id.diary_location_list);
         lv.setAdapter(myAdapter);
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(TypekitContextWrapper.wrap(newBase));
     }
 }
