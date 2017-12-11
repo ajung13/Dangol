@@ -64,7 +64,11 @@
         <activity
             android:name=".RealDataMapActivity"
             android:label="@string/title_activity_real_data_map" />
-        <activity android:name=".GuideActivity"></activity>
+        <activity android:name=".GuideActivity"/>
+
+        <service
+            android:name=".TimeThread"/>
     </application>
+
 
 </manifest>
