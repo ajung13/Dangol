@@ -173,6 +173,7 @@ public class Writing2Activity extends AppCompatActivity {
                 sql = "INSERT INTO Diary(LocationID, Mood, Weather, Title, Text, Time, Photo) VALUES (" +
                         locID + ", " + emotion + ", " + weather +
                         ", '" + title + "', '" + contents + "', '" + year + "-" + month + "-" + date + " 00:00:00'" + ", '" + imageName + "' " + ");";
+                Toast.makeText(getApplicationContext(), "사진을 저장중입니다", Toast.LENGTH_SHORT).show();
             } else {
                 sql = "INSERT INTO Diary(LocationID, Mood, Weather, Title, Text, Time) VALUES (" +
                         locID + ", " + emotion + ", " + weather +
