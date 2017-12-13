@@ -76,6 +76,8 @@ public class RealDataListActivity extends AppCompatActivity {
         try {
             Cursor c = mDB.rawQuery("SELECT realDataID, Latitude, Longitude, Time FROM realData", null);
 
+            Log.e("dangol_real", c.getCount() + "개");
+
             if (c != null) {
                 if (c.moveToLast()) {
                     do {

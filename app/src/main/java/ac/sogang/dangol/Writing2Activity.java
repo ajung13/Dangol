@@ -288,7 +288,8 @@ public class Writing2Activity extends AppCompatActivity {
 
             String[] tokenResult = result.split(" ");
             result = "";
-            for(int i = tokenResult.length - 1; i >= 0 && i > tokenResult.length - 4; i--)
+//            for(int i = tokenResult.length - 1; i >= 0 && i > tokenResult.length - 4; i--)
+            for(int i = 0; i < 3; i++)
                 result = tokenResult[i] + " " + result;
         }catch(ParseException pe){
             Log.e("dangol_write_setLocName", pe.toString());
