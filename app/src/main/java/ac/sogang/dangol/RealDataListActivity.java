@@ -71,7 +71,8 @@ public class RealDataListActivity extends AppCompatActivity {
 
     private int addList(){
         int cnt = 0;
-        SQLiteDatabase mDB = openOrCreateDatabase("Dangol", MODE_PRIVATE, null);
+        SQLiteDatabase mDB = openOrCreateDatabase("Dangol", MODE_PRIVATE,
+                null);
 
         try {
             Cursor c = mDB.rawQuery("SELECT realDataID, Latitude, Longitude, Time FROM realData", null);

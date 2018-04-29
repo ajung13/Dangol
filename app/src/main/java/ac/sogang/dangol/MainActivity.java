@@ -21,9 +21,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -38,7 +35,6 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.tsengvn.typekit.TypekitContextWrapper;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 public class MainActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
@@ -52,6 +48,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     private int fragment_num;
 
     private boolean startFlag = false;
+    final private boolean threadRunFlag = false;
 
     Context context;
 
@@ -71,14 +68,14 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 //        realDataTest();
 
         checkDangerousPermissions();
-        setLayout();
     }
 
     private void realDataTest(){
         SQLiteDatabase myDB = openOrCreateDatabase("Dangol", MODE_PRIVATE, null);
-        String sql = "INSERT INTO realData(Latitude, Longitude, Time) VALUES (37.550396, 126.939813, '2017-12-12 14:29:12')";
+        String sql = "INSERT INTO realData(Latitude, Longitude, Time) VALUES (37.550396, 126.939813, '2017.12.12 14:29:12')";
         myDB.execSQL(sql);
-        myDB.execSQL("INSERT INTO realData(Latitude, Longitude, Time) VALUES (37.549903, 126.941748, '2017-12-12 10:42:40')");
+        myDB.execSQL("INSERT INTO realData(Latitude, Longitude, Time) VALUES (37.549903, 126.941748, '2017.12.12 10:42:40')");
+
         myDB.close();
     }
 
@@ -98,47 +95,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             changeFragment(findViewById(R.id.menu_diary));
         }
 
-    }
-
-    private void setLayout(){
-        int realData = realDataCnt();
-        if(realData <= 0)   return;
-
-        FrameLayout fl = (FrameLayout)findViewById(R.id.main_frame_layout);
-        RelativeLayout rl = new RelativeLayout(this);
-        rl.setId(R.id.realDataLayout);
-
-        rl.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, 150));
-        rl.setBackgroundColor(getResources().getColor(R.color.white));
-        rl.setAlpha((float)0.9);
-        rl.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, RealDataListActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        RelativeLayout.LayoutParams params1 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-//        RelativeLayout.LayoutParams params1 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, 66);
-        TextView tv = new TextView(this);
-        params1.addRule(RelativeLayout.CENTER_IN_PARENT);
-        tv.setLayoutParams(params1);
-        tv.setText("현재 " + realData + "개 장소에 대한 기록을 남길 수 있습니다.");
-        tv.setTextColor(getResources().getColor(R.color.contents));
-        tv.setTextSize(15);
-
-        RelativeLayout.LayoutParams params2 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        ImageView iv = new ImageView(this);
-        iv.setImageResource(R.drawable.diary_next);
-        params2.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-        params2.setMargins(20, 20, 20, 20);
-        iv.setLayoutParams(params2);
-        iv.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-
-        rl.addView(tv);
-        rl.addView(iv);
-        fl.addView(rl);
     }
 
     private int realDataCnt(){
@@ -233,13 +189,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         } catch (SecurityException se) {
             Log.e("dangol_main(4)", "catch " + se.getMessage());
         }
-
-        if(dangolApp.th == null){
-            dangolApp.th = new TimeThread(getApplicationContext());
-            dangolApp.th.start();
-        }
-        else if(dangolApp.th.isInterrupted())
-            dangolApp.th.start();
 
         addMarkerOnView();
         if(!markers.isEmpty())
@@ -339,92 +288,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-    public class TimeThread extends Thread{
-        private Context context;
-        public TimeThread(Context con){
-            this.context = con;
-        }
-        public void run(){
-            String dbName = "Dangol";
-            long sleepTime = 180000;
-//            long sleepTime = 3000;
-            long minTime = 5000;
-            float minDistance = 10;
-
-            SQLiteDatabase mDB;
-            String nowDateTime = "";
-
-            try {
-                String sql = "";
-                //제일 처음 위치를 받아옴 (초기화)
-                manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, minTime, minDistance, gpsListener );
-                manager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, minTime, minDistance, gpsListener);
-
-                sleep(5000);
-                Location location1 = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                if(location1 == null)   location1 = lastlocation;
-                Double latitude = location1.getLatitude();
-                Double longitude = location1.getLongitude();
-                nowDateTime = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss").format(System.currentTimeMillis());
-
-                int count = 0;
-                while(true) {
-                    //잠을 재운다
-                    sleep(sleepTime);
-
-                    //3분 후 값을 읽어온다
-                    manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 10, gpsListener);
-                    Location location2 = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-
-                    if (location2 == null) location2 = lastlocation;
-                    if (location2 == null){
-                        Toast.makeText(context, "위치 설정을 켜주세요", Toast.LENGTH_LONG).show();
-                        sleep(60000);
-                        location2 = lastlocation;
-                    }
-                    if(location2 == null)   break;
-                    String nowDateTime2 = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss").format(System.currentTimeMillis());
-
-                    if(count != 7){
-                        if (location1.distanceTo(location2) <= 10) {
-                            // Location Class에 존재하는 distanceTo 함수, 두 지점 사이의 거리를 Meter 단위로 반환, 만약 두 지점 사이가 10m 이하이면 count++
-                            count++;
-                            String str = location2.getLatitude() + ", " + location2.getLongitude() + ", ";
-                            Log.e("dangol_task_check_data", str + Integer.toString(count));
-                        }
-                        else {
-                            // 데이터 리셋, 위치 재설정
-                            count = 0;
-                            location1 = location2;
-                            latitude = location2.getLatitude();
-                            longitude = location2.getLongitude();
-                            nowDateTime = nowDateTime2;
-                        }
-                    }
-                    else{
-                        // 유효한 데이터일 경우 데이터 저장
-                        mDB = context.openOrCreateDatabase(dbName, MODE_PRIVATE, null);
-                        sql = "INSERT INTO realData(Latitude, Longitude, Time) VALUES (" + latitude + ", " + longitude + ", '" + nowDateTime + "');";
-                        mDB.execSQL(sql);
-                        Log.e("dangol_task", count + ": " + sql);
-                        mDB.close();
-                        count++;
-                    }
-                }
-            }catch(SecurityException se){
-                Log.e("dangol_task", "se: " + se.toString());
-            }catch(InterruptedException ie){
-                Log.e("dangol_task", "ie: " + ie.toString());
-            }catch(SQLiteException sqe){
-                Log.e("dangol_task", "sqe: " + sqe.toString());
-            }catch(Exception e){
-                Log.e("dangol_task", e.toString());
-            }
-            Log.e("dangol_main", "thread dead at " + nowDateTime);
-            Toast.makeText(context, "자동위치저장 기능을 사용할 수 없습니다", Toast.LENGTH_LONG).show();
-        }
-    }
-
     public void changeFragment(View v){
         int flag = 0;
         switch(v.getId()){
@@ -448,7 +311,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             fragment_num = 0;
             ib_d.setBackgroundResource(R.drawable.menu_diary_gray);
             ib_p.setBackgroundResource(R.drawable.menu_pin_brown);
-            setLayout();
             addMarkerOnView();
             super.onBackPressed();
         }
@@ -478,7 +340,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             ImageButton ib_p = (ImageButton)findViewById(R.id.menu_pin);
             ib_d.setBackgroundResource(R.drawable.menu_diary_gray);
             ib_p.setBackgroundResource(R.drawable.menu_pin_brown);
-            setLayout();
             addMarkerOnView();
         }
         super.onBackPressed();

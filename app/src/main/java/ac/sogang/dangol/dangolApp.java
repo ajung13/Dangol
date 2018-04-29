@@ -14,7 +14,6 @@ public class dangolApp implements Application.ActivityLifecycleCallbacks {
     private int paused;
     private int started;
     private int stopped;
-    static public MainActivity.TimeThread th;
 
     @Override
     public void onActivityCreated(Activity activity, Bundle savedInstanceState) {

@@ -35,8 +35,8 @@ public class GuideActivity extends AppCompatActivity {
             case 4: iv.setImageResource(R.drawable.guide5); break;
             case 5:
                 Intent intent = new Intent(GuideActivity.this, MainActivity.class);
-                startActivity(intent);
                 Toast.makeText(getApplicationContext(), "잠시만 기다려 주세요", Toast.LENGTH_SHORT).show();
+                startActivity(intent);
                 finish();
         }
     }
